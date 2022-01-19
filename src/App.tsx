@@ -20,7 +20,7 @@ function App() {
       <Router>
         <ThemeProvider theme={ Theme }>
             <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>{ t('projectName') }</Typography>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>{ t('commons:projectName') }</Typography>
             </Toolbar>
 
             <Container maxWidth="xl">
