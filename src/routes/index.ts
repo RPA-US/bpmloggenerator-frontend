@@ -1,9 +1,9 @@
-import SeedConfigPage from 'pages/SeedConfig/SeedConfig';
+import BTPToolConfigurationPage from 'pages/BPMToolConfiguration';
 
 const routes = [
   {
       path: '/',
-      component: SeedConfigPage,
+      component: BTPToolConfigurationPage,
   },
 ]
 
