@@ -1,1 +1,7 @@
-{}
+{
+  "pages": {
+    "bpmtool": {
+      "title": "Interfaz de generación automática de logs"
+    }
+  }
+}

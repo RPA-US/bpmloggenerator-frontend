@@ -1,1 +1,7 @@
-{}
+{
+  "pages": {
+    "bpmtool": {
+      "title": "Automatic GUI log generation"
+    }
+  }
+}

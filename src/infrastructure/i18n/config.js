@@ -8,12 +8,12 @@ import esTranslation from './locales/es.json';
 
 export const resources = {
   en: {
-    ns1: commons,
-    ns2: enTranslation,
+    commons,
+    ns: enTranslation,
   },
   es: {
-    ns1: commons,
-    ns2: esTranslation,
+    commons,
+    ns: esTranslation,
   },
 };
 
@@ -21,7 +21,8 @@ i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
-    ns: ['ns1', 'ns2'],
+    ns: ['commons', 'ns'],
+    defaultNS: 'ns',
     interpolation: {
       escapeValue: false,
     },
