@@ -1,7 +1,30 @@
 {
+  "input": {
+    "attach": "Select file",
+    "addRow": "Add"
+  },
   "pages": {
     "bpmtool": {
-      "title": "Automatic GUI log generation"
+      "title": "Automatic GUI log generation",
+      "seedLog": {
+        "text": "Seed log"
+      },
+      "caseVariability": {
+        "text": "Case variability"
+      },
+      "scenario": {
+        "text": "Scenario"
+      },
+      "logSize": {
+        "text": "Log size",
+        "helperText": "Number of rows separated by comma (',')"
+      },
+      "families": {
+        "text": "Families",
+        "title": "Title",
+        "balanced": "Balanced",
+        "imbalanced": "Imbalanced"
+      }
     }
   }
 }

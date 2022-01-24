@@ -1,7 +1,30 @@
 {
+  "input": {
+    "attach": "Seleccionar archivo",
+    "addRow": "Añadir"
+  },
   "pages": {
     "bpmtool": {
-      "title": "Interfaz de generación automática de logs"
+      "title": "Interfaz de generación automática de logs",
+      "seedLog": {
+        "text": "Seed log"
+      },
+      "caseVariability": {
+        "text": "Case variability"
+      },
+      "scenario": {
+        "text": "Scenario"
+      },
+      "logSize": {
+        "text": "Tamaño del log",
+        "helperText": "Número de líneas separadas por coma (',')"
+      },
+      "families": {
+        "text": "Familias",
+        "title": "Título",
+        "balanced": "Equilibrada",
+        "imbalanced": "Desequilibrada"
+      }
     }
   }
 }
