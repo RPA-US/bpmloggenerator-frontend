@@ -1,3 +1,4 @@
 {
-  "projectName": "AGOSUIRPA FRONTEND"
+  "projectName": "AGOSUIRPA FRONTEND",
+  "datetime":"{{ val, datetime }}"
 }

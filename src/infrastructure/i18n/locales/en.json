@@ -3,27 +3,43 @@
     "attach": "Select file",
     "addRow": "Add"
   },
-  "pages": {
-    "bpmtool": {
-      "title": "Automatic GUI log generation",
-      "seedLog": {
-        "text": "Seed log"
+  "features": {
+    "experiment": {
+      "list": {
+        "title": "Experiments list",
+        "add": "Add new",
+        "name": "Name",
+        "launchedAt": "Launched at",
+        "edit": "Edit",
+        "downloadResults": "Download results"
       },
-      "caseVariability": {
-        "text": "Case variability"
+      "create": {
+        "title": "Automatic GUI log generation"
       },
-      "scenario": {
-        "text": "Scenario"
-      },
-      "logSize": {
-        "text": "Log size",
-        "helperText": "Number of rows separated by comma (',')"
-      },
-      "families": {
-        "text": "Families",
-        "title": "Title",
-        "balanced": "Balanced",
-        "imbalanced": "Imbalanced"
+      "firstStep": {
+        "name": {
+          "label": "Name",
+          "helperText": "Name helper text"
+        },
+        "logSize": {
+          "label": "Log size",
+          "helperText": "Number of rows separated by comma (',')"
+        },
+        "scenariosNumber": {
+          "label": "Number of scenarios",
+          "helperText": "Number of scenarios helper text"
+        },
+        "seedLog": {
+          "label": "Seed log",
+          "helperText": "Seed log helper text"
+        },
+        "variability": {
+          "label": "Variability",
+          "helperText": "Variablity helper text"
+        },
+        "errors": {
+          "nameRequired": "Please enter a valid name"
+        }
       }
     }
   }

@@ -3,23 +3,26 @@ import Button from '@mui/material/Button';
 import { useTranslation } from 'react-i18next';
 
 export interface FileInputProps extends React.HTMLProps<HTMLInputElement> {
+  inputRef?: any,
 }
 
-const FileInput: React.FC<FileInputProps> = ({ name, title = 'input.attach', accept, multiple = false, onChange, onClick }) => {
+const FileInput: React.FC<FileInputProps> = ({ inputRef, ...inputProps }) => {
   const { t } = useTranslation();
+
+  const { accept, title = 'input.attach', name, multiple = false } = inputProps;
 
   const inputId = `file-input--${name}-file`;
   return (
     <React.Fragment>
       <input
+        { ...inputProps }
+        ref={ inputRef }
         accept={ accept }
         className={ `input--${name}`}
         style={{ display: 'none' }}
         multiple={ multiple }
         id={ inputId }
         type="file"
-        onChange={ onChange }
-        onClick={ onClick }
       />
       <label htmlFor={ inputId }>
         <Button variant="contained" color="secondary" component="span" className={ `input--button-${name}` }>
