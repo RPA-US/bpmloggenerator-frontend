@@ -25,6 +25,13 @@ i18n
     defaultNS: 'ns',
     interpolation: {
       escapeValue: false,
+      format: function(value, format, lng) {
+        if (format === 'datetime') return new Intl.DateTimeFormat('es-ES', {
+          dateStyle: "medium",
+          timeStyle: "medium"
+        }).format(value);
+        return value;
+      }
     },
     resources,
   })
