@@ -4,6 +4,18 @@
     "addRow": "Add"
   },
   "features": {
+    "auth": {
+      "login": {
+        "title": "Authentication is required",
+        "email": "email",
+        "password": "password",
+        "errors": {
+          "emailRequired": "Please enter a valid email",
+          "passwordRequired": "Please enter a valid password"
+        },
+        "login": "Enter"
+      }
+    },
     "experiment": {
       "list": {
         "title": "Experiments list",
