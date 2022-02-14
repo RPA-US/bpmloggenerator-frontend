@@ -57,6 +57,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.name.label"
               helperText="features.experiment.form.name.helperText"
+              tooltip="features.experiment.form.name.tooltip"
             >
               <TextInputContainer>
                 <TextField
@@ -77,6 +78,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.logSize.label"
               helperText="features.experiment.form.logSize.helperText"
+              tooltip="features.experiment.form.logSize.tooltip"
             >
               <TextInputContainer>
                 <TextField
@@ -97,6 +99,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.scenariosNumber.label"
               helperText="features.experiment.form.scenariosNumber.helperText"
+              tooltip="features.experiment.form.scenariosNumber.tooltip"
             >
               <TextInputContainer>
                 <TextField
@@ -117,12 +120,13 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.seedLog.label"
               helperText="features.experiment.form.seedLog.helperText"
+              tooltip="features.experiment.form.seedLog.tooltip"
               style={{ marginTop: theme.spacing(2) }}
             >
               <FileUpload
                 accept=".csv"
                 { ...registerWithCustomRef(
-                    register('seedLog', {
+                  register('seedLog', {
                     required: t('features.experiment.form.errors.seedLogRequired') as string
                   }), 'inputRef') }
               />
@@ -131,6 +135,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.screenshots.label"
               helperText="features.experiment.form.screenshots.helperText"
+              tooltip="features.experiment.form.screenshots.tooltip"
               style={{ marginTop: theme.spacing(2) }}
             >
               <FileUpload
@@ -145,6 +150,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.variability.label"
               helperText="features.experiment.form.variability.helperText"
+              tooltip="features.experiment.form.variability.tooltip"
               style={{ marginTop: theme.spacing(2) }}
             >
               <FileUpload
@@ -158,6 +164,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.scenario.label"
               helperText="features.experiment.form.scenario.helperText"
+              tooltip="features.experiment.form.scenario.tooltip"
               style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(3) }}
             >
               <FileUpload
@@ -171,6 +178,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.unbalancedCases.label"
               helperText="features.experiment.form.unbalancedCases.helperText"
+              tooltip="features.experiment.form.unbalancedCases.tooltip"
             >
               <TextInputContainer>
                 <TextField

@@ -31,35 +31,43 @@
       "form": {
         "name": {
           "label": "Name",
-          "helperText": "Name helper text"
+          "helperText": "Name helper text",
+          "tooltip": "Name tooltip"
         },
         "logSize": {
           "label": "Log size",
-          "helperText": "Number of rows separated by comma (',')"
+          "helperText": "Number of rows separated by comma (',')",
+          "tooltip": "Name tooltip"
         },
         "scenariosNumber": {
           "label": "Number of scenarios",
-          "helperText": "Number of scenarios helper text"
+          "helperText": "Number of scenarios helper text",
+          "tooltip": "Name tooltip"
         },
         "seedLog": {
           "label": "Seed log",
-          "helperText": "Seed log helper text"
+          "helperText": "Seed log helper text",
+          "tooltip": "Name tooltip"
         },
         "screenshots": {
           "label": "Screenshots",
-          "helperText": "Screenshots helper text"
+          "helperText": "Screenshots helper text",
+          "tooltip": "Name tooltip"
         },
         "variability": {
           "label": "Variability",
-          "helperText": "Variablity helper text"
+          "helperText": "Variablity helper text",
+          "tooltip": "Name tooltip"
         },
         "scenario": {
           "label": "Scenario",
-          "helperText": "Scenario helper text"
+          "helperText": "Scenario helper text",
+          "tooltip": "Name tooltip"
         },
         "unbalancedCases": {
           "label": "Percentage of each variant for the unbalanced case",
-          "helperText": "Unbalanced cases helper text"
+          "helperText": "Unbalanced cases helper text",
+          "tooltip": "Name tooltip"
         },
         "errors": {
           "nameRequired": "Please enter a valid name"
