@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import FirstStep from './FirstStep';
+import ExperimentFormComponent from './Form';
 
 
 const CreateExperiment: React.FC = () => {
   const { t } = useTranslation();
-  const [ step, setStep ] = useState(1);
 
   return (
     <>
@@ -15,9 +14,11 @@ const CreateExperiment: React.FC = () => {
         { t('features.experiment.create.title') }
       </Typography>
 
-      {
-        step === 1 && (<FirstStep />)
-      }
+      <ExperimentFormComponent 
+        onSubmit={(data: any) => {
+          console.log('Create component data received:', data);
+        }}
+      />
     </>
   )
 }

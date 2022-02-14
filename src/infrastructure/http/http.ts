@@ -1,42 +1,81 @@
+import configuration from "infrastructure/util/configuration";
 
-const headers = {
-    'Content-Type': 'application/json'
+const commonHeaders = {
+    'Content-Type': 'application/json',
+    // 'Accept': 'application/json',
+}
+
+const body = (bodyObj: any) => bodyObj != null ? JSON.stringify(bodyObj) : undefined;
+
+const handleRequestResponse = async <T>(response: Response) => {
+    if (response.ok) {
+        return await response.json() as T;
+    } else {
+        return Promise.reject(response);
+    }
 }
 
 export default class Http {
 
-    static async get <T>(url:string) {
+    static async get <T>(url:string, headers?:any) {
         const response = await fetch(url, {
             method: 'GET',
-            headers
+            headers: {
+                ...commonHeaders,
+                ...headers,
+            }
         })
-        return await response.json() as T;
+        return handleRequestResponse<T>(response);
     }
 
-    static async post <T>(url:string, body: any) {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers,
-            body
-        })
-        return await response.json() as T;
+    static async post <T>(url:string, bodyObj: any, headers?: any) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    ...commonHeaders,
+                    ...headers,
+                },
+                body: body(bodyObj)
+            })
+            return handleRequestResponse<T>(response);
+        } catch (ex) {
+            throw ex;
+        }
     }
 
-    static async put <T>(url:string, body: any) {
+    static async put <T>(url:string, bodyObj: any, headers?: any) {
         const response = await fetch(url, {
             method: 'PUT',
-            headers,
-            body
+            headers: {
+                ...commonHeaders,
+                ...headers,
+            },
+            body: body(bodyObj)
         })
-        return await response.json() as T;
+        return handleRequestResponse<T>(response);
     }
 
-    static async delete <T>(url:string) {
+    static async delete <T>(url:string, headers?: any) {
         const response = await fetch(url, {
             method: 'PUT',
-            headers
+            headers: {
+                ...commonHeaders,
+                ...headers,
+            }
         })
-        return await response.json() as T;
+        return handleRequestResponse<T>(response);
     }
+
+    static authHeader(token: string):{ Authorization: string } {
+        return { Authorization: `token ${token}` };
+    }
+
+    static buildURL = (path:string, queryParams:any = {}) => {
+        const params = Object.entries(queryParams).map(p => `${p[0]}=${p[1]}`).join('&');
+        let parsedPath = path.startsWith('/') ? path.substring(1) : path;
+        return configuration.API_BASE_URL + parsedPath + (params !== '' ? `?${params}` : '');
+    }
+      
 
 }

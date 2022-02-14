@@ -28,7 +28,7 @@
       "create": {
         "title": "Automatic GUI log generation"
       },
-      "firstStep": {
+      "form": {
         "name": {
           "label": "Name",
           "helperText": "Name helper text"
@@ -45,13 +45,26 @@
           "label": "Seed log",
           "helperText": "Seed log helper text"
         },
+        "screenshots": {
+          "label": "Screenshots",
+          "helperText": "Screenshots helper text"
+        },
         "variability": {
           "label": "Variability",
           "helperText": "Variablity helper text"
         },
+        "scenario": {
+          "label": "Scenario",
+          "helperText": "Scenario helper text"
+        },
+        "unbalancedCases": {
+          "label": "Percentage of each variant for the unbalanced case",
+          "helperText": "Unbalanced cases helper text"
+        },
         "errors": {
           "nameRequired": "Please enter a valid name"
-        }
+        },
+        "generate": "Generate"
       }
     }
   }

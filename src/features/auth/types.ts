@@ -1,7 +1,7 @@
 import { User } from 'features/user/types';
 
 export interface AuthError {
-  message: string
+  code: string
 }
 
 export interface AuthState {
@@ -9,5 +9,7 @@ export interface AuthState {
   currentUser?: User
   redirectPath: string
   isLoading: boolean
+  token: string | null
+  checked: boolean
   error: AuthError | null
 }

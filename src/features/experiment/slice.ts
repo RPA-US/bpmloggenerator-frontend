@@ -1,9 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { Experiment, ExperimentError, ExperimentsState } from './types';
+import { Experiment, ExperimentError, ExperimentsState, Pagination } from './types';
+import ExperimentRepository from 'infrastructure/repositories/experiment';
+import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
+
+const repository = new ExperimentRepository();
 
 const initialState: ExperimentsState =  {
   experiments: [],
+  pagination: {
+    page: 1,
+    total : 0,
+    hasNext: true
+  },
   isLoading: false,
   error: null
 }
@@ -15,8 +24,13 @@ export const experimentsSlice = createSlice({
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.isLoading = payload
     },
-    setExperiments: (state, { payload }: PayloadAction<Experiment[]>) => {
-      state.experiments = payload
+    addExperiments: (state, { payload }: PayloadAction<{ experiments: Experiment[], pagination: Pagination}>) => {
+      state.experiments = state.experiments.concat(payload.experiments)
+      state.pagination = payload.pagination
+    },
+    setExperiments: (state, { payload }: PayloadAction<{ experiments: Experiment[], pagination: Pagination}>) => {
+      state.experiments = payload.experiments
+      state.pagination = payload.pagination
     },
     setError: (state, { payload }: PayloadAction<ExperimentError>) => {
       state.error = payload
@@ -24,27 +38,35 @@ export const experimentsSlice = createSlice({
   }
 });
 
-const { setLoading, setExperiments, setError } = experimentsSlice.actions
+const { setLoading, addExperiments, setError } = experimentsSlice.actions
 
 export const experimentsSelector = (state: RootState) => state.experiment;
 
-const mockCallDelay = () => new Promise((resolve) => setTimeout(resolve, 3000));
+function experimentDTOToExperimentType(id: number, experiment: ExperimentDTO): Experiment {
+  return {
+    id,
+    name: experiment.name,
+    description: experiment.description,
+    launchDate: new Date()
+  }
+}
 
 export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, getState) => {
-  const { auth } = getState();
+  const { auth, experiment } = getState();
   try {
     dispatch(setLoading(true))
     // TODO fetch experiments
     console.log('EXPERIMENT SLICE: LOAD EXPERIMENTS FROM USER WITH ID ', auth.currentUser?.id);
-    await mockCallDelay();
-    dispatch(setExperiments(
-      [
-        { id: 1, name: 'First sample experiment', launchDate: new Date('2022-02-01T09:00:00') },
-        { id: 2, name: 'Second sample experiment', launchDate: new Date('2022-02-01T10:00:00') },
-        { id: 3, name: 'Third sample experiment', launchDate: new Date('2022-02-02T11:30:00') },
-      ]
-    ));
-
+    const currentPage = experiment.pagination.page;
+    const experimentResponse = await repository.list(currentPage, auth.token ?? '');
+    dispatch(addExperiments({
+      experiments: experimentResponse.results.map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(i+1, exp)),
+      pagination: {
+        page: currentPage + 1,
+        total: experimentResponse.count,
+        hasNext: experimentResponse.next != null
+      }
+    }));
   } catch (error) {
     dispatch(setError(error as ExperimentError))
   } finally {

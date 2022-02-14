@@ -15,7 +15,7 @@ import Toolbar from 'components/Toolbar';
 import Spacer from 'components/Spacer';
 
 import { history } from 'store/store';
-import { authSelector, updateRedirectPath, logout } from 'features/auth/slice';
+import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
 import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/List';
@@ -26,8 +26,6 @@ import { useTranslation } from "react-i18next";
 
 import Theme from 'styles/theme';
 import PrivateRoute from './helpers/PrivateRoute';
-import { Grid } from '@mui/material';
-
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -36,7 +34,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 
 function App() {
   const { t } = useTranslation();
-  const { isAuth, redirectPath, currentUser } = useSelector( authSelector );
+  const { isAuth, checked, redirectPath, currentUser } = useSelector( authSelector );
   const dispatch = useDispatch();
 
   const defaultProtectedRouteProps = {
@@ -45,6 +43,8 @@ function App() {
     redirectPath,
     setRedirectPath: (path: string) => dispatch(updateRedirectPath(path)),
   }
+
+  dispatch(checkSession())
 
   return (
     <>
@@ -73,14 +73,14 @@ function App() {
               }
             </Toolbar>
 
-            <StyledContainer maxWidth="xl">
+            { checked && (<StyledContainer maxWidth="xl">
               <Switch>
                 <Route exact component={ Login } path="/login" />
                 <Route exact component={ Signup } path="/signup" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
-            </StyledContainer>
+            </StyledContainer>) }
         </ThemeProvider>
       </ConnectedRouter>
     </>
