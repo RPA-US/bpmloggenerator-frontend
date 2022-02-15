@@ -38,7 +38,7 @@ export const experimentsSlice = createSlice({
   }
 });
 
-const { setLoading, addExperiments, setError } = experimentsSlice.actions
+const { setLoading, addExperiments, setExperiments, setError } = experimentsSlice.actions
 
 export const experimentsSelector = (state: RootState) => state.experiment;
 
@@ -55,22 +55,43 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
   const { auth, experiment } = getState();
   try {
     dispatch(setLoading(true))
-    // TODO fetch experiments
-    console.log('EXPERIMENT SLICE: LOAD EXPERIMENTS FROM USER WITH ID ', auth.currentUser?.id);
     const currentPage = experiment.pagination.page;
     const experimentResponse = await repository.list(currentPage, auth.token ?? '');
-    dispatch(addExperiments({
-      experiments: experimentResponse.results.map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(i+1, exp)),
-      pagination: {
-        page: currentPage + 1,
-        total: experimentResponse.count,
-        hasNext: experimentResponse.next != null
-      }
-    }));
+    if (experimentResponse.count !== experiment.experiments.length) {
+      dispatch(addExperiments({
+        experiments: experimentResponse.results
+          .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(i + experiment.experiments.length +1, exp))
+          .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i),
+        pagination: {
+          page: currentPage + (experimentResponse.next != null ? 1 : 0),
+          total: experimentResponse.count,
+          hasNext: experimentResponse.next != null
+        }
+      }));
+    }
   } catch (error) {
     dispatch(setError(error as ExperimentError))
   } finally {
     dispatch(setLoading(false))
+  }
+}
+
+export const createExperiment = (experimentData: any): AppThunk => async (dispatch: AppDispatch, getState) => {
+  const { auth, experiment } = getState();
+  try {
+    const experimentResponse = await repository.create(experimentData, auth.token ?? '');
+    const { experiments, pagination } = experiment;
+    const hasNext = pagination.total > experiments.length + 1;
+    dispatch(setExperiments({
+      experiments: [experimentDTOToExperimentType(experiments.length + 1, experimentResponse)].concat(experiments),
+      pagination: {
+        page: hasNext ? 2 : 1,
+        total: experiments.length + 1,
+        hasNext
+      }
+    }));
+  } catch (error) {
+    dispatch(setError(error as ExperimentError))
   }
 }
 

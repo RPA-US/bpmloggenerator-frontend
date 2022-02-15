@@ -20,6 +20,7 @@ import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/List';
 import ExperimentCreation from 'features/experiment/Create';
+import ExperimentDetails from 'features/experiment/Details';
 
 import 'infrastructure/i18n/config';
 import { useTranslation } from "react-i18next";
@@ -78,6 +79,7 @@ function App() {
                 <Route exact component={ Login } path="/login" />
                 <Route exact component={ Signup } path="/signup" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }

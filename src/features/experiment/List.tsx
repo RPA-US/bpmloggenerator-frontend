@@ -47,7 +47,7 @@ const ExperimentsList: React.FC = () => {
               <Grid key={i} item xs={ 12 } sm={ 6 } lg={ 4 }>
                 <Card>
                   <CardContent>
-                    <Typography variant="h5">{ experiment.name }</Typography>
+                    <RouterLink to={`/experiment/${experiment.id}`}><Typography variant="h5">{ experiment.name }</Typography></RouterLink>
                     <Typography variant="caption" color="gray">
                     { t('commons:datetime', { val: experiment.launchDate }) }
                     </Typography>

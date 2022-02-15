@@ -5,7 +5,13 @@ const commonHeaders = {
     // 'Accept': 'application/json',
 }
 
-const body = (bodyObj: any) => bodyObj != null ? JSON.stringify(bodyObj) : undefined;
+const body = (bodyObj: any) => {
+    if (bodyObj != null) {
+        if (bodyObj instanceof FormData) return bodyObj;
+        else return JSON.stringify(bodyObj);
+    }
+    return undefined
+};
 
 const handleRequestResponse = async <T>(response: Response) => {
     if (response.ok) {
@@ -33,7 +39,7 @@ export default class Http {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    ...commonHeaders,
+                    ...(bodyObj instanceof FormData ? {} : commonHeaders),
                     ...headers,
                 },
                 body: body(bodyObj)

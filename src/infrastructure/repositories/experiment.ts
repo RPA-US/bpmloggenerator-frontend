@@ -1,4 +1,4 @@
-import { ExperimentResponse } from "infrastructure/http/dto/experiment";
+import { ExperimentDTO, ExperimentResponse } from "infrastructure/http/dto/experiment";
 import Http from "infrastructure/http/http";
 
 export default class ExperimentRepository {
@@ -7,13 +7,21 @@ export default class ExperimentRepository {
     try {
       return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', { page }), Http.authHeader(token))
     } catch (ex) {
-      console.error('error caught in AuthRepository.userData', ex);
+      console.error('error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error
       throw ex;
     }
   }
 
-  async create() {}
+  async create(experimentData: any, token: string) {
+    try {
+      return await Http.post<ExperimentDTO>(Http.buildURL('/experiments/'), experimentData, Http.authHeader(token))
+    } catch (ex) {
+      console.error('error caught in ExperimentRepository.create', ex);
+      // TODO handle session caduced error
+      throw ex;
+    }
+  }
 
   async delete() {}
 
