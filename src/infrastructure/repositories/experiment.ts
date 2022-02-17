@@ -24,7 +24,6 @@ export default class ExperimentRepository {
   }
 
   async delete() {}
-
   async download() {}
 
 }

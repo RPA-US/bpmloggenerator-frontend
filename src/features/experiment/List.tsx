@@ -18,6 +18,9 @@ const FlexDiv = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(4)
 }))
 
+const onDownload = () => {}
+
+
 const ExperimentsList: React.FC = () => {
   const { isLoading, pagination, experiments, error } = useSelector(experimentsSelector);
   const dispatch = useDispatch();
@@ -54,8 +57,8 @@ const ExperimentsList: React.FC = () => {
                   </CardContent>
                   <CardActions>
                     <Spacer />
-                    <Button color="secondary">{ t('features.experiment.list.edit') }</Button>
-                    <Button color="secondary">{ t('features.experiment.list.downloadResults') }</Button>
+                    <Button color="secondary" disabled>{ t('features.experiment.list.edit') }</Button>
+                    <Button color="secondary" disabled>{ t('features.experiment.list.downloadResults') }</Button>
                   </CardActions>
                 </Card>
               </Grid>

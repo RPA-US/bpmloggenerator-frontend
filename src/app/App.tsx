@@ -54,7 +54,7 @@ function App() {
             <CssBaseline />
             <Toolbar>
               <Button variant="text" component={ Link } to="/">
-                <Typography variant="h6" color="white" component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" color="white" component="div" sx={{ flexGrow: 1 }} >
                   { t('commons:projectName') }
                 </Typography>
               </Button>
@@ -80,6 +80,7 @@ function App() {
                 <Route exact component={ Signup } path="/signup" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
+                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }

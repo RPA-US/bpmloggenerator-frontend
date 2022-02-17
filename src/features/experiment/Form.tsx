@@ -79,13 +79,13 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
     delete checkedData.seedLog;
 
     if (data.logSize != null && data.imbalancedCase != null) {
-      const imbalancedCases = data.imbalancedCase.split(',');
+      const imbalancedCases = data.imbalancedCase.split(',').map((n: string) => parseFloat(n));
       checkedData.size_balance = JSON.stringify({
         balance: {
           Balanced: Array.from({ length: imbalancedCases.length }, () => 1 / imbalancedCases.length),
           Imbalanced: imbalancedCases
         },
-        size_secuence: data.logSize.split(',')
+        size_secuence: data.logSize.split(',').map((n: string) => parseFloat(n))
       })
 
       delete checkedData.logSize;
@@ -122,9 +122,12 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
               tooltip="features.experiment.form.name.tooltip"
               style={{ marginTop: theme.spacing(2) }}
             >
+
+              
               <TextInputContainer>
                 <TextField
                   fullWidth
+                  placeholder={t('features.experiment.form.name.placeholder')}
                   defaultValue=""
                   inputProps={
                     register('name', {
@@ -133,48 +136,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                   }
                   error={ formState.errors.name != null }
                   helperText={ formState.errors.name?.message }
-                />
-              </TextInputContainer>
-            </FormInput>
-
-            <FormInput 
-              title="features.experiment.form.logSize.label"
-              helperText="features.experiment.form.logSize.helperText"
-              tooltip="features.experiment.form.logSize.tooltip"
-              style={{ marginTop: theme.spacing(2) }}
-            >
-              <TextInputContainer>
-                <TextField
-                  fullWidth
-                  defaultValue=""
-                  inputProps={
-                    register('logSize', {
-                      required: t('features.experiment.form.errors.logSizeRequired') as string
-                    })
-                  }
-                  error={ formState.errors.logSize != null }
-                  helperText={ formState.errors.logSize?.message }
-                />
-              </TextInputContainer>
-            </FormInput>
-
-            <FormInput 
-              title="features.experiment.form.scenariosNumber.label"
-              helperText="features.experiment.form.scenariosNumber.helperText"
-              tooltip="features.experiment.form.scenariosNumber.tooltip"
-              style={{ marginTop: theme.spacing(2) }}
-            >
-              <TextInputContainer>
-                <TextField
-                  fullWidth
-                  defaultValue=""
-                  inputProps={
-                    register('number_scenarios', {
-                      required: t('features.experiment.form.errors.scenariosNumberRequired') as string
-                    })
-                  }
-                  error={ formState.errors.scenariosNumber != null }
-                  helperText={ formState.errors.scenariosNumber?.message }
                 />
               </TextInputContainer>
             </FormInput>
@@ -226,6 +187,104 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             </FormInput>
 
             <FormInput 
+              title="features.experiment.form.scenariosNumber.label"
+              helperText="features.experiment.form.scenariosNumber.helperText"
+              tooltip="features.experiment.form.scenariosNumber.tooltip"
+              style={{ marginTop: theme.spacing(2) }}
+            >
+              <TextInputContainer>
+                <TextField
+                  fullWidth
+                  defaultValue=""
+                  placeholder={t('features.experiment.form.scenariosNumber.placeholder')}
+                  inputProps={
+                    register('number_scenarios', {
+                      required: t('features.experiment.form.errors.scenariosNumberRequired') as string
+                    })
+                  }
+                  error={ formState.errors.scenariosNumber != null }
+                  helperText={ formState.errors.scenariosNumber?.message }
+                />
+              </TextInputContainer>
+            </FormInput>
+
+ 
+            <FormInput 
+              title="features.experiment.form.scenario.label"
+              helperText="features.experiment.form.scenario.helperText"
+              tooltip="features.experiment.form.scenario.tooltip"
+              style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(3) }}
+              >
+              <FileUpload
+                accept=".json"
+                errorMessage={ !formState.dirtyFields.scenarios_conf && formState.errors?.scenarios_conf?.message }
+                fileName={ (getValues('scenarios_conf')??[])[0]?.name }
+                inputProps={{
+                  ...scenarioField,
+                  onChange: (evt: any) => {
+                    scenarioField.onChange(evt);
+                    const file = evt.target.files[0];
+                    readFileContent(file)
+                    .then((content: string) => {
+                      setFileContents({
+                          ...fileContents,
+                          scenarios_conf: content,
+                        });
+                      })
+                      .catch((err) => {
+                        console.error('error reading file', err);
+                        setError('seedLog', err);
+                      })
+                    }                    
+                  }}
+                  />
+            </FormInput>
+            </CardContent>
+            <CardContent>
+            <FormInput 
+              title="features.experiment.form.logSize.label"
+              helperText="features.experiment.form.logSize.helperText"
+              tooltip="features.experiment.form.logSize.tooltip"
+              style={{ marginTop: theme.spacing(2) }}
+              >
+              <TextInputContainer>
+                <TextField
+                  fullWidth
+                  defaultValue=""
+                  placeholder={t('features.experiment.form.logSize.placeholder')}
+                  inputProps={
+                    register('logSize', {
+                      required: t('features.experiment.form.errors.logSizeRequired') as string
+                    })
+                  }
+                  error={ formState.errors.logSize != null }
+                  helperText={ formState.errors.logSize?.message }
+                />
+              </TextInputContainer>
+            </FormInput>
+
+            <FormInput 
+              title="features.experiment.form.imbalancedCase.label"
+              helperText="features.experiment.form.imbalancedCase.helperText"
+              tooltip="features.experiment.form.imbalancedCase.tooltip"
+            >
+              <TextInputContainer>
+                <TextField
+                  fullWidth
+                  defaultValue=""
+                  placeholder={t('features.experiment.form.imbalancedCase.placeholder')}
+                  inputProps={
+                    register('imbalancedCase', {
+                      required: t('features.experiment.form.errors.imbalancedCaseRequired') as string
+                    })
+                  }
+                  error={ formState.errors.imbalancedCase != null }
+                  helperText={ formState.errors.imbalancedCase?.message }
+                />
+              </TextInputContainer>
+            </FormInput>
+
+            <FormInput 
               title="features.experiment.form.variability.label"
               helperText="features.experiment.form.variability.helperText"
               tooltip="features.experiment.form.variability.tooltip"
@@ -254,57 +313,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                   }
                 }}
               />
-            </FormInput>
-              
-            <FormInput 
-              title="features.experiment.form.scenario.label"
-              helperText="features.experiment.form.scenario.helperText"
-              tooltip="features.experiment.form.scenario.tooltip"
-              style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(3) }}
-            >
-              <FileUpload
-                accept=".json"
-                errorMessage={ !formState.dirtyFields.scenarios_conf && formState.errors?.scenarios_conf?.message }
-                fileName={ (getValues('scenarios_conf')??[])[0]?.name }
-                inputProps={{
-                  ...scenarioField,
-                  onChange: (evt: any) => {
-                    scenarioField.onChange(evt);
-                    const file = evt.target.files[0];
-                    readFileContent(file)
-                      .then((content: string) => {
-                        setFileContents({
-                          ...fileContents,
-                          scenarios_conf: content,
-                        });
-                      })
-                      .catch((err) => {
-                        console.error('error reading file', err);
-                        setError('seedLog', err);
-                      })
-                  }                    
-                }}
-              />
-            </FormInput>
-
-            <FormInput 
-              title="features.experiment.form.imbalancedCase.label"
-              helperText="features.experiment.form.imbalancedCase.helperText"
-              tooltip="features.experiment.form.imbalancedCase.tooltip"
-            >
-              <TextInputContainer>
-                <TextField
-                  fullWidth
-                  defaultValue=""
-                  inputProps={
-                    register('imbalancedCase', {
-                      required: t('features.experiment.form.errors.imbalancedCaseRequired') as string
-                    })
-                  }
-                  error={ formState.errors.imbalancedCase != null }
-                  helperText={ formState.errors.imbalancedCase?.message }
-                />
-              </TextInputContainer>
             </FormInput>
           </CardContent>
 

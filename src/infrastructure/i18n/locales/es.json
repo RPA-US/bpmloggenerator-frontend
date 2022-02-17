@@ -1,78 +1,121 @@
 {
+  "genaral": {
+      "agosuirpa": {
+          "label": "AGOSUIRPA",
+          "tooltip": "La plataforma de AGOSUIRPA viene motivada por la dificultad de encontrar logs reales para realizar pruebas sobre ellos. Debido a lo intrusivo que llegan a ser los keyloggers a nivel de privacidad de los operadores y de los datos de los clientes que se ven involucrados dentro de los procesos de negocio a automatizar, las empresas no pueden compartir estos datos con terceros sin el consentimiento expreso de los involucrados. Por tanto, desarrollamos una plataforma, que a partir de una semilla y unos parámetros de configuración, nos permita generar logs de la dimensión que queramos con sus capturas asociadas."
+      },
+      "log": {
+          "label": "UI log",
+          "tooltip": "Un UI log es un archivo XML cuya gramática permite expresar logs de eventos en Process Mining. Esta extensión incorpora: los atributos estándar del concepto, nombre de la aplicación, tipo de evento (es decir, clic de ratón o pulsación de tecla), tipo de click (es decir, izquierda, derecha o centro), coordenadas del click (es decir, posición del ratón en la pantalla) y keystroke (es decir, las teclas que se escriben)."
+      },
+      "seed": {
+          "label": "Semilla",
+          "tooltip": "Una semilla se corresponde con un log pequeño, que tiene un caso por cada variante del log que queremos generar. Y obviamente las capturas asociadas a las actividades de dichos casos."
+      },
+      "activity": {
+          "label": "Actividad",
+          "tooltip": "Se corresponden con un conjunto de tareas o acciones cuya secuencia da lugar a un proceso. Por ejemplo: abrir un email, registrar a un usuario en un CRM, etc."
+      },
+      "variant": {
+          "label": "Variante",
+          "tooltip": "Una variante de proceso es una secuencia de actividades de proceso con un evento de inicio y un evento final. Cada variante difiere de las demás por al menos una actividad."
+      },
+      "case": {
+          "label": "Caso",
+          "tooltip": "Describe un caso de negocio que se ejecuta a través de una variante de proceso particular. Por lo tanto, es la imagen de exactamente un ciclo del proceso."
+      },
+      "scenario": {
+          "label": "Escenario",
+          "tooltip": "Un escenario se corresponde con el ecosistema de las distintas aplicaciones que va a utilizar un usuario durante el proceso. Cuando nos referimos a la variabilidad a nivel de escenario, hacemos referencia a que variaremos los componentes GUI relativos al look and feel de las distintas aplicaciones que aparezcan en las capturas del proceso. Usando las capturas de la semilla y variándolas para los X escenarios distintos que se quieran obtener. Esas variaciones se llevarán a cabo una vez y se generarán como resultado X semillas con look and feels distintos."
+      },
+      "experiment": {
+         "label": "Experimento",
+         "tooltip": "Un experimento estará formado por una semilla (seed), una configuración donde indicaremos el tamaño de los logs y cómo queremos que se generen los logs imbalanceados, una configuración de variabilidad a nivel de caso y opcionalmente, la variabilidad a nivel de escenario. Los experimentos serán el núcleo de nuestro sistema. Lanzaremos un experimento cada vez que queramos generar una serie de logs asociados a un proceso. Es decir, teniendo claro el proceso sobre el que queremos obtener logs sintéticos, definiendo el experimento, podremos obtener los UI logs y las capturas asociadas a ese proceso, con el número de filas indicados en el tamaño y el desbalancedo indicado en los porcentajes para logs imbalanceados."
+      },
+      "balance":{
+          "label": "Balanceo",
+          "tooltip": "El balanceo que tendrá cada variante, por ejemplo, unos valores como  [0.4,0.6], indica que el 40% de casos son de la V1 y 60% de casos de la V2."
+      }
+  },
   "input": {
-    "attach": "Seleccionar archivo",
+    "attach": "Seleccione el fichero",
     "addRow": "Añadir"
   },
   "features": {
     "auth": {
       "login": {
-        "title": "Authentication is required",
+        "title": "Inicio de sesión",
         "email": "email",
-        "password": "password",
+        "password": "contraseña",
         "errors": {
-          "emailRequired": "Please enter a valid email",
-          "passwordRequired": "Please enter a valid password"
+          "emailRequired": "Por favor introduzca un email válido",
+          "passwordRequired": "Por favor introduzca una contraseña válida"
         },
-        "login": "Enter"
+        "login": "Iniciar sesión"
       }
     },
     "experiment": {
       "list": {
-        "title": "Experiments list",
-        "add": "Add new",
-        "name": "Name",
-        "launchedAt": "Launched at",
-        "edit": "Edit",
-        "downloadResults": "Download results"
+        "title": "Lista de experimentos",
+        "add": "Añadir nuevo experimento",
+        "name": "Nombre",
+        "launchedAt": "Lanzado en",
+        "edit": "Editar",
+        "downloadResults": "Descargar resultados",
+        "viewMore": "Ver más"
       },
       "create": {
-        "title": "Automatic GUI log generation"
+        "title": "Generación automática de GUI logs"
       },
       "form": {
         "name": {
-          "label": "Name",
-          "helperText": "Name helper text",
-          "tooltip": "Name tooltip"
+          "label": "Nombre",
+          "placeholder": "Experiment 1",
+          "helperText": "El nombre que se le quiera dar a este experimento",
+          "tooltip": "Un experimento estará formado por una semilla (seed), una configuración donde indicaremos el tamaño de los logs y cómo queremos que se generen los logs imbalanceados, una configuración de variabilidad a nivel de caso y opcionalmente, la variabilidad a nivel de escenario. Los experimentos serán el núcleo de nuestro sistema. Lanzaremos un experimento cada vez que queramos generar una serie de logs asociados a un proceso. Es decir, teniendo claro el proceso sobre el que queremos obtener logs sintéticos, definiendo el experimento, podremos obtener los UI logs y las capturas asociadas a ese proceso, con el número de filas indicados en el tamaño y el desbalancedo indicado en los porcentajes para logs imbalanceados."
         },
         "logSize": {
-          "label": "Log size",
-          "helperText": "Number of rows separated by comma (',')",
-          "tooltip": "Name tooltip"
+          "label": "Tamaño del log",
+          "placeholder": "10,50,100",
+          "helperText": "Número de filas que tiene el log separados por (',')",
+          "tooltip": "El sistema generará los UI logs de los tamaños que se le indique en este campo, separados por comas. Estos tamaños de logs se corresponden con el número de filas de cada log."
         },
         "scenariosNumber": {
-          "label": "Number of scenarios",
-          "helperText": "Number of scenarios helper text",
-          "tooltip": "Name tooltip"
+          "label": "Número de escenarios",
+          "placeholder": "0",
+          "helperText": "Si sólo se desea generar variabilidad en las acciones del usuario indicar un 0",
+          "tooltip": "El número de escenarios a generar, si simplemente queremos variar nuestra semilla, es decir, queremos realizar variaciones a nivel de caso y no a nivel de escenarios, le damos valor 0. Se generarán tantos look and feels sintéticos como se indique en este campo, por cada uno de ellos se generará un look and feel sintético, donde se aplicarán la variabilidad correpsondiente para generar logs balanceados e imbalanceados por cada tamaño que se ha indicado en el campo anterior."
         },
         "seedLog": {
-          "label": "Seed log",
-          "helperText": "Seed log helper text",
-          "tooltip": "Name tooltip"
+          "label": "Log semilla",
+          "helperText": "Semilla a partir de la que se generan el resto de filas del log.",
+          "tooltip": "Una semilla se corresponde con un log pequeño, que tiene un caso por cada variante del log que queremos generar. Y obviamente las capturas asociadas a las actividades de dichos casos."
         },
         "screenshots": {
-          "label": "Screenshots",
-          "helperText": "Screenshots helper text",
-          "tooltip": "Name tooltip"
+          "label": "Capturas de pantalla",
+          "helperText": "Capturas de pantalla que aparecen en la semilla",
+          "tooltip": "Se corresponden con las capturas indicadas en el log semilla y por tanto, con indicadas las configuraciones de variabilidad y/o escenario. Debe ser un comprimido con todas las capturas en la raíz del comprimido con el mismo nombre que se indica en los json de configuración."
         },
         "variability": {
-          "label": "Variability",
-          "helperText": "Variablity helper text",
-          "tooltip": "Name tooltip"
+          "label": "Configuración de variabilidad",
+          "helperText": "Variabilidad en el contenido introducido por el usuario",
+          "tooltip": "Cuando nos referimos a variabilidad a nivel de caso nos referimos a variaciones en el contenido que puede introducir o modificar el usuario, es decir, variaciones en el contenido de los input de texto, los seleccionables, los checkbox, las imágenes adjuntas, etc."
         },
         "scenario": {
-          "label": "Scenario",
-          "helperText": "Scenario helper text",
-          "tooltip": "Name tooltip"
+          "label": "Configuración de escenarios",
+          "helperText": "Variación de escenario. Look and feel de las aplicaciones implicadas en el proceso.",
+          "tooltip": "Solamente indicamos la configuración a nivel de escenario si queremos un número de escenarios mayor de 0. Esta configuración consta de las mismas funciones para variar componentes GUI a nivel de interfaz gráfica, pero solamente va dirigido a variar aquellos componentes GUI relativos con el look and feel de las aplicaciones implicadas en las capturas del log. Los componentes GUI que son fruto de las acciones de los usuarios sobre el sistemas, serán variados según la configuración indicada en la configuración de variabilidad. "
         },
-        "unbalancedCases": {
-          "label": "Percentage of each variant for the unbalanced case",
-          "helperText": "Unbalanced cases helper text",
-          "tooltip": "Name tooltip"
+        "imbalancedCase": {
+          "label": "Porcentajes para logs imbalanceados",
+          "placeholder": "0.7,0.3",
+          "helperText": "Porcentajes del número de casos de cada variante en los logs imbalanceados",
+          "tooltip": "Número de filas de cada variante que tendrá el log en el caso imbalanceado. Para cada escenario, se generarán logs balanceados e imbalanceados por cada uno de los tamaños que se indiquen. Si tenemos un número de escenarios igual a 1, un tamaño de log '100,1000' y porcentajes para el imbalanceado de '0.7,0.3', generarán dos escenarios (uno con el look and feel de las capturas que se pasan, y otro con variaciones sintéticas) con logs balanceados e imbalanceados con 100 y 1000 filas, donde en el caso imbalanceado, el 70% de las filas corresponderán a la variante 1 y el 30% de la variante 2."
         },
         "errors": {
-          "nameRequired": "Please enter a valid name"
+          "nameRequired": "Por favor introduzca un nombre válido"
         },
-        "generate": "Generate"
+        "generate": "Generar"
       }
     }
   }

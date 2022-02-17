@@ -32,6 +32,9 @@ const ExperimentDetails: React.FC = () => {
         <Card style={{ marginTop: theme.spacing(4)}}>
           <CardContent>
             Name: { experiment.name }
+            {/* Number of scenarios: { experiment.name }
+            Log size: { experiment.logSize }
+            Umbalance percentage: { experiment.imbalanceCase  } */}
           </CardContent>
         </Card>
       )}
