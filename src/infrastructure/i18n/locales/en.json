@@ -73,56 +73,51 @@
       "form": {
         "assistant": "Assistant",
         "name": {
-            "label": "Name",
-            "placeholder": "Experiment 1",
-            "helperText": "The name you want to give to this experiment",
-            "tooltip": "An experiment consist of a seed log, the size of the logs and how we want the unbalanced logs to be generated, a case-level variability configuration and optionally, the scenario-level variability configuration. Experiments are the core of our system. We will launch an experiment every time we want to generate a series of logs associated to a process. That is, defining a experiment based on a process, we obtain synthetic UI logs and the captures associated to that process, which corresponds to the variability, the size (number of rows) and the percentages for unbalanced logs indicated in the configuration."
-          },
-          "description": {
-            "label": "Description",
-            "placeholder": "This is a nice experiment",
-            "helperText": "Short experiment description"
-          },
-          "logSize": {
-            "label": "Log Size",
-            "placeholder": "10,50,100",
-            "helperText": "Number of rows separated by (',')",
-            "tooltip": "UI logs of the sizes indicated in this field, separated by commas, are generated. These log sizes correspond to the number of rows in each log."
-          },
-          "scenariosNumber": {
-            "label": "Number of scenarios",
-            "placeholder": "0",
-            "helperText": "If you only want to generate variability in the user's actions indicate a 0",
-            "tooltip": "The number of scenarios to generate, that is, this field indicates how many synthetic look and feels will be generated. For each of the synthetic looks and feel generated, the correpsonding variability will be applied. If we we want only to vary our seed, i.e. we want to perform variations at the case level and not at the scenario level, we set it as 0."
-          },
-          "seedLog": {
-            "label": "Seed log",
-            "helperText": "Seed log that is used to generate the rest of the synthetic log rows.",
-            "tooltip": "A seed corresponds to a small log, which has one case for each variant of the log we want to generate. Obviously, this log has screenshots associated with its rows."
-          },
-          "screenshots": {
-            "label": "Screenshots",
-            "helperText": "Screenshots that appear in the seed log",
-            "tooltip": "Corresponds to the screenshots indicated in the seed log and therefore, with indicated variability and/or scenario configurations. It should be a tablet with all screenshots in the root of the tablet with the same name as indicated in the configuration json(s)."
-          },
-          "variability": {
-            "label": "Case Variability configuration",
-            "helperText": "Variability on user entered content",
-            "tooltip": "When we refer to variability at the case level we mean variations in the content that can be entered or modified by user, i.e. variations in the content of text inputs, selectables, checkboxes, attached images, etc."
-          },
-          "scenario": {
-            "label": "Scenario Variability configuration",
-            "helperText": "Scenarios variation. Look and feel of the applications involved in the process.",
-            "tooltip": "We only indicate the configuration at scenario level if we want a number of scenarios greater than 0. This configuration consists of the same functions for varying GUI components at case level, but it is only aimed at varying those GUI components related to the look and feel of the applications involved in the log captures. GUI components that are the result of user actions on the system will be varied according to the configuration indicated in the case variability configuration. "
-          },
-          "imbalancedCase": {
-            "label": "Percentages for imbalanced logs",
-            "placeholder": "0.7,0.3",
-            "helperText": "Percentages of the number of cases per variant in the imbalanced logs",
-            "tooltip": "Number of rows per variant that the log will have in the imbalanced case. For each scenario, balanced and imbalanced logs will be generated for each of the sizes indicated. If we have a number of scenarios equal to 1, a log size '100,1000' and percentages for the imbalanced of '0.7,0.3', the experiment will get as a result two scenarios (one with the look and feel of the captures being passed, and another with synthetic variations of user inputs) with balanced and imbalanced logs, where in the second, 70% of the rows will correspond to variant 1 and 30% of variant 2, and with 100 and 1000 rows independently of their balance"
-          },
-          "errors": {
-            "nameRequired": "Please enter a valid name."
+          "label": "Name",
+          "placeholder": "Experiment 1",
+          "helperText": "The name you want to give to this experiment",
+          "tooltip": "An experiment consist of a seed log, the size of the logs and how we want the unbalanced logs to be generated, a case-level variability configuration and optionally, the scenario-level variability configuration. Experiments are the core of our system. We will launch an experiment every time we want to generate a series of logs associated to a process. That is, defining a experiment based on a process, we obtain synthetic UI logs and the captures associated to that process, which corresponds to the variability, the size (number of rows) and the percentages for unbalanced logs indicated in the configuration."
+        },
+        "logSize": {
+          "label": "Log Size",
+          "placeholder": "10,50,100",
+          "helperText": "Number of rows separated by (',')",
+          "tooltip": "UI logs of the sizes indicated in this field, separated by commas, are generated. These log sizes correspond to the number of rows in each log."
+        },
+        "scenariosNumber": {
+          "label": "Number of scenarios",
+          "placeholder": "0",
+          "helperText": "If you only want to generate variability in the user's actions indicate a 0",
+          "tooltip": "The number of scenarios to generate, that is, this field indicates how many synthetic look and feels will be generated. For each of the synthetic looks and feel generated, the correpsonding variability will be applied. If we we want only to vary our seed, i.e. we want to perform variations at the case level and not at the scenario level, we set it as 0."
+        },
+        "seedLog": {
+          "label": "Seed log",
+          "helperText": "Seed log that is used to generate the rest of the synthetic log rows.",
+          "tooltip": "A seed corresponds to a small log, which has one case for each variant of the log we want to generate. Obviously, this log has screenshots associated with its rows."
+        },
+        "screenshots": {
+          "label": "Screenshots",
+          "helperText": "Screenshots that appear in the seed log",
+          "tooltip": "Corresponds to the screenshots indicated in the seed log and therefore, with indicated variability and/or scenario configurations. It should be a tablet with all screenshots in the root of the tablet with the same name as indicated in the configuration json(s)."
+        },
+        "variability": {
+          "label": "Case Variability configuration",
+          "helperText": "Variability on user entered content",
+          "tooltip": "When we refer to variability at the case level we mean variations in the content that can be entered or modified by user, i.e. variations in the content of text inputs, selectables, checkboxes, attached images, etc."
+        },
+        "scenario": {
+          "label": "Scenario Variability configuration",
+          "helperText": "Scenarios variation. Look and feel of the applications involved in the process.",
+          "tooltip": "We only indicate the configuration at scenario level if we want a number of scenarios greater than 0. This configuration consists of the same functions for varying GUI components at case level, but it is only aimed at varying those GUI components related to the look and feel of the applications involved in the log captures. GUI components that are the result of user actions on the system will be varied according to the configuration indicated in the case variability configuration. "
+        },
+        "imbalancedCase": {
+          "label": "Percentages for imbalanced logs",
+          "placeholder": "0.7,0.3",
+          "helperText": "Percentages of the number of cases per variant in the imbalanced logs",
+          "tooltip": "Number of rows per variant that the log will have in the imbalanced case. For each scenario, balanced and imbalanced logs will be generated for each of the sizes indicated. If we have a number of scenarios equal to 1, a log size '100,1000' and percentages for the imbalanced of '0.7,0.3', the experiment will get as a result two scenarios (one with the look and feel of the captures being passed, and another with synthetic variations of user inputs) with balanced and imbalanced logs, where in the second, 70% of the rows will correspond to variant 1 and 30% of variant 2, and with 100 and 1000 rows independently of their balance"
+        },
+        "errors": {
+          "nameRequired": "Please enter a valid name."
         },
         "generate": "Generate"
       }

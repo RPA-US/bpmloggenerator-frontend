@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { Experiment, ExperimentError, ExperimentsState, Pagination } from './types';
+import { Experiment, ExperimentError, ExperimentsState, ExperimentState, Pagination } from './types';
 import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 
-const repository = new ExperimentRepository();
+export const repository = new ExperimentRepository();
 
 const initialState: ExperimentsState =  {
   experiments: [],
@@ -14,7 +14,7 @@ const initialState: ExperimentsState =  {
     hasNext: true
   },
   isLoading: false,
-  error: null
+  error: null,
 }
 
 export const experimentsSlice = createSlice({
@@ -42,12 +42,13 @@ const { setLoading, addExperiments, setExperiments, setError } = experimentsSlic
 
 export const experimentsSelector = (state: RootState) => state.experiment;
 
-function experimentDTOToExperimentType(id: number, experiment: ExperimentDTO): Experiment {
+function experimentDTOToExperimentType(experiment: ExperimentDTO): Experiment {
   return {
-    id,
+    id: experiment.id,
     name: experiment.name,
     description: experiment.description,
-    launchDate: new Date()
+    launchDate: new Date(),
+    state: experiment.id === 1 ? ExperimentState.CREATING : ExperimentState.CREATED
   }
 }
 
@@ -60,7 +61,7 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
     if (experimentResponse.count !== experiment.experiments.length) {
       dispatch(addExperiments({
         experiments: experimentResponse.results
-          .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(i + experiment.experiments.length +1, exp))
+          .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(exp))
           .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i),
         pagination: {
           page: currentPage + (experimentResponse.next != null ? 1 : 0),
@@ -69,7 +70,7 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
         }
       }));
     }
-  } catch (error) {
+  } catch (error) {  
     dispatch(setError(error as ExperimentError))
   } finally {
     dispatch(setLoading(false))
@@ -83,7 +84,7 @@ export const createExperiment = (experimentData: any): AppThunk => async (dispat
     const { experiments, pagination } = experiment;
     const hasNext = pagination.total > experiments.length + 1;
     dispatch(setExperiments({
-      experiments: [experimentDTOToExperimentType(experiments.length + 1, experimentResponse)].concat(experiments),
+      experiments: [experimentDTOToExperimentType(experimentResponse)].concat(experiments),
       pagination: {
         page: hasNext ? 2 : 1,
         total: experiments.length + 1,

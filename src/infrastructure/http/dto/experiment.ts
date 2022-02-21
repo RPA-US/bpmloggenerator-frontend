@@ -1,4 +1,5 @@
 export interface ExperimentDTO {
+  id: number,
   size_balance: any,
   name: string,
   description: string,

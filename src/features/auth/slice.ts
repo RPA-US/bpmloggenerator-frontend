@@ -80,6 +80,7 @@ export const checkSession = (): AppThunk => async (dispatch: AppDispatch, getSta
         }))
       } catch (error) {
         dispatch(setAuthFailed(error as AuthError))
+        dispatch(setChecked(true))
       }
     } else {
       dispatch(setChecked(true))
