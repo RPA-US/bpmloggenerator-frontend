@@ -18,8 +18,6 @@ const FlexDiv = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(4)
 }))
 
-const onDownload = () => {}
-
 
 const ExperimentsList: React.FC = () => {
   const { isLoading, pagination, experiments, error } = useSelector(experimentsSelector);

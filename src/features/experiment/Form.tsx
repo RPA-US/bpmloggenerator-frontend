@@ -63,7 +63,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
     required: t('features.experiment.form.errors.scenarioRequired') as string
   }));
 
-  const formSubmit = (data: any) => {
+  const formSubmit = (data: any, event: any) => {
+    const buttonName = event.nativeEvent.submitter.name;
     const checkedData = {
       ...data,
       special_colnames: JSON.stringify({
@@ -73,6 +74,9 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
         "Variant": "Variant"
       }),
       screenshot_name_generation_function: "screenshot_name_without_root_path"
+    }
+    if (buttonName=="generate"){
+      checkedData.execute_mode = true;
     }
     delete checkedData.seedLog;
 
@@ -340,7 +344,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
 
           <CardActions>
             <Spacer />
-            <Button type="submit" variant="contained" color="primary" endIcon={<SendIcon />}>
+            <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SendIcon />}>
+                { t('features.experiment.form.save') }
+            </Button>
+            <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />}>
                 { t('features.experiment.form.generate') }
             </Button>
           </CardActions>
