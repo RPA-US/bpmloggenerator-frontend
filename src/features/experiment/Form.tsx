@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import FormInput from 'components/FormInput';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -63,6 +64,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
     required: t('features.experiment.form.errors.scenarioRequired') as string
   }));
 
+  const startAssistant = (data: any) => {
+      alert(data);
+  }
+
   const formSubmit = (data: any, event: any) => {
     const buttonName = event.nativeEvent.submitter.name;
     const checkedData = {
@@ -75,7 +80,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
       }),
       screenshot_name_generation_function: "screenshot_name_without_root_path"
     }
-    if (buttonName=="generate"){
+    if (buttonName==="generate"){
       checkedData.execute_mode = true;
     }
     delete checkedData.seedLog;
@@ -145,7 +150,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
             <FormInput 
               title="features.experiment.form.description.label"
               helperText="features.experiment.form.description.helperText"
-              tooltip="features.experiment.form.description.tooltip"
               style={{ marginTop: theme.spacing(2) }}
             >
 
@@ -264,6 +268,9 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                     }                    
                   }}
                   />
+                  <Button variant="outlined" style={{ fontSize: "small", marginLeft: 4}} endIcon={<HelpOutlineIcon />}>
+                    {t('features.experiment.form.assistant')}
+                  </Button>
             </FormInput>
             </CardContent>
             <CardContent>
@@ -339,6 +346,9 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                   }
                 }}
               />
+              <Button onClick={startAssistant} variant="outlined" style={{ fontSize: "small", marginLeft: 4}} endIcon={<HelpOutlineIcon />}>
+                {t('features.experiment.form.assistant')}
+              </Button>
             </FormInput>
           </CardContent>
 

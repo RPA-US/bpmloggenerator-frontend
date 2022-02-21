@@ -71,11 +71,17 @@
         "title": "Experiment Details"
       },
       "form": {
+        "assistant": "Assistant",
         "name": {
             "label": "Name",
             "placeholder": "Experiment 1",
             "helperText": "The name you want to give to this experiment",
             "tooltip": "An experiment consist of a seed log, the size of the logs and how we want the unbalanced logs to be generated, a case-level variability configuration and optionally, the scenario-level variability configuration. Experiments are the core of our system. We will launch an experiment every time we want to generate a series of logs associated to a process. That is, defining a experiment based on a process, we obtain synthetic UI logs and the captures associated to that process, which corresponds to the variability, the size (number of rows) and the percentages for unbalanced logs indicated in the configuration."
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "This is a nice experiment",
+            "helperText": "Short experiment description"
           },
           "logSize": {
             "label": "Log Size",

@@ -2,7 +2,7 @@ import React, { FormEventHandler } from 'react';
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, Typography, TypographyProps } from '@mui/material';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import InfoIcon from '@mui/icons-material/Info';
 import { styled } from '@mui/system';
 
 export interface FormInputProps {
@@ -31,7 +31,7 @@ const FormInput: React.FC<FormInputProps> = ({ title, helperText, tooltip, style
         <Grid item xs={ 12 } md={ 5 }>
           { typeof tooltip === 'string' && (
             <Tooltip title={ t(tooltip) as string }  >
-                <HelpOutlineIcon style={{ fontSize: 16, marginRight: 4 }} />
+                <InfoIcon style={{ fontSize: 16, marginRight: 4 }} />
             </Tooltip>
           ) }
           { t(title) }
