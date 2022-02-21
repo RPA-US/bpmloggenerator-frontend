@@ -63,7 +63,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
     required: t('features.experiment.form.errors.scenarioRequired') as string
   }));
 
-  const formSubmit = (data: any) => {
+  const formSubmit = (data: any, event: any) => {
+    const buttonName = event.nativeEvent.submitter.name;
     const checkedData = {
       ...data,
       special_colnames: JSON.stringify({
@@ -72,9 +73,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
         "Screenshot": "Screenshot",
         "Variant": "Variant"
       }),
-      screenshot_name_generation_function: "screenshot_name_without_root_path",
-      generation_mode: "autoscenario_mode",
-      description: "sample"
+      screenshot_name_generation_function: "screenshot_name_without_root_path"
+    }
+    if (buttonName=="generate"){
+      checkedData.execute_mode = true;
     }
     delete checkedData.seedLog;
 
@@ -136,6 +138,30 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                   }
                   error={ formState.errors.name != null }
                   helperText={ formState.errors.name?.message }
+                />
+              </TextInputContainer>
+            </FormInput>
+
+            <FormInput 
+              title="features.experiment.form.description.label"
+              helperText="features.experiment.form.description.helperText"
+              tooltip="features.experiment.form.description.tooltip"
+              style={{ marginTop: theme.spacing(2) }}
+            >
+
+              
+              <TextInputContainer>
+                <TextField
+                  fullWidth
+                  placeholder={t('features.experiment.form.description.placeholder')}
+                  defaultValue=""
+                  inputProps={
+                    register('description', {
+                      required: t('features.experiment.form.errors.descriptionRequired') as string
+                    })
+                  }
+                  error={ formState.errors.description != null }
+                  helperText={ formState.errors.description?.message }
                 />
               </TextInputContainer>
             </FormInput>
@@ -317,7 +343,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
 
           <CardActions>
             <Spacer />
-            <Button type="submit" variant="contained" color="primary" endIcon={<SendIcon />}>
+            <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SendIcon />}>
+                { t('features.experiment.form.save') }
+            </Button>
+            <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />}>
                 { t('features.experiment.form.generate') }
             </Button>
           </CardActions>
