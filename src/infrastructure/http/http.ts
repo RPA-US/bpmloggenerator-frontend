@@ -14,7 +14,7 @@ const body = (bodyObj: any) => {
 };
 
 const handleRequestResponse = async <T>(response: Response) => {
-    console.log('response', response);
+    console.log('response', response, response.headers);
     if (response.ok) {
         return await response.json() as T;
     } else {
@@ -23,6 +23,14 @@ const handleRequestResponse = async <T>(response: Response) => {
 }
 
 export default class Http {
+
+    static request(method: string, url: string, headers?:any, body?: any) {
+        return fetch(url, {
+            method,
+            headers,
+            body
+        });
+    }
 
     static async get <T>(url:string, headers?:any) {
         const response = await fetch(url, {

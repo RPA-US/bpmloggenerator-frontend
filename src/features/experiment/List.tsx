@@ -23,9 +23,22 @@ const FlexDiv = styled('div')(({ theme }) => ({
 }))
 
 const downloadResults = async (experimentId: number, token: string) => {
-  // http://127.0.0.1:8000/api/v1/experiments/download/5/
-  const response = await repository.download(experimentId, token);
+  try {
+    const { filename, blob }: any = await repository.download(experimentId, token);
 
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      filename,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link?.parentNode?.removeChild(link);
+  } catch (ex) {
+    console.error('error downloading experiment result', ex);
+  }
 }
 
 const ExperimentsList: React.FC = () => {

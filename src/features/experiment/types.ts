@@ -1,6 +1,6 @@
 
 export enum ExperimentState {
-  CONFIGURED,
+  NOT_LAUNCHED,
   CREATING,
   CREATED,
 }
