@@ -72,7 +72,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
         "Screenshot": "Screenshot",
         "Variant": "Variant"
       }),
-      screenshot_name_generation_function: "function25",
+      screenshot_name_generation_function: "screenshot_name_without_root_path",
       generation_mode: "autoscenario_mode",
       description: "sample"
     }
@@ -208,7 +208,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
               </TextInputContainer>
             </FormInput>
 
- 
+
             <FormInput 
               title="features.experiment.form.scenario.label"
               helperText="features.experiment.form.scenario.helperText"
