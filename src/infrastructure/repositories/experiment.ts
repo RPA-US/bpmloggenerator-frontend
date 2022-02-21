@@ -24,6 +24,13 @@ export default class ExperimentRepository {
   }
 
   async delete() {}
-  async download() {}
+
+  async download(id: number, token: string) {
+    return Http.get(Http.buildURL(`/experiments/download/${id}`), {
+      ...Http.authHeader(token),
+      'Content-Disposition': `attachment; filename='experiment-${id}-results.zip'`,
+      'Content-Type': 'application/zip'
+    });
+  }
 
 }

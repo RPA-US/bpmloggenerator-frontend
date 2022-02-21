@@ -16,7 +16,6 @@ const FileInput: React.FC<FileInputProps> = ({ accept, inputProps, fileName, err
   const theme = useContext(ThemeContext) as Theme;
 
   const { title = 'input.attach', name, multiple = false } = inputProps;
-  console.log('props received', inputProps);
   const inputId = `file-input--${name}-file`;
   return (
     <React.Fragment>

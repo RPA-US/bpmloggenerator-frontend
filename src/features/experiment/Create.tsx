@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import ExperimentFormComponent from './Form';
 import { experimentsSelector, createExperiment } from './slice';
 
 const CreateExperiment: React.FC = () => {
   const { t } = useTranslation();
-  const { pagination, experiments, error } = useSelector(experimentsSelector);
+  const history = useHistory();
+  const { experiments } = useSelector(experimentsSelector);
+  const [ experimentsNumber, setExperimentsNumber ] = useState(experiments.length);
   const dispatch = useDispatch();
-  
+ 
+  useEffect(() => {
+    if (experiments.length > experimentsNumber) {
+      history.push('/')
+    } else {
+      setExperimentsNumber(experiments.length);
+    }
+  }, [ experiments ])
+
   return (
     <>
       <Typography variant="h4">

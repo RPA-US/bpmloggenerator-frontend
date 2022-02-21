@@ -98,7 +98,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
       .forEach(key => {
         const value = (fileContents as any)[key] ?? checkedData[key];
         if (value instanceof FileList) {
-          formData.append(key, value[0], value[0].name)
+          formData.append(key, value[0])
         } else {
           formData.append(key, value)
         }
@@ -207,8 +207,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                 />
               </TextInputContainer>
             </FormInput>
-
-
+ 
             <FormInput 
               title="features.experiment.form.scenario.label"
               helperText="features.experiment.form.scenario.helperText"
@@ -239,8 +238,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                   }}
                   />
             </FormInput>
-            </CardContent>
-            <CardContent>
+            
             <FormInput 
               title="features.experiment.form.logSize.label"
               helperText="features.experiment.form.logSize.helperText"
@@ -267,6 +265,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
               title="features.experiment.form.imbalancedCase.label"
               helperText="features.experiment.form.imbalancedCase.helperText"
               tooltip="features.experiment.form.imbalancedCase.tooltip"
+              style={{ marginTop: theme.spacing(2) }}
             >
               <TextInputContainer>
                 <TextField
@@ -303,7 +302,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit 
                       .then((content: string) => {
                         setFileContents({
                           ...fileContents,
-                          variability_conf: content,
+                          variability_conf: JSON.stringify(JSON.parse(content)),
                         });
                       })
                       .catch((err) => {

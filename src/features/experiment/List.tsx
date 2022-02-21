@@ -3,11 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { experimentsSelector, loadExperiments } from 'features/experiment/slice';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { Button, Card, CardActions, CardContent, CircularProgress, Grid, Theme, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CircularProgress, Grid, LinearProgress, Theme, Typography } from '@mui/material';
+import { ThemeContext } from '@emotion/react';import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
 import Spacer from 'components/Spacer';
 import { styled } from '@mui/system';
-import { ThemeContext } from '@emotion/react';
+
+import { authSelector } from 'features/auth/slice';
+import { repository } from './slice';
+import { ExperimentState } from './types';
 
 
 const FlexDiv = styled('div')(({ theme }) => ({
@@ -18,17 +22,23 @@ const FlexDiv = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(4)
 }))
 
-const onDownload = () => {}
+const downloadResults = async (experimentId: number, token: string) => {
+  // http://127.0.0.1:8000/api/v1/experiments/download/5/
+  const response = await repository.download(experimentId, token);
 
+}
 
 const ExperimentsList: React.FC = () => {
   const { isLoading, pagination, experiments, error } = useSelector(experimentsSelector);
+  const { token } = useSelector(authSelector);
   const dispatch = useDispatch();
   const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(loadExperiments());
+    if (experiments.length === 0) {
+      dispatch(loadExperiments());
+    }
   }, [ dispatch ])
 
   return (
@@ -50,20 +60,29 @@ const ExperimentsList: React.FC = () => {
               <Grid key={i} item xs={ 12 } sm={ 6 } lg={ 4 }>
                 <Card>
                   <CardContent>
-                    <RouterLink to={`/experiment/${experiment.id}`}><Typography variant="h5">{ experiment.name }</Typography></RouterLink>
-                    <Typography variant="caption" color="gray">
+                    <Button color='primary' variant="text" to={`/experiment/${experiment.id}`} component={RouterLink}>
+                      <Typography variant='h6'>{ experiment.name }</Typography>
+                    </Button>
+                    <br />
+                    <Typography variant="caption" color="gray" style={{ paddingLeft: theme.spacing(1) }}>
                     { t('commons:datetime', { val: experiment.launchDate }) }
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Spacer />
-                    <Button color="secondary" disabled>{ t('features.experiment.list.edit') }</Button>
-                    <Button color="secondary" disabled>{ t('features.experiment.list.downloadResults') }</Button>
+                    {
+                      experiment.state === ExperimentState.CREATED && (<>
+                        <Spacer />
+                        <Button color="secondary" startIcon={ <DownloadIcon /> } onClick={ () => downloadResults(experiment.id, token || '') }>{ t('features.experiment.list.downloadResults') }</Button>
+                       </>)
+                    }
+                    {
+                      experiment.state === ExperimentState.CREATING && (<LinearProgress color="secondary" />)
+                    }
                   </CardActions>
                 </Card>
               </Grid>
             ))))
-            : (<Grid item xs={ 12 }>{ t('features.experiment.list.empty') }</Grid>)
+            : ( !isLoading && (<Grid item xs={ 12 }>{ t('features.experiment.list.empty') }</Grid>))
         }
 
         <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>
