@@ -4,7 +4,6 @@ export interface ExperimentDTO {
   description: string,
   number_scenarios: number,
   variability_conf: any,
-  generation_mode: string,
   special_colnames: any,
   screenshot_name_generation_function: string
 }
