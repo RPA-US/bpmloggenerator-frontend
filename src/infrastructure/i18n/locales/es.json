@@ -78,6 +78,7 @@
         "title": "Generación automática de GUI logs"
       },
       "form": {
+        "save": "Guardar",
         "assistant": "Asistente",
         "name": {
           "label": "Nombre",
@@ -131,7 +132,7 @@
         "errors": {
           "nameRequired": "Por favor introduzca un nombre válido"
         },
-        "generate": "Generar"
+        "generate": "Ejecutar"
       }
     }
   }
