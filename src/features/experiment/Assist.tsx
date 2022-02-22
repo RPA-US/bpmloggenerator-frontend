@@ -1,7 +1,7 @@
-import React, { SetStateAction, SyntheticEvent, useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext, useTheme } from '@emotion/react';
-import { Card, CardContent, Theme, Typography, Grid, CardMedia, Box } from '@mui/material';
+import { ThemeContext } from '@emotion/react';
+import { Card, CardContent, Theme, Typography, Grid, CardMedia } from '@mui/material';
 
 const ExperimentAssist: React.FC = () => {
     const { t } = useTranslation();
@@ -9,28 +9,55 @@ const ExperimentAssist: React.FC = () => {
     const [coordenates, setCoordenates] = useState({x0:0,y0:0, x1: 0, y1: 0 ,x2:0 , y2:0 });
 
     const handleMouseEnter = (e: any) => {
+         var x: number = (e.nativeEvent.offsetX>=0 ? e.nativeEvent.offsetX:0)
+         var y: number = (e.nativeEvent.offsetY>=0 ? e.nativeEvent.offsetY:0)
         setCoordenates({
             ...coordenates,
-            x1:e.nativeEvent.offsetX,
-            y1:e.nativeEvent.offsetY
+            x1:x,
+            y1:y
           })
     }
     const handleMouseLeave = (e: any) => {
+        var tx: number = (e.nativeEvent.offsetX>=0 ? e.nativeEvent.offsetX:0)
+        var ty: number = (e.nativeEvent.offsetY>=0 ? e.nativeEvent.offsetY:0)
+        var x1,y1,x2,y2: number
+        if (coordenates.x1<=tx){
+            x1 = coordenates.x1
+        }else{
+            x1 = tx
+        }
+        if (coordenates.y1<=ty){
+            y1 = coordenates.y1
+        }else{
+            y1 = ty
+        }
+        if (coordenates.x1>tx){
+            x2 = coordenates.x1
+        }else{
+            x2 = tx
+        }
+        if (coordenates.y1>ty){
+            y2 = coordenates.y1
+        }else{
+            y2 = ty
+        }
         setCoordenates({
             ...coordenates,
-            x2:e.nativeEvent.offsetX,
-            y2:e.nativeEvent.offsetY
+            x1:x1,
+            y1:y1,
+            x2:x2,
+            y2:y2
           })
-
     }
     const handleMouseMove = (e: any) => {
+        var x: number = (e.nativeEvent.offsetX>=0 ? e.nativeEvent.offsetX:0)
+        var y: number = (e.nativeEvent.offsetY>=0 ? e.nativeEvent.offsetY:0)
         setCoordenates({
             ...coordenates,
-            x0:e.nativeEvent.offsetX,
-            y0:e.nativeEvent.offsetY
+            x0:x,
+            y0:y
           })
     }
-
 
     return (
         <>
@@ -57,8 +84,9 @@ const ExperimentAssist: React.FC = () => {
                         image={process.env.PUBLIC_URL + "example_image.png"}
                         alt="mock"
                         onMouseMove={handleMouseMove}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
+                        onMouseDown={handleMouseEnter}
+                        onMouseUp={handleMouseLeave}
+                        draggable={false}
                     />
                 </Card>
             </Grid>
