@@ -64,6 +64,16 @@
         "downloadResults": "Download results",
         "viewMore": "View More"
       },
+      "assist":{
+        "title":{
+          "elementselector": "Select image element to use"
+        },
+        "coordenates":{
+          "coordenates": "Coordenates",
+          "topleft": "Top-Left coordenate",
+          "rightbot": "Bot-Right coordenate"
+        }
+      },
       "create": {
         "title": "Automatic GUI log generation"
       },
