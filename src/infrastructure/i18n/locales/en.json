@@ -91,9 +91,9 @@
           "tooltip": "UI logs of the sizes indicated in this field, separated by commas, are generated. These log sizes correspond to the number of rows in each log."
         },
         "scenariosNumber": {
-          "label": "Number of scenarios",
+          "label": "Additional scenarios",
           "placeholder": "0",
-          "helperText": "If you only want to generate variability in the user's actions indicate a 0",
+          "helperText": "If you only want to consider the seed scenario indicate 0",
           "tooltip": "The number of scenarios to generate, that is, this field indicates how many synthetic look and feels will be generated. For each of the synthetic looks and feel generated, the correpsonding variability will be applied. If we we want only to vary our seed, i.e. we want to perform variations at the case level and not at the scenario level, we set it as 0."
         },
         "seedLog": {
