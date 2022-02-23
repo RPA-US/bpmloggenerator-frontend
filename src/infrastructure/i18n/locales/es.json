@@ -64,6 +64,16 @@
         "downloadResults": "Descargar resultados",
         "viewMore": "Ver más"
       },
+      "assist":{
+        "title":{
+          "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
+        },
+        "coordenates":{
+          "coordenates": "Coordenadas",
+          "topleft": "Coordenada superior izquierda",
+          "rightbot": "Coordenada inferior derecha"
+        }
+      },
       "create": {
         "title": "Generación automática de GUI logs"
       },
