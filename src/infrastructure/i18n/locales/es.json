@@ -79,7 +79,7 @@
       },
       "form": {
         "save": "Guardar",
-        "assistant": "Asistente",
+        "assistant": "Wizard",
         "name": {
           "label": "Nombre",
           "placeholder": "Experiment 1",
