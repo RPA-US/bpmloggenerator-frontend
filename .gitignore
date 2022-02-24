@@ -4,6 +4,7 @@ package-lock.json
 yarn.lock
 env.example
 .env
+.vscode/
 
 # Yarn (not zero-installs)
 .pnp.*
