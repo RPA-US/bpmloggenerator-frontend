@@ -24,6 +24,14 @@ const ExperimentAssist: React.FC = () => {
     const url = process.env.PUBLIC_URL + "example_image.png";
     const textRef = useRef();
     
+    const addElementToTable = () =>  {
+        var name: string = textRef.current.value;
+        setElements({
+            ...elements,
+            [name]: coordinates
+        })
+    }
+    
     const getResolution = () => {
         var img = new Image();
         img.src = url;
@@ -138,7 +146,7 @@ const ExperimentAssist: React.FC = () => {
                             {t('features.experiment.assist.coordinates.rightbot')}:{coordinates.x2}, {coordinates.y2}
                         </Typography>
                         <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>
-                            <Button variant="contained" color="secondary" onClick={setElements()}>
+                            <Button variant="contained" color="secondary" onClick={addElementToTable}>
                                 {t('features.experiment.assist.add')}
                             </Button>
                         </Grid>
@@ -199,5 +207,11 @@ const ExperimentAssist: React.FC = () => {
     )
 
 }
-
+    const addElementToTable = () =>  {
+        var name: string = textRef.current.value;
+        setElements({
+            ...elements,
+            [name]: coordinates
+        })
+    }
 export default ExperimentAssist;
