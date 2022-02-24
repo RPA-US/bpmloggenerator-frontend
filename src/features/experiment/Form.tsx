@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useTranslation } from 'react-i18next';
@@ -74,7 +75,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
         "Screenshot": "Screenshot",
         "Variant": "Variant"
       }),
-      screenshot_name_generation_function: "function21"
+      screenshot_name_generation_function: "screenshot_name_without_root_path"
     }
 
     if (buttonName === "generate") {
@@ -277,7 +278,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               component={RouterLink}
               to="/assist-experiment"
               style={{ fontSize: "small", marginLeft: 4 }}
-              endIcon={<HelpOutlineIcon />}>{t('features.experiment.form.assistant')}</Button>
+              endIcon={<SettingsSuggestIcon />}>{t('features.experiment.form.assistant')}</Button>
           </FormInput>
 
           <FormInput
@@ -355,7 +356,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                 }
               }}
             />
-            <Button onClick={startAssistant} disabled={ disabled } variant="outlined" style={{ fontSize: "small", marginLeft: 4 }} endIcon={<HelpOutlineIcon />}>
+            <Button onClick={startAssistant} disabled={ disabled } variant="outlined" style={{ fontSize: "small", marginLeft: 4 }} endIcon={<SettingsSuggestIcon />}>
               {t('features.experiment.form.assistant')}
             </Button>
           </FormInput>
