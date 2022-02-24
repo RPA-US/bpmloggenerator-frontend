@@ -9,9 +9,10 @@ export interface FileInputProps {
   errorMessage?: string
   fileName?: string
   inputProps: React.HTMLProps<HTMLInputElement>
+  disabled?: boolean
 }
 
-const FileInput: React.FC<FileInputProps> = ({ accept, inputProps, fileName, errorMessage }) => {
+const FileInput: React.FC<FileInputProps> = ({ accept, inputProps, fileName, errorMessage, disabled }) => {
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
 
@@ -37,6 +38,7 @@ const FileInput: React.FC<FileInputProps> = ({ accept, inputProps, fileName, err
           style={{
             marginRight: theme.spacing(1)
           }}
+          disabled={ disabled }
         >
           { t(title) }
         </Button>

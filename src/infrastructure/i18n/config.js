@@ -26,10 +26,14 @@ i18n
     interpolation: {
       escapeValue: false,
       format: function(value, format, lng) {
-        if (format === 'datetime') return new Intl.DateTimeFormat('es-ES', {
-          dateStyle: "medium",
-          timeStyle: "medium"
-        }).format(value);
+        if (format === 'datetime') try {
+          return new Intl.DateTimeFormat('es-ES', {
+            dateStyle: "medium",
+            timeStyle: "medium"
+          }).format(value);
+        } catch (ex) {
+          console.error('error on datetime format interpolation', ex)
+        }
         return value;
       }
     },

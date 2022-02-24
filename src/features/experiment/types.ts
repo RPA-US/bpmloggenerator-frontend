@@ -28,6 +28,7 @@ export interface ExperimentsState {
   pagination: Pagination
   isLoading: boolean
   error: ExperimentError | null
+  detail: Experiment | null
 }
 
 export interface ExperimentConfiguration {

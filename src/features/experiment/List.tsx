@@ -12,6 +12,7 @@ import { styled } from '@mui/system';
 import { authSelector } from 'features/auth/slice';
 import { repository } from './slice';
 import { ExperimentState } from './types';
+import { downloadFile } from './utils';
 
 
 const FlexDiv = styled('div')(({ theme }) => ({
@@ -25,17 +26,7 @@ const FlexDiv = styled('div')(({ theme }) => ({
 const downloadResults = async (experimentId: number, token: string) => {
   try {
     const { filename, blob }: any = await repository.download(experimentId, token);
-
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute(
-      'download',
-      filename,
-    );
-    document.body.appendChild(link);
-    link.click();
-    link?.parentNode?.removeChild(link);
+    downloadFile(filename, blob);    
   } catch (ex) {
     console.error('error downloading experiment result', ex);
   }
@@ -71,7 +62,7 @@ const ExperimentsList: React.FC = () => {
         { experiments.length
             ? (experiments.map(((experiment, i) => (
               <Grid key={i} item xs={ 12 } sm={ 6 } lg={ 4 }>
-                <Card>
+                <Card style={{ minHeight: 155 }}>
                   <CardContent>
                     <Button color='primary' variant="text" to={`/experiment/${experiment.id}`} component={RouterLink}>
                       <Typography variant='h6'>{ experiment.name }</Typography>
