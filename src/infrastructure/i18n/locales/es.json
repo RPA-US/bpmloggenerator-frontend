@@ -68,11 +68,18 @@
         "title":{
           "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
         },
-        "coordenates":{
-          "coordenates": "Coordenadas",
+        "coordinates":{
+          "coordinates": "Coordenadas",
           "topleft": "Coordenada superior izquierda",
           "rightbot": "Coordenada inferior derecha"
-        }
+        },
+        "element": {
+          "name": "Elemento en imagen",
+          "topleft": "Coordenada superior izquierda",
+          "botright": "Coordenada inferior derecha"
+        },
+        "delete": "Borrar elemento",
+        "add": "Añadir"
       },
       "create": {
         "title": "Generación automática de GUI logs"

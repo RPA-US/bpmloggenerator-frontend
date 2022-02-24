@@ -68,11 +68,18 @@
         "title":{
           "elementselector": "Select image element to use"
         },
-        "coordenates":{
-          "coordenates": "Coordenates",
-          "topleft": "Top-Left coordenate",
-          "rightbot": "Bot-Right coordenate"
-        }
+        "coordinates":{
+          "coordinates": "Coordinates",
+          "topleft": "Top-Left coordinate",
+          "rightbot": "Bot-Right coordinate"
+        },
+        "element": {
+          "name": "image element",
+          "topleft": "Top-Left coordinate",
+          "botright": "Bot-Right coordinate"
+        },
+        "delete": "Delete element",
+        "add": "Add"
       },
       "create": {
         "title": "Automatic GUI log generation"
