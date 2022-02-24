@@ -207,11 +207,5 @@ const ExperimentAssist: React.FC = () => {
     )
 
 }
-    const addElementToTable = () =>  {
-        var name: string = textRef.current.value;
-        setElements({
-            ...elements,
-            [name]: coordinates
-        })
-    }
+
 export default ExperimentAssist;
