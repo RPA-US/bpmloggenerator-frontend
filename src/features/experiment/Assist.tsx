@@ -22,16 +22,15 @@ const ExperimentAssist: React.FC = () => {
     const [coordinates, setcoordinates] = useState(initialCoordinates);
     const [elements, setElements] = useState(initialElements);
     const url = process.env.PUBLIC_URL + "example_image.png";
-    const textRef = useRef();
+    const textRef = useRef<any>();
     
     const addElementToTable = () =>  {
-        var name: string = textRef.current.value;
         setElements({
             ...elements,
-            [name]: coordinates
+            [textRef.current.value]: coordinates
         })
     }
-    
+
     const getResolution = () => {
         var img = new Image();
         img.src = url;
@@ -138,7 +137,7 @@ const ExperimentAssist: React.FC = () => {
                 <Card style={{ display: 'flex', marginTop: theme.spacing(4) }}>
                     <CardContent onMouseEnter={(e: any) => handleMouseEnter}
                         onMouseLeave={(e: any) => handleMouseLeave}>
-                        <TextField inputRef={textRef} id="outlined-basic" label={t('features.experiment.assist.element.name')} variant="outlined" />
+                        <TextField inputRef={textRef} placeholder={t('features.experiment.assist.element.name')} label={t('features.experiment.assist.element.name')} variant="outlined" />
                         <Typography variant='caption' component="div" >
                             {t('features.experiment.assist.coordinates.topleft')}:{coordinates.x1}, {coordinates.y1}
                         </Typography>
@@ -207,11 +206,5 @@ const ExperimentAssist: React.FC = () => {
     )
 
 }
-    const addElementToTable = () =>  {
-        var name: string = textRef.current.value;
-        setElements({
-            ...elements,
-            [name]: coordinates
-        })
-    }
+
 export default ExperimentAssist;
