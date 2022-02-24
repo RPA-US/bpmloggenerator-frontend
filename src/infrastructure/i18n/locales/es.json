@@ -94,13 +94,13 @@
         "logSize": {
           "label": "Tamaño del log",
           "placeholder": "10,50,100",
-          "helperText": "Número de filas que tiene el log separados por (',')",
-          "tooltip": "El sistema generará los UI logs de los tamaños que se le indique en este campo, separados por comas. Estos tamaños de logs se corresponden con el número de filas de cada log."
+          "helperText": "Número de eventos que tiene el log separados por (',')",
+          "tooltip": "El sistema generará los UI logs de los tamaños que se le indique en este campo, separados por comas. Estos tamaños de logs se corresponden con el número de eventos/filas de cada log."
         },
         "scenariosNumber": {
-          "label": "Número de escenarios",
+          "label": "Número de escenarios adicionales",
           "placeholder": "0",
-          "helperText": "Si sólo se desea generar variabilidad en las acciones del usuario indicar un 0",
+          "helperText": "Si solamente quiere considerar la semilla indique 0",
           "tooltip": "El número de escenarios a generar, si simplemente queremos variar nuestra semilla, es decir, queremos realizar variaciones a nivel de caso y no a nivel de escenarios, le damos valor 0. Se generarán tantos look and feels sintéticos como se indique en este campo, por cada uno de ellos se generará un look and feel sintético, donde se aplicarán la variabilidad correpsondiente para generar logs balanceados e imbalanceados por cada tamaño que se ha indicado en el campo anterior."
         },
         "seedLog": {

@@ -4,35 +4,34 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import BackButton from 'components/BackButton';
 import ExperimentFormComponent from './Form';
-import { experimentsSelector, createExperiment } from './slice';
+import { experimentsSelector, saveExperiment } from './slice';
 
 const CreateExperiment: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const { experiments } = useSelector(experimentsSelector);
-  const [ experimentsNumber, setExperimentsNumber ] = useState(experiments.length);
+  const [ loading, setLoading ] = useState(false)
   const dispatch = useDispatch();
  
-  useEffect(() => {
-    if (experiments.length > experimentsNumber) {
-      history.push('/')
-    } else {
-      setExperimentsNumber(experiments.length);
-    }
-  }, [ experiments ])
-
   return (
     <>
       <Typography variant="h4">
+        <BackButton to="/" />
         { t('features.experiment.create.title') }
       </Typography>
 
       <ExperimentFormComponent
         onSubmit={(data: any) => {
           console.log('Create component data received:', data);
-          dispatch(createExperiment(data));
+          setLoading(true)
+          dispatch(saveExperiment(data, (error: any) => {
+            setLoading(false)
+            error == null && history.push('/')
+          }));
         }}
+        disabled={ loading }
       />
     </>
   )
