@@ -74,11 +74,12 @@
           "rightbot": "Bot-Right coordinate"
         },
         "element": {
-          "name": "image element",
-          "topleft": "Top-Left coordinate",
-          "botright": "Bot-Right coordinate"
+          "name": "Element",
+          "topleft": "Top-Left",
+          "botright": "Bot-Right",
+          "color": "Colour"
         },
-        "delete": "Delete element",
+        "delete": "Delete",
         "add": "Add"
       },
       "create": {

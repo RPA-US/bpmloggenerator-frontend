@@ -74,11 +74,12 @@
           "rightbot": "Coordenada inferior derecha"
         },
         "element": {
-          "name": "Elemento en imagen",
-          "topleft": "Coordenada superior izquierda",
-          "botright": "Coordenada inferior derecha"
+          "name": "Elemento",
+          "topleft": "Superior izquierda",
+          "botright": "Inferior derecha",
+          "color": "Color"
         },
-        "delete": "Borrar elemento",
+        "delete": "Borrar",
         "add": "Añadir"
       },
       "create": {
