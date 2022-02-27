@@ -69,7 +69,7 @@ const ExperimentsList: React.FC = () => {
                     </Button>
                     <br />
                     <Typography variant="caption" color="gray" style={{ paddingLeft: theme.spacing(1) }}>
-                    { t('commons:datetime', { val: experiment.launchDate }) }
+                    { t('commons:datetime', { val: experiment.state === ExperimentState.CREATED ? experiment.executionEnd : experiment.lastEditionDate }) }
                     </Typography>
                   </CardContent>
                   <CardActions>

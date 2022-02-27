@@ -141,6 +141,16 @@
           "nameRequired": "Por favor introduzca un nombre válido"
         },
         "generate": "Ejecutar"
+      },
+      "details": {
+        "description": "Descripción:",
+        "createdAt": "Creado el {{ val, datetime }}",
+        "modifiedAt": "modificado el {{ val, datetime }}",
+        "executionStart": "Ejecución lanzada:",
+        "executionEnd": "Ejecución finalizada:",
+        "scenariosNumber": "Número de escenarios: {{ val }}",
+        "state": "Estado: {{ val }}",
+        "screenshotNameGenerationFunction": "Función generadora: {{ val }}"
       }
     }
   }
