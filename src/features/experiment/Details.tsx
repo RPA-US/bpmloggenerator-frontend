@@ -6,11 +6,12 @@ import DownloadIcon from '@mui/icons-material/Download';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 import { useHistory, useParams } from 'react-router-dom';
-import { ThemeContext, useTheme } from '@emotion/react';
+import { ThemeContext } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
-import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentDTOToExperimentType,  } from './slice';
+import { experimentsSelector, addExperiment, saveExperiment, experimentRepository } from './slice';
+import { experimentDTOToExperimentType } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
 import { downloadFile } from './utils';

@@ -1,12 +1,12 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { Button, Select, MenuItem, Box, TextField, Card, CardContent, Theme, Typography, Grid, CardMedia } from '@mui/material';
+import { Button, Select, MenuItem, Box, Card, CardContent, Theme, Typography, Grid, CardMedia } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
-import { ICoordinates, IElements } from './types';
+import { ICoordinates } from './types';
 import { useSelector, useDispatch } from 'react-redux';
-import { elementSelector,wizardSlice } from './slice';
+import { wizardSelector, wizardSlice } from './slice';
 
 const funcitonList = [
   {
@@ -55,18 +55,19 @@ const ScreenshotVariability: React.FC = () => {
   var initialStateCoordinates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, params: {} };
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
-  const textRef = useRef<any>('');
+  // const textRef = useRef<any>('');
   const url = process.env.PUBLIC_URL + "example_image.png";//TODO:cambiar a la url real
   const [resolutionBRW, setResolution] = useState([0, 0]);
   const [coordinates, setcoordinates] = useState(initialStateCoordinates);
   const [functionID, setFunction] = useState(0);
-  const elements = useSelector(elementSelector);
+  const wizard = useSelector(wizardSelector);
+  const elements = wizard.elements;
   const dispatch = useDispatch();
 
   //TODO: create repository call
   const variabilityFunctions = funcitonList;
   //TODO: create repository call
-  const params = paramList;
+  // const params = paramList;
 
   const [elementName, setName] = useState("");
 
@@ -75,7 +76,7 @@ const ScreenshotVariability: React.FC = () => {
     var count = Object.keys(elements).length;
     console.log(elements)
     for (const [key] of Object.entries(elements)) {
-      if (elements[key].processed == false) {
+      if (elements[key].processed === false) {
         let coor = elements[key]
         setcoordinates(coor);
         setName(key)

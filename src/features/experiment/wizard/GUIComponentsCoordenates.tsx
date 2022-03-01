@@ -7,7 +7,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStore } from 'redux';
 import { ICoordinates, IElements } from './types';
-import { elementSelector,wizardSlice } from './slice';
+import { wizardSelector, wizardSlice } from './slice';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
