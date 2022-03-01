@@ -5,11 +5,24 @@ export enum ExperimentState {
   CREATED,
 }
 export interface Experiment {
-  id: number,
-  name: string,
-  description: string,
-  launchDate: Date,
-  state: ExperimentState,
+  id: number
+  name: string
+  description: string
+  creationDate: Date
+  executionStart: Date
+  executionEnd: Date
+  lastEditionDate: Date
+  state: ExperimentState
+  numberScenarios: number
+  variabilityConf: any
+  scenariosConf: any
+  foldername: string
+  isActive: boolean
+  isBeingProcessed: number
+  screenshotNameGenerationFunction: string
+  screenshotsPath: string
+  sizeBalance: any
+  specialColnames: any
 }
 
 export interface ExperimentError {

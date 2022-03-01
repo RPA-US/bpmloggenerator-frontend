@@ -8,10 +8,14 @@ export interface ExperimentDTO {
   screenshot_name_generation_function: string
   is_being_processed: number
   created_at: string
+  execution_start: string
+  execution_finish: string
+  last_edition: string
   foldername: string
   is_active: boolean
   scenarios_conf: any
   screenshots_path: string
+  size_balance: any
 }
 
 export interface ExperimentResponse {

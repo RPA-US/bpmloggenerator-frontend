@@ -72,8 +72,21 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
     id: experiment.id,
     name: experiment.name,
     description: experiment.description,
-    launchDate: new Date(experiment.created_at),
+    creationDate: new Date(experiment.created_at),
+    executionStart: new Date(experiment.execution_start),
+    executionEnd: new Date(experiment.execution_finish),
+    lastEditionDate: new Date(experiment.last_edition),
     state,
+    numberScenarios: experiment.number_scenarios,
+    variabilityConf: experiment.variability_conf,
+    scenariosConf: experiment.scenarios_conf,
+    foldername: experiment.foldername,
+    isActive: experiment.is_active,
+    isBeingProcessed: experiment.is_being_processed,
+    screenshotNameGenerationFunction: experiment.screenshot_name_generation_function,
+    screenshotsPath: experiment.screenshots_path,
+    sizeBalance: experiment.size_balance,
+    specialColnames: experiment.description,
   }
 }
 
