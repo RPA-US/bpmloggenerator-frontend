@@ -21,7 +21,8 @@ import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/List';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
-import ExperimentAssist from 'features/experiment/Assist';
+import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
+import ExperimentAssist from 'features/experiment/wizard/ActivitySelection';
 
 import 'infrastructure/i18n/config';
 import { useTranslation } from "react-i18next";
@@ -83,6 +84,10 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/assist-experiment" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordenates" />
+                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/select-activity" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-column-variability" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-gui-component-variability" /> */}
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }

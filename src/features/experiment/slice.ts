@@ -2,9 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
 import { Experiment, ExperimentError, ExperimentsState, ExperimentState, Pagination } from './types';
 import ExperimentRepository from 'infrastructure/repositories/experiment';
+import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
+import GUIComponentRepository from 'infrastructure/repositories/gui-component';
+import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
+import VariabilityFunctionRepository from 'infrastructure/repositories/variability-function';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 
-export const repository = new ExperimentRepository();
+export const experimentRepository = new ExperimentRepository();
+export const guiComponentCategoryRepository = new GUIComponentCategoryRepository();
+export const guiComponentRepository = new GUIComponentRepository();
+export const variabilityFunctionCategoryRepository = new VariabilityFunctionCategoryRepository();
+export const variabilityFunctionRepository = new VariabilityFunctionRepository();
+
 
 const initialState: ExperimentsState =  {
   experiments: [],
@@ -73,7 +82,7 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
   try {
     dispatch(setLoading(true))
     const currentPage = experiment.pagination.page;
-    const experimentResponse = await repository.list(currentPage, auth.token ?? '');
+    const experimentResponse = await experimentRepository.list(currentPage, auth.token ?? '');
     if (experimentResponse.count !== experiment.experiments.length) {
       dispatch(addExperiments({
         experiments: experimentResponse.results
@@ -92,6 +101,30 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
     dispatch(setLoading(false))
   }
 }
+
+// export const loadExperimentActivities = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+//   const { auth, experiment } = getState();
+//   try {
+//     dispatch(setLoading(true))
+//     const experimentResponse = await Repository.list(currentPage, auth.token ?? '');
+//     if (experimentResponse.count !== experiment.experiments.length) {
+//       dispatch(addExperiments({
+//         experiments: experimentResponse.results
+//           .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(exp))
+//           .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i),
+//         pagination: {
+//           page: currentPage + (experimentResponse.next != null ? 1 : 0),
+//           total: experimentResponse.count,
+//           hasNext: experimentResponse.next != null
+//         }
+//       }));
+//     }
+//   } catch (error) {  
+//     dispatch(setError(error as ExperimentError))
+//   } finally {
+//     dispatch(setLoading(false))
+//   }
+// }
  
 export const addExperiment = (experimentOb: Experiment): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { experiment } = getState();
@@ -107,10 +140,10 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   const { auth, experiment } = getState();
   const hasPreviousId = experimentData.id;
   try {
-    const experimentResponse = await repository.save(experimentData, auth.token ?? '');
+    const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     if (!hasPreviousId && experimentResponse.id != null) {
       const { experiments, pagination } = experiment;
-      const savedExperimentData = await repository.get(experimentResponse.id, auth.token ?? '');
+      const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       dispatch(setExperiments({
         experiments: [experimentDTOToExperimentType(savedExperimentData)].concat(experiments),
         pagination,

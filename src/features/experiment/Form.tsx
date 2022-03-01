@@ -4,7 +4,6 @@ import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { SubmitHandler, useForm, ValidationRule } from 'react-hook-form';

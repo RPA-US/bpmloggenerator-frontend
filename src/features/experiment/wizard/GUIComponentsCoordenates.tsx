@@ -14,7 +14,7 @@ interface ICoordinates {
     resolutionBRW: Array<Number>
 }
 
-const ExperimentAssist: React.FC = () => {
+const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialCoordinates = { x0: 0, y0: 0, x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], resolutionBRW: [0, 0] };
     var initialElements: { [name: string]: ICoordinates; } = {};
     const { t } = useTranslation();
@@ -207,4 +207,4 @@ const ExperimentAssist: React.FC = () => {
 
 }
 
-export default ExperimentAssist;
+export default ExperimentGetGUIComponentsCoordenates;
