@@ -19,18 +19,14 @@ export const variabilityFunctionRepository = new VariabilityFunctionRepository()
 
 const initialState: ExperimentsState =  {
   experiments: [],
-  pagination: {
-    page: 1,
-    total : 0,
-    hasNext: true
-  },
   detail: null,
   isLoading: false,
-  error: null
+  error: null,
+  seed: null,
 }
 
 export const experimentsSlice = createSlice({
-  name: 'experiment',
+  name: 'wizard',
   initialState,
   reducers: {
     setLoading: (state, { payload }: PayloadAction<boolean>) => {

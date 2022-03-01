@@ -64,10 +64,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
   }, [watchNumberScenarios])
 
-  const startAssistant = (data: any) => {
-    alert(data);
-  }
-
   const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || getValues('screenshots').length == 0;
   const scenariosConfDisabled = getValues('number_scenarios') == 0;
 
@@ -112,11 +108,13 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
     if (buttonName === "generate") {
       checkedData.execute_mode = true;
+    } else if (buttonName === "scenarioVariability" || buttonName === "caseVariability") {
+      checkedData.status = "PRE_SAVED";
     }
 
-    delete checkedData.seedLog;
+    // delete checkedData.seedLog;
 
-    if (data.logSize != null && data.imbalancedCase != null) {
+    if (data.logSize != null && data.logSize != "" && data.imbalancedCase != null && data.imbalancedCase != "") {
       const imbalancedCases = data.imbalancedCase.split(',').map((n: string) => parseFloat(n));
       checkedData.size_balance = JSON.stringify({
         balance: {
@@ -129,8 +127,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       delete checkedData.logSize;
       delete checkedData.imbalancedCase;
     }
-
-
+    
     const formData = new FormData();
     Object.keys(checkedData)
       .forEach(key => {
@@ -306,10 +303,9 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               }}
             />
             <Button
-              variant="outlined"
+              type="submit" name="scenarioVariability"
               disabled={ disabled || wizzardDisabled }
-              component={RouterLink}
-              to="/get-gui-component-coordenates"
+              variant="outlined"
               style={{ fontSize: "small", marginLeft: 4 }}
               endIcon={<SettingsSuggestIcon />}>{t('features.experiment.form.assistant')}</Button>
           </FormInput>
@@ -392,7 +388,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               }}
             />
             <Button
-              onClick={startAssistant}
+              type="submit" name="caseVariability"
               disabled={ disabled || wizzardDisabled }
               variant="outlined"
               style={{ fontSize: "small", marginLeft: 4 }}

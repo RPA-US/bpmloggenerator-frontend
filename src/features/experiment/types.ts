@@ -23,6 +23,7 @@ export interface Experiment {
   screenshotsPath: string
   sizeBalance: any
   specialColnames: any
+  status: string | null
 }
 
 export interface ExperimentError {
