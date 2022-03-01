@@ -6,24 +6,16 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStore } from 'redux';
-
-
-interface ICoordinates {
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    resolutionIMG: Array<Number>,
-    randomColor: string
-}
-
+import { ICoordinates, IElements } from './types';
+import { elementSelector,wizardSlice } from './slice';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
-    var initialElements: { [name: string]: ICoordinates; } = {};
+    var initialElements: IElements = {};
+    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, params: {} };
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
-    const [coordinates, setcoordinates] = useState({ x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "" });
-    const [elements, setElements] = useState(initialElements);
+    const [coordinates, setcoordinates] = useState(initialCoordenates);
+    const [elements, setElementsTMP] = useState(initialElements);
     const textRef = useRef<any>('');
     const url = process.env.PUBLIC_URL + "example_image.png";//cambiar a la url real
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
@@ -31,6 +23,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const actualCapture = 1; //numero actual de capturas
     const [draggable, setDraggable] = useState(false);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
+    const dispatch = useDispatch();
+    dispatch(wizardSlice.actions.setElements(elements));
 
 
     window.onresize = function () {
@@ -45,7 +39,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     const addElementToTable = () => {
-        setElements({
+        setElementsTMP({
             ...elements,
             [textRef.current.value.trim()]: coordinates
         })
@@ -72,12 +66,11 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     const setCoordenatesByResolution = (list: any) => {
         var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-        var resIMG = coordinates.resolutionIMG;
-        if (resIMG !== resolutionBRW) {
-            list.x1 = Math.round(resIMG[0] * list.x1 / resolutionBRW[0])
-            list.y1 = Math.round(resIMG[1] * list.y1 / resolutionBRW[1])
-            list.x2 = Math.round(resIMG[0] * list.x2 / resolutionBRW[0])
-            list.y2 = Math.round(resIMG[1] * list.y2 / resolutionBRW[1])
+        if (resolutionIMG !== resolutionBRW) {
+            list.x1 = Math.round(resolutionIMG[0] * list.x1 / resolutionBRW[0])
+            list.y1 = Math.round(resolutionIMG[1] * list.y1 / resolutionBRW[1])
+            list.x2 = Math.round(resolutionIMG[0] * list.x2 / resolutionBRW[0])
+            list.y2 = Math.round(resolutionIMG[1] * list.y2 / resolutionBRW[1])
         }
         setcoordinates({
             ...coordinates,
@@ -136,7 +129,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const removeElement = (key: string) => {
         let elementsCopy = elements;
         delete elementsCopy[key];
-        setElements(
+        setElementsTMP(
             { ...elementsCopy }
         )
     }
@@ -145,49 +138,21 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         return Math.round(brw * x / img);
     }
 
-    function startDrag(event: any) {
-        var x: number = (event.nativeEvent.offsetX >= 0 ? event.nativeEvent.offsetX : 1)
-        var y: number = (event.nativeEvent.offsetY >= 0 ? event.nativeEvent.offsetY : 1)
-        setDraggable(true);
+    function updateRectangleTMP() {
         var overlay = document.getElementById('overlay');
-
         if (overlay != null) {
-            overlay.style.left = x + 'px';
-            overlay.style.top = y + 'px';
-            overlay.style.width = '0px';
-            overlay.style.height = '0px';
+            overlay.style.left = resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0]) + "px";
+            overlay.style.top = resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1]) + "px";
+            overlay.style.width = (resizeRect(coordinates.x2, resolutionBRW[0], resolutionIMG[0]) - resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0])) + "px";
+            overlay.style.height = (resizeRect(coordinates.y2, resolutionBRW[1], resolutionIMG[1]) - resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1])) + "px";
         }
     }
 
-    function stopDrag(event: any) {
-        drawRightBottomCorner(event);
-        setDraggable(false);
+    function saveElements() {
+        if (Object.keys(elements).length > 0) {
+            dispatch(wizardSlice.actions.setElements(elements))
+        }
     }
-
-    function drawRightBottomCorner(event:any) {
-        var x2: number = (event.nativeEvent.offsetX >= 0 ? event.nativeEvent.offsetX : 1)
-        var y2: number = (event.nativeEvent.offsetY >= 0 ? event.nativeEvent.offsetY : 1)
-
-        if (!draggable) return;
-        var overlay = document.getElementById('overlay');
-        if (overlay != null) {
-            var x1 = overlay.style.left
-            var y1 = overlay.style.top
-            overlay.style.width = 'calc(' + x2 + 'px - ' + x1 + ')';
-            overlay.style.height = 'calc(' +y2 + 'px - ' + y1 + ')';
-        }
-      }
-
-      function updateRectangleTMP() {
-        var overlay = document.getElementById('overlay');
-        if (overlay != null) {
-            overlay.style.left = resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0])+"px";
-            overlay.style.top = resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1])+"px";           
-            overlay.style.width = (resizeRect(coordinates.x2, resolutionBRW[0], resolutionIMG[0]) - resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0]))+"px";
-            overlay.style.height = (resizeRect(coordinates.y2, resolutionBRW[1], resolutionIMG[1]) - resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1]))+"px";
-        }
-      }
-
 
     return (
         <>
@@ -195,6 +160,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 {t('features.experiment.assist.title.elementselector')}
             </Typography>
             <Button
+                onClick={saveElements}
                 variant="outlined"
                 disabled={numberCaptures !== actualCapture}
                 component={RouterLink}

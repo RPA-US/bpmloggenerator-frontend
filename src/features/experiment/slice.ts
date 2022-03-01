@@ -2,18 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
 import { Experiment, ExperimentError, ExperimentsState, Pagination } from './types';
 import ExperimentRepository from 'infrastructure/repositories/experiment';
-import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
-import GUIComponentRepository from 'infrastructure/repositories/gui-component';
-import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
-import VariabilityFunctionRepository from 'infrastructure/repositories/variability-function';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType } from './utils';
 
 export const experimentRepository = new ExperimentRepository();
-export const guiComponentCategoryRepository = new GUIComponentCategoryRepository();
-export const guiComponentRepository = new GUIComponentRepository();
-export const variabilityFunctionCategoryRepository = new VariabilityFunctionCategoryRepository();
-export const variabilityFunctionRepository = new VariabilityFunctionRepository();
 
 // ================================== REDUCERS ==================================
 
@@ -44,10 +36,10 @@ export const experimentsSlice = createSlice({
       state.experiments = payload.experiments
       state.pagination = payload.pagination
     },
-    setVariabilityConfiguration: (state, { payload }: PayloadAction<{ experiment: Experiment, seed: any}>) => {
-      state.detail = payload.experiment
-      state.seed = payload.seed
-    },
+    // setVariabilityConfiguration: (state, { payload }: PayloadAction<{ experiment: Experiment, seed: any}>) => {
+    //   state.detail = payload.experiment
+    //   state.seed = payload.seed
+    // },
     setExperiment: (state, { payload }: PayloadAction<Experiment>) => {
       const index = state.experiments.findIndex(exp => exp.id === payload.id);
       if (index !== -1) {
@@ -62,7 +54,7 @@ export const experimentsSlice = createSlice({
 
 // ================================== ACTIONS ==================================
 
-const { setLoading, addExperiments, setExperiment, setVariabilityConfiguration, setExperiments, setError } = experimentsSlice.actions
+const { setLoading, addExperiments, setExperiment, setExperiments, setError } = experimentsSlice.actions
 
 // ================================== Root STATE ==================================
 
@@ -115,10 +107,10 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     if (!hasPreviousId && experimentResponse.id != null) {
       const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
-        dispatch(setVariabilityConfiguration({
-          experiment: experimentDTOToExperimentType(savedExperimentData),
-          seed: seed,
-        }));
+        // dispatch(setVariabilityConfiguration({
+        //   experiment: experimentDTOToExperimentType(savedExperimentData),
+        //   seed: seed,
+        // }));
       } else {
         const { experiments, pagination } = experiment;
         dispatch(setExperiments({

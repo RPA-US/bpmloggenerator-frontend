@@ -4,6 +4,7 @@ import { connectRouter } from "connected-react-router";
 import alert from 'features/alert/slice';
 import auth, { SESSION_TOKEN_ITEM } from 'features/auth/slice';
 import experiment from 'features/experiment/slice';
+import wizard from 'features/experiment/wizard/slice';
 
 const { localStorage } = window;
 
@@ -12,6 +13,7 @@ export default function configureRootReducer(history: any) {
     alert,
     auth,
     experiment,
+    wizard,
     router: connectRouter(history),
   });
 
