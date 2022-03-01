@@ -80,7 +80,8 @@
           "color": "Color"
         },
         "delete": "Borrar",
-        "add": "Añadir"
+        "add": "Añadir",
+        "next": "Siguiente"
       },
       "create": {
         "title": "Generación automática de GUI logs"

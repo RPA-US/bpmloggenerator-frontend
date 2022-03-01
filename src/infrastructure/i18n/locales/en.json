@@ -39,7 +39,8 @@
   },
   "input": {
     "attach": "Select file",
-    "addRow": "Add"
+    "addRow": "Add",
+    "next": "next"
   },
   "features": {
     "auth": {

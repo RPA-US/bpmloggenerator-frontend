@@ -2,6 +2,11 @@ import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, makeStyles } from '@mui/material';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import { Link as RouterLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { createStore } from 'redux';
+
 
 interface ICoordinates {
     x1: number,
@@ -13,15 +18,20 @@ interface ICoordinates {
 }
 
 
-const ExperimentAssist: React.FC = () => {
+const ExperimentScreenAssist: React.FC = () => {
     var initialElements: { [name: string]: ICoordinates; } = {};
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
     const [coordinates, setcoordinates] = useState({ x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "" });
     const [elements, setElements] = useState(initialElements);
     const textRef = useRef<any>('');
-    const url = process.env.PUBLIC_URL + "example_image.png";
-    const  [resolutionBRW, setResolution] = useState([0,0]);
+    const url = process.env.PUBLIC_URL + "example_image.png";//cambiar a la url real
+    const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
+    const numberCaptures = 1; //cambiar al número de capturas a tratar
+    const actualCapture = 1; //numero actual de capturas
+    const [draggable, setDraggable] = useState(false);
+    const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
+
 
     window.onresize = function () {
         var imgRect: any = document.getElementById('imgRect');
@@ -30,7 +40,8 @@ const ExperimentAssist: React.FC = () => {
         let newRes = resolutionBRW;
         newRes[0] = width;
         newRes[1] = height;
-        setResolution([...newRes]);
+        setResolutionBRW([...newRes]);
+        updateRectangleTMP();
     }
 
     const addElementToTable = () => {
@@ -50,12 +61,13 @@ const ExperimentAssist: React.FC = () => {
                 resolutionIMG: [img.width, img.height]
             })
         }
+        setResolutionIMG([img.width, img.height]);
     }
 
     const getResolutionBRW = (e: any) => {
         var width: number = e.currentTarget.clientWidth;
         var height: number = e.currentTarget.clientHeight;
-        setResolution([width, height]);
+        setResolutionBRW([width, height]);
     }
 
     const setCoordenatesByResolution = (list: any) => {
@@ -78,6 +90,7 @@ const ExperimentAssist: React.FC = () => {
     }
 
     const handleMouseEnter = (e: any) => {
+        //startDrag(e);
         var x: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 1)
         var y: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 1)
         setcoordinates({
@@ -88,6 +101,7 @@ const ExperimentAssist: React.FC = () => {
     }
 
     const handleMouseLeave = (e: any) => {
+        //stopDrag(e);
         var tx: number = (e.nativeEvent.offsetX > 0 ? e.nativeEvent.offsetX : 1)
         var ty: number = (e.nativeEvent.offsetY > 0 ? e.nativeEvent.offsetY : 1)
         var x1, y1, x2, y2: number
@@ -131,11 +145,63 @@ const ExperimentAssist: React.FC = () => {
         return Math.round(brw * x / img);
     }
 
+    function startDrag(event: any) {
+        var x: number = (event.nativeEvent.offsetX >= 0 ? event.nativeEvent.offsetX : 1)
+        var y: number = (event.nativeEvent.offsetY >= 0 ? event.nativeEvent.offsetY : 1)
+        setDraggable(true);
+        var overlay = document.getElementById('overlay');
+
+        if (overlay != null) {
+            overlay.style.left = x + 'px';
+            overlay.style.top = y + 'px';
+            overlay.style.width = '0px';
+            overlay.style.height = '0px';
+        }
+    }
+
+    function stopDrag(event: any) {
+        drawRightBottomCorner(event);
+        setDraggable(false);
+    }
+
+    function drawRightBottomCorner(event:any) {
+        var x2: number = (event.nativeEvent.offsetX >= 0 ? event.nativeEvent.offsetX : 1)
+        var y2: number = (event.nativeEvent.offsetY >= 0 ? event.nativeEvent.offsetY : 1)
+
+        if (!draggable) return;
+        var overlay = document.getElementById('overlay');
+        if (overlay != null) {
+            var x1 = overlay.style.left
+            var y1 = overlay.style.top
+            overlay.style.width = 'calc(' + x2 + 'px - ' + x1 + ')';
+            overlay.style.height = 'calc(' +y2 + 'px - ' + y1 + ')';
+        }
+      }
+
+      function updateRectangleTMP() {
+        var overlay = document.getElementById('overlay');
+        if (overlay != null) {
+            overlay.style.left = resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0])+"px";
+            overlay.style.top = resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1])+"px";           
+            overlay.style.width = (resizeRect(coordinates.x2, resolutionBRW[0], resolutionIMG[0]) - resizeRect(coordinates.x1, resolutionBRW[0], resolutionIMG[0]))+"px";
+            overlay.style.height = (resizeRect(coordinates.y2, resolutionBRW[1], resolutionIMG[1]) - resizeRect(coordinates.y1, resolutionBRW[1], resolutionIMG[1]))+"px";
+        }
+      }
+
+
     return (
         <>
             <Typography variant="h4">
                 {t('features.experiment.assist.title.elementselector')}
             </Typography>
+            <Button
+                variant="outlined"
+                disabled={numberCaptures !== actualCapture}
+                component={RouterLink}
+                to="/assist-experiment-screenshot-configuration"
+                style={{ fontSize: "small", marginLeft: 4 }}
+                endIcon={<SettingsSuggestIcon />}>
+                {t('features.experiment.assist.next')}</Button>
             <Grid
                 container
                 direction="row"
@@ -213,7 +279,10 @@ const ExperimentAssist: React.FC = () => {
                                 id="overlay"
                                 sx={
                                     {
-                                        position: "absolute"
+                                        position: "absolute",
+                                        outline: "2px solid black",
+                                        backgroundColor: "blue",
+                                        opacity: 0.3
                                     }}
                             ></Box>
                             {Object.keys(elements).length > 0 && Object.keys(elements).map((key, index) => (
@@ -221,10 +290,10 @@ const ExperimentAssist: React.FC = () => {
                                     sx={
                                         {
                                             position: "absolute",
-                                            left: resizeRect(elements[key].x1, resolutionBRW[0], elements[key].resolutionIMG[0]),
-                                            top: resizeRect(elements[key].y1, resolutionBRW[1], elements[key].resolutionIMG[1]),
-                                            width: resizeRect(elements[key].x2, resolutionBRW[0], elements[key].resolutionIMG[0]) - resizeRect(elements[key].x1, resolutionBRW[0], elements[key].resolutionIMG[0]),
-                                            height: resizeRect(elements[key].y2, resolutionBRW[1], elements[key].resolutionIMG[1]) - resizeRect(elements[key].y1, resolutionBRW[1], elements[key].resolutionIMG[1]),
+                                            left: resizeRect(elements[key].x1, resolutionBRW[0], resolutionIMG[0]),
+                                            top: resizeRect(elements[key].y1, resolutionBRW[1], resolutionIMG[1]),
+                                            width: resizeRect(elements[key].x2, resolutionBRW[0], resolutionIMG[0]) - resizeRect(elements[key].x1, resolutionBRW[0], resolutionIMG[0]),
+                                            height: resizeRect(elements[key].y2, resolutionBRW[1], resolutionIMG[1]) - resizeRect(elements[key].y1, resolutionBRW[1], resolutionIMG[1]),
                                             outline: "2px solid black",
                                             backgroundColor: elements[key].randomColor,
                                             opacity: 0.3
@@ -240,11 +309,11 @@ const ExperimentAssist: React.FC = () => {
                                     height: "auto",
                                     maxWidth: "100%"
                                 }}
-                                
-
+                                /*onMouseMove={drawRightBottomCorner}*/
                                 onLoad={getResolution}
                                 onMouseDown={handleMouseEnter}
                                 onMouseUp={handleMouseLeave}
+                                /*onMouseLeave={stopDrag}*/
                                 draggable={false}
                             />
                         </Box>
@@ -254,5 +323,4 @@ const ExperimentAssist: React.FC = () => {
         </>
     )
 }
-
-export default ExperimentAssist;
+export default ExperimentScreenAssist;
