@@ -14,7 +14,7 @@ interface ICoordinates {
 }
 
 
-const ExperimentScreenConfAssist: React.FC = () => {
+const ScreenshotVariability: React.FC = () => {
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
     const textRef = useRef<any>('');
@@ -119,4 +119,4 @@ const ExperimentScreenConfAssist: React.FC = () => {
     )
 }
 
-export default ExperimentScreenConfAssist;
+export default ScreenshotVariability;

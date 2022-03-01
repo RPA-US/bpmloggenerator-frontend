@@ -10,7 +10,7 @@ import { ThemeContext, useTheme } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
-import { experimentsSelector, addExperiment, saveExperiment, repository, experimentDTOToExperimentType,  } from './slice';
+import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentDTOToExperimentType,  } from './slice';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
 import { downloadFile } from './utils';
@@ -18,7 +18,7 @@ import Spacer from 'components/Spacer';
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
-    const { filename, blob }: any = await repository.download(experimentId, token);
+    const { filename, blob }: any = await experimentRepository.download(experimentId, token);
     downloadFile(filename, blob);    
   } catch (ex) {
     console.error('error downloading experiment result', ex);
@@ -63,7 +63,7 @@ const ExperimentDetails: React.FC = () => {
         setExperiment(null);
         let experimentDetail = experiments.find((exp) => exp.id === idParam);
         if (experimentDetail == null) {
-          const response = await repository.get(idParam, token ?? '');
+          const response = await experimentRepository.get(idParam, token ?? '');
           experimentDetail = experimentDTOToExperimentType(response);
           dispatch(addExperiment)
         }

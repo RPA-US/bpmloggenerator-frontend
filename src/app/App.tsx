@@ -21,7 +21,8 @@ import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/List';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
-import ExperimentScreenAssist from 'features/experiment/Assist';
+import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
+import ExperimentAssist from 'features/experiment/wizard/ActivitySelection';
 import ExperimentScreenConfAssist from 'features/experiment/ScreenConf';
 
 import 'infrastructure/i18n/config';
@@ -83,8 +84,12 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentScreenAssist } path="/assist-experiment-screenshot" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentScreenConfAssist } path="/assist-experiment-screenshot-configuration" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/assist-experiment" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordenates" />
+                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/select-activity" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-column-variability" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-gui-component-variability" /> */}
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }

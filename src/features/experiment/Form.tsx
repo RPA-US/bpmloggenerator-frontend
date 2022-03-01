@@ -309,7 +309,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               variant="outlined"
               disabled={ disabled || wizzardDisabled }
               component={RouterLink}
-              to="/assist-experiment-screenshot"
+              to="/get-gui-component-coordenates"
               style={{ fontSize: "small", marginLeft: 4 }}
               endIcon={<SettingsSuggestIcon />}>{t('features.experiment.form.assistant')}</Button>
           </FormInput>

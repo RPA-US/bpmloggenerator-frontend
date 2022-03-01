@@ -18,7 +18,7 @@ interface ICoordinates {
 }
 
 
-const ExperimentScreenAssist: React.FC = () => {
+const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: { [name: string]: ICoordinates; } = {};
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
@@ -323,4 +323,4 @@ const ExperimentScreenAssist: React.FC = () => {
         </>
     )
 }
-export default ExperimentScreenAssist;
+export default ExperimentGetGUIComponentsCoordenates;
