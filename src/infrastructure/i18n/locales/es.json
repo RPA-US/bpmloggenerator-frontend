@@ -65,6 +65,9 @@
         "viewMore": "Ver más"
       },
       "assist":{
+        "function": {
+          "variability_function": "Función de variabilidad"
+        },
         "title":{
           "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
         },
