@@ -10,7 +10,7 @@ import Spacer from 'components/Spacer';
 import { styled } from '@mui/system';
 
 import { authSelector } from 'features/auth/slice';
-import { repository } from './slice';
+import { experimentRepository } from './slice';
 import { ExperimentState } from './types';
 import { downloadFile } from './utils';
 
@@ -25,7 +25,7 @@ const FlexDiv = styled('div')(({ theme }) => ({
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
-    const { filename, blob }: any = await repository.download(experimentId, token);
+    const { filename, blob }: any = await experimentRepository.download(experimentId, token);
     downloadFile(filename, blob);    
   } catch (ex) {
     console.error('error downloading experiment result', ex);
