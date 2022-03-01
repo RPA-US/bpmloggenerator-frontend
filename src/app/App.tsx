@@ -23,8 +23,7 @@ import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
 import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
 import ExperimentAssist from 'features/experiment/wizard/ActivitySelection';
-import ExperimentScreenConfAssist from 'features/experiment/ScreenConf';
-
+import ScreenshotVariability from 'features/experiment/wizard/ScreenshotVariability'
 import 'infrastructure/i18n/config';
 import { useTranslation } from "react-i18next";
 
@@ -84,7 +83,7 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentScreenConfAssist } path="/assist-experiment-screenshot-configuration" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ScreenshotVariability } path="/screenshot-variability" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/assist-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordenates" />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/select-activity" />

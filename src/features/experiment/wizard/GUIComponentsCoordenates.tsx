@@ -198,7 +198,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 variant="outlined"
                 disabled={numberCaptures !== actualCapture}
                 component={RouterLink}
-                to="/assist-experiment-screenshot-configuration"
+                to="/screenshot-variability"
                 style={{ fontSize: "small", marginLeft: 4 }}
                 endIcon={<SettingsSuggestIcon />}>
                 {t('features.experiment.assist.next')}</Button>
