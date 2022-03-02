@@ -24,7 +24,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [draggable, setDraggable] = useState(false);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const dispatch = useDispatch();
-    dispatch(wizardSlice.actions.setElements(elements));
+    dispatch(wizardSlice.actions.setElement(elements));
 
 
     window.onresize = function () {
@@ -150,7 +150,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function saveElements() {
         if (Object.keys(elements).length > 0) {
-            dispatch(wizardSlice.actions.setElements(elements))
+            dispatch(wizardSlice.actions.setElement(elements))
         }
     }
 

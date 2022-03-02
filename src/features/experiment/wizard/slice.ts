@@ -19,12 +19,12 @@ export const wizardSlice = createSlice({
     name: 'wizard',
     initialState,
     reducers: {
-        setElements: (state, { payload }: PayloadAction<IElements>) => {
+        setElement: (state, { payload }: PayloadAction<IElements>) => {
             state.elements = payload;
-        }
+        },
     }
 })
 
-export const elementSelector = (state: RootState) => state.wizard.elements;
+export const elementSelector = (state: RootState) => state.wizard;
 
 export default wizardSlice.reducer;
