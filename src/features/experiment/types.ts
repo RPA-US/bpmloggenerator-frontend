@@ -43,6 +43,7 @@ export interface ExperimentsState {
   isLoading: boolean
   error: ExperimentError | null
   detail: Experiment | null
+  seed: any | null
 }
 
 export interface ExperimentConfiguration {

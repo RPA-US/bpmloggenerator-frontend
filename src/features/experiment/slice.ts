@@ -17,44 +17,58 @@ const initialState: ExperimentsState =  {
     hasNext: true
   },
   detail: null,
+  seed: null,
   isLoading: false,
   error: null
 }
 
 export const experimentsSlice = createSlice({
-  name: 'experiment',
+  name: "experiment",
   initialState,
   reducers: {
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.isLoading = payload
+      state.isLoading = payload;
     },
-    addExperiments: (state, { payload }: PayloadAction<{ experiments: Experiment[], pagination: Pagination}>) => {
-      state.experiments = state.experiments.concat(payload.experiments)
-      state.pagination = payload.pagination
+    addExperiments: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ experiments: Experiment[]; pagination: Pagination }>
+    ) => {
+      state.experiments = state.experiments.concat(payload.experiments);
+      state.pagination = payload.pagination;
     },
-    setExperiments: (state, { payload }: PayloadAction<{ experiments: Experiment[], pagination: Pagination}>) => {
-      state.experiments = payload.experiments
-      state.pagination = payload.pagination
+    setExperiments: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ experiments: Experiment[]; pagination: Pagination }>
+    ) => {
+      state.experiments = payload.experiments;
+      state.pagination = payload.pagination;
     },
-    // setVariabilityConfiguration: (state, { payload }: PayloadAction<{ experiment: Experiment, seed: any}>) => {
-    //   state.detail = payload.experiment
-    //   state.seed = payload.seed
-    // },
-    setExperiment: (state, { payload }: PayloadAction<Experiment>) => {
-      const index = state.experiments.findIndex(exp => exp.id === payload.id);
+    setExperimentInList: (state, { payload }: PayloadAction<Experiment>) => {
+      const index = state.experiments.findIndex((exp) => exp.id === payload.id);
       if (index !== -1) {
-        state.experiments[index] = payload
+        state.experiments[index] = payload;
       }
     },
+    setExperiment: (
+      state,
+      { payload }: PayloadAction<{ detail: Experiment; seed: any }>
+    ) => {
+      state.detail = payload.detail;
+      state.seed = payload.seed;
+    },
     setError: (state, { payload }: PayloadAction<ExperimentError>) => {
-      state.error = payload
-    }
-  }
+      state.error = payload;
+    },
+  },
 });
 
 // ================================== ACTIONS ==================================
 
-const { setLoading, addExperiments, setExperiment, setExperiments, setError } = experimentsSlice.actions
+const { setLoading, addExperiments, setExperiment, setExperimentInList, setExperiments, setError } = experimentsSlice.actions
 
 // ================================== Root STATE ==================================
 
@@ -100,17 +114,24 @@ export const addExperiment = (experimentOb: Experiment): AppThunk => async (disp
 export const saveExperiment = (experimentData: any, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth, experiment } = getState();
   const hasPreviousId = experimentData.id;
-  const seed = experimentData.seedLog;
+  // const entries = experimentData.entries();
+  // for (let entry of entries) {
+  //   const key = entry[0];
+  //   const val = entry[1];
+  //   console.log(key, val);
+  // }
+  const seed = experimentData.get("seedLog");
   delete experimentData.seedLog;
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     if (!hasPreviousId && experimentResponse.id != null) {
       const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
-        // dispatch(setVariabilityConfiguration({
-        //   experiment: experimentDTOToExperimentType(savedExperimentData),
-        //   seed: seed,
-        // }));
+        dispatch(
+          setExperiment({
+            detail: experimentDTOToExperimentType(savedExperimentData),
+            seed: seed
+        }));
       } else {
         const { experiments, pagination } = experiment;
         dispatch(setExperiments({
@@ -119,12 +140,12 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
         }));
       } 
     } else {
-      dispatch(setExperiment(experimentDTOToExperimentType(experimentData)));
+      dispatch(setExperimentInList(experimentDTOToExperimentType(experimentData)));
     }
-    actionFinishedCallback != null && actionFinishedCallback();
+    actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {
       dispatch(setError(error as ExperimentError))
-      actionFinishedCallback != null && actionFinishedCallback(error);
+      actionFinishedCallback != null && actionFinishedCallback(null, error);
     }
 }
 

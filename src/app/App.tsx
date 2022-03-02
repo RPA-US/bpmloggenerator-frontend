@@ -86,9 +86,7 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ScreenshotVariability } path="/screenshot-variability" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/assist-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordenates" />
-                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/select-activity" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-column-variability" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ??? } path="/set-gui-component-variability" /> */}
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/column-variability" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }
