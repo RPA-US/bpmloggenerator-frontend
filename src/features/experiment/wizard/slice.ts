@@ -47,12 +47,9 @@ export const wizardSlice = createSlice({
 
   // ================================== ROOT STATE ==================================
   
-  // export const elementSelector = (state: RootState) => state.wizard.elements;
   export const wizardSelector = (state: RootState) => state.wizard;
   
   // ================================== THUNK middleware ==================================
   
-
-
   export default wizardSlice.reducer;
   
