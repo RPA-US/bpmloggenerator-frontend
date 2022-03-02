@@ -6,7 +6,7 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import Tooltip from '@mui/material/Tooltip';
 import { ICoordinates, IElements } from './types';
 import { useSelector, useDispatch } from 'react-redux';
-import {  wizardSelector, wizardSlice } from './slice';
+import { wizardSelector, wizardSlice } from './slice';
 import { Link as RouterLink } from 'react-router-dom';
 
 const funcitonList = [
@@ -30,20 +30,18 @@ const paramList = [
     "label": "Insert text",
     "placeholder": "Text",
     "data_type": "String",
-    "validation_needs": "Required",
+    "validation_needs": "required",
     "description": "Insert a text in the screenshot "
   },
   {
     "id": 2,
     "label": "Random UI",
     "placeholder": "0",
-    "data_type": "Integer",
-    "validation_needs": "Required",
+    "data_type": "number",
+    "validation_needs": "",
     "description": "Change the number passed of GUI elements randomly"
   }
 ]
-
-//TODO: poner el contenido como feature.experiment.wizard... etc
 
 const ScreenshotVariability: React.FC = () => {
   const { elements } = useSelector(wizardSelector);
@@ -63,7 +61,7 @@ const ScreenshotVariability: React.FC = () => {
   //TODO: create repository call
   const variabilityFunctions = funcitonList;
   //TODO: create repository call
-  // const params = paramList;
+  const params = paramList;
 
   function onLoadImage() {
     getResolutionBRW();
@@ -89,6 +87,7 @@ const ScreenshotVariability: React.FC = () => {
   }
   window.onresize = function () {
     getResolutionBRW()
+    console.log(functionID)
   }
 
   function getResolutionBRW() {
@@ -100,7 +99,7 @@ const ScreenshotVariability: React.FC = () => {
     newRes[1] = height;
     setResolution([...newRes]);
   }
-  //TODO: cambiar a editar el elements del dispatcher borrando el elemento
+
   const removeElement = () => {
     let key = elementName;
     let elementsCopy = elementsTMP;
@@ -116,22 +115,37 @@ const ScreenshotVariability: React.FC = () => {
   }
 
   function handleChange(e: any) {
-    let functionTMP = e.currentTarget.value;
+    let functionTMP: number = e.target.value;
     setFunction(functionTMP);
   }
 
   function saveElements() {
     let coordinateTMP = coordinates
     let elementsTMP2 = elementsTMP;
-    coordinateTMP.function_variability = functionID
-    coordinateTMP.params = ["text", 1] //TODO: cambiar al params real
+    let paramsTMP: any = ["Text",1];
+    let paramsCoor: any = [];/*
+    var inputContent: any;
+    //coordinateTMP.function_variability = functionID  
+    let test = Object.keys(variabilityFunctions).map((key, index) => ((variabilityFunctions[index].id === functionID && variabilityFunctions[index].params.length > 0) ? variabilityFunctions[index].params : ""))
+    for (var i in test) {
+      if (Array.isArray(i)) {
+        paramsTMP = i
+      }
+    }
+    for (var j in paramsTMP) {
+      inputContent = document.getElementById(j+"").value;
+      paramsCoor.append(inputContent)
+    }*/
+    coordinateTMP.params = paramsTMP
     coordinateTMP.processed = true
     elementsTMP2[elementName] = coordinateTMP
     setElements({
       ...elementsTMP2
     })
     onEvent();
+
   }
+
 
   return (
     <>
@@ -215,32 +229,35 @@ const ScreenshotVariability: React.FC = () => {
                 {t('features.experiment.assist.function.variability_function')}:
               </Typography>
               <Select
-                labelId="demo-simple-select-label"
                 id="select_function"
-                label={t('features.experiment.assist.variability_function')}
+                value={functionID}
+                label={t('features.experiment.assist.function.variability_function')}
                 onChange={handleChange}
               >
                 {Object.keys(variabilityFunctions).map((key, index) => (
-                  <Tooltip title={variabilityFunctions[index].description} placement="right-end">
-                    <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
-                  </Tooltip>
+                  <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
                 ))}
               </Select>
             </CardContent>
           </Card>
         </Grid>
         <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} >
-          <Card>
-            <CardContent>
-              <Typography component="div" >
-                {t('features.experiment.assist.coordinates.topleft')}:
-              </Typography>
-              <Typography component="div">
-                {t('features.experiment.assist.coordinates.rightbot')}:
-              </Typography>
-
-            </CardContent>
-          </Card>
+          {Object.keys(variabilityFunctions).map((key, index) => (
+            variabilityFunctions[index].id === functionID && variabilityFunctions[index].params.length > 0 &&
+            <Card>
+              <CardContent>
+                <Typography component="div" >
+                  {t('features.experiment.assist.function.params_function')}
+                </Typography>
+                {Object.keys(params).map((key2, index2) => (
+                  <Box component={"div"}>
+                    <Typography component="div">{params[index2].description}:</Typography>
+                    <TextField id={params[index2].id+""} required={params[index2].validation_needs === "required"} placeholder={params[index2].placeholder} label={params[index2].label} type={params[index2].data_type} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
         </Grid>
       </Grid >
     </>
