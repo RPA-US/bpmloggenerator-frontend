@@ -3,7 +3,7 @@ import { AppThunk, AppDispatch, RootState } from 'store/store';
 import { Experiment, ExperimentError, ExperimentsState, Pagination } from './types';
 import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
-import { experimentDTOToExperimentType } from './utils';
+import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
 
 export const experimentRepository = new ExperimentRepository();
 
@@ -120,7 +120,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   //   const val = entry[1];
   //   console.log(key, val);
   // }
-  const seed = experimentData.get("seedLog");
+  const seed = csvLogToJSON(experimentData.get("seedLog"), experimentData.get("special_colnames"));
   delete experimentData.seedLog;
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
