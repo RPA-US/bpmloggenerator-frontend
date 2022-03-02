@@ -66,7 +66,8 @@
       },
       "assist":{
         "function": {
-          "variability_function": "Función de variabilidad"
+          "variability_function": "Función de variabilidad",
+          "params_function": "Parámetros de la función seleccionada"
         },
         "title":{
           "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
