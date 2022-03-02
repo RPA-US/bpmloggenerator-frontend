@@ -51,7 +51,7 @@ const ExperimentDetails: React.FC = () => {
   const { experiments } = useSelector(experimentsSelector);
   const { token } = useSelector(authSelector);
   const { id } = useParams<{ id: string }>();
-  const [ experiment, setExperiment ]:any = useState(null);
+  const [ experiment, setExperimentInList ]:any = useState(null);
   const [ loading, setLoading ]:any = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -61,14 +61,14 @@ const ExperimentDetails: React.FC = () => {
       try {
         const idParam = parseInt(id, 10);
         setLoading(true)
-        setExperiment(null);
+        setExperimentInList(null);
         let experimentDetail = experiments.find((exp) => exp.id === idParam);
         if (experimentDetail == null) {
           const response = await experimentRepository.get(idParam, token ?? '');
           experimentDetail = experimentDTOToExperimentType(response);
           dispatch(addExperiment)
         }
-        setExperiment(experimentDetail);
+        setExperimentInList(experimentDetail);
       } catch (ex) {
         console.error('error getting experiment detail', ex);
       } finally {

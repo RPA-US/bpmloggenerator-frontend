@@ -26,9 +26,18 @@ const CreateExperiment: React.FC = () => {
         onSubmit={(data: any) => {
           setLoading(true)
           console.log('Create component data received:', data);
-          dispatch(saveExperiment(data, (error: any) => {
-            setLoading(false)
-            error == null && history.push('/')
+          dispatch(saveExperiment(data, (status: string, error: any) => {
+            setLoading(false);
+            if(error != null){
+              // TODO
+              history.push('/');
+            } else {
+              if(status === "PRE_SAVED"){
+                history.push('/column-variability');
+              } else {
+                history.push('/');
+              }
+            }
           }));
         }}
         disabled={ loading }
