@@ -16,6 +16,7 @@ export interface ExperimentDTO {
   scenarios_conf: any
   screenshots_path: string
   size_balance: any
+  status: string
 }
 
 export interface ExperimentResponse {

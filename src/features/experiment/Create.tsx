@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import BackButton from 'components/BackButton';
 import ExperimentFormComponent from './Form';
-import { experimentsSelector, saveExperiment } from './slice';
+import { experimentsSelector, saveExperiment} from './slice';
 
 const CreateExperiment: React.FC = () => {
   const { t } = useTranslation();
@@ -24,8 +24,8 @@ const CreateExperiment: React.FC = () => {
 
       <ExperimentFormComponent
         onSubmit={(data: any) => {
-          console.log('Create component data received:', data);
           setLoading(true)
+          console.log('Create component data received:', data);
           dispatch(saveExperiment(data, (error: any) => {
             setLoading(false)
             error == null && history.push('/')

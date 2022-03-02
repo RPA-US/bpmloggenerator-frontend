@@ -7,7 +7,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStore } from 'redux';
 import { ICoordinates, IElements } from './types';
-import { elementSelector,wizardSlice } from './slice';
+import { wizardSelector, wizardSlice } from './slice';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
@@ -24,7 +24,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [draggable, setDraggable] = useState(false);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const dispatch = useDispatch();
-    dispatch(wizardSlice.actions.setElement(elements));
+    dispatch(wizardSlice.actions.setElements(elements));
 
 
     window.onresize = function () {
@@ -150,7 +150,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function saveElements() {
         if (Object.keys(elements).length > 0) {
-            dispatch(wizardSlice.actions.setElement(elements))
+            dispatch(wizardSlice.actions.setElements(elements))
         }
     }
 

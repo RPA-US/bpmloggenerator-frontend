@@ -11,9 +11,9 @@ const { localStorage } = window;
 export default function configureRootReducer(history: any) {
   const appReducer = combineReducers({
     alert,
-    wizard,
     auth,
     experiment,
+    wizard,
     router: connectRouter(history),
   });
 

@@ -1,5 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
-
+import React, { useContext, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { Button, Select, MenuItem, Box, TextField, Card, CardContent, Theme, Typography, Grid, CardMedia } from '@mui/material';
@@ -7,9 +6,8 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import Tooltip from '@mui/material/Tooltip';
 import { ICoordinates, IElements } from './types';
 import { useSelector, useDispatch } from 'react-redux';
-import { elementSelector, wizardSlice } from './slice';
+import {  wizardSelector, wizardSlice } from './slice';
 import { Link as RouterLink } from 'react-router-dom';
-import { experimentsSelector } from '../slice';
 
 const funcitonList = [
   {
@@ -48,8 +46,8 @@ const paramList = [
 //TODO: poner el contenido como feature.experiment.wizard... etc
 
 const ScreenshotVariability: React.FC = () => {
-  const { elements } = useSelector(elementSelector);
-  var initialElements: IElements = {...elements}
+  const { elements } = useSelector(wizardSelector);
+  var initialElements: IElements = { ...elements }
   var initialStateCoordinates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, params: {} };
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
@@ -61,10 +59,11 @@ const ScreenshotVariability: React.FC = () => {
   const [count, setCount] = useState(Object.keys(elementsTMP).length)
   const [elementName, setName] = useState("");
   const dispatch = useDispatch();
+
   //TODO: create repository call
   const variabilityFunctions = funcitonList;
   //TODO: create repository call
-  const params = paramList;
+  // const params = paramList;
 
   function onLoadImage() {
     getResolutionBRW();
@@ -74,12 +73,12 @@ const ScreenshotVariability: React.FC = () => {
   function onEvent() {
     let countTMP = count
     for (const [key] of Object.entries(elementsTMP)) {
-      if (count === 0 || Object.keys(elementsTMP).length===0) {
-        dispatch(wizardSlice.actions.setElement(elementsTMP))
+      if (count === 0 || Object.keys(elementsTMP).length === 0) {
+        dispatch(wizardSlice.actions.setElements(elementsTMP))
       } else {
         if (elementsTMP[key].processed === false) {
           let coor = elementsTMP[key]
-          setcoordinates({...coor});
+          setcoordinates({ ...coor });
           setName(key)
           countTMP = countTMP - 1
           setCount(countTMP);
@@ -87,11 +86,9 @@ const ScreenshotVariability: React.FC = () => {
         }
       }
     }
-  };
-
+  }
   window.onresize = function () {
     getResolutionBRW()
-    console.log(elementsTMP)
   }
 
   function getResolutionBRW() {
