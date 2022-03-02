@@ -8,6 +8,7 @@ import { ICoordinates, IElements } from './types';
 import { useSelector, useDispatch } from 'react-redux';
 import { wizardSelector, wizardSlice } from './slice';
 import { Link as RouterLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const funcitonList = [
   {
@@ -57,6 +58,7 @@ const ScreenshotVariability: React.FC = () => {
   const [count, setCount] = useState(Object.keys(elementsTMP).length)
   const [elementName, setName] = useState("");
   const dispatch = useDispatch();
+  const history = useHistory();
 
   //TODO: create repository call
   const variabilityFunctions = funcitonList;
@@ -73,6 +75,7 @@ const ScreenshotVariability: React.FC = () => {
     for (const [key] of Object.entries(elementsTMP)) {
       if (count === 0 || Object.keys(elementsTMP).length === 0) {
         dispatch(wizardSlice.actions.setElements(elementsTMP))
+        history.push('/assist-experiment')
       } else {
         if (elementsTMP[key].processed === false) {
           let coor = elementsTMP[key]
@@ -138,6 +141,7 @@ const ScreenshotVariability: React.FC = () => {
     }*/
     coordinateTMP.params = paramsTMP
     coordinateTMP.processed = true
+    coordinateTMP.function_variability = functionID
     elementsTMP2[elementName] = coordinateTMP
     setElements({
       ...elementsTMP2

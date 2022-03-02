@@ -16,10 +16,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [coordinates, setcoordinates] = useState(initialCoordenates);
     const [elements, setElementsTMP] = useState(initialElements);
     const textRef = useRef<any>('');
-    const url = process.env.PUBLIC_URL + "example_image.png";//cambiar a la url real
+    const url = process.env.PUBLIC_URL + "example_image.png";//TODO:cambiar a la url real
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
-    const numberCaptures = 1; //cambiar al número de capturas a tratar
-    const actualCapture = 1; //numero actual de capturas
+    const numberCaptures = 1; //TODO:cambiar al número de capturas a tratar
+    const actualCapture = 1; //TODO:numero actual de capturas
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const dispatch = useDispatch();
     dispatch(wizardSlice.actions.setElements(elements));
