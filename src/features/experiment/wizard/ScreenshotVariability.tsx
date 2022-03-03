@@ -10,22 +10,8 @@ import { wizardSelector, wizardSlice, guiComponentCategoryRepository, guiCompone
 import { Link as RouterLink } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { authSelector } from 'features/auth/slice';
-import {FunctionParamResponse} from 'infrastructure/http/dto/wizard'
+import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 
-const funcitonList = [
-  {
-    "id": 1,
-    "function_name": "copy_image",
-    "description": "copy an image without changes",
-    "params": [1, 2]
-  },
-  {
-    "id": 2,
-    "function_name": "change_ui",
-    "description": "change element in ui",
-    "params": []
-  }
-]
 
 const guiList = [
   {
@@ -48,30 +34,11 @@ const guiList = [
   }
 ]
 
-const paramList = [
-  {
-    "id": 1,
-    "label": "Insert text",
-    "placeholder": "Text",
-    "data_type": "String",
-    "validation_needs": "required",
-    "description": "Insert a text in the screenshot "
-  },
-  {
-    "id": 2,
-    "label": "Random UI",
-    "placeholder": "0",
-    "data_type": "number",
-    "validation_needs": "",
-    "description": "Change the number passed of GUI elements randomly"
-  }
-]
 
 /*Function category and results*/
-
 const categoriesFunctionResult = async (token: string) => {
   try {
-    const categories: any = await variabilityFunctionCategoryRepository.list(token);
+    const categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
     return categories;
   } catch (ex) {
     console.error('error listing function categories result', ex);
@@ -87,23 +54,9 @@ const functionVariabilityResults = async (token: string) => {
   }
 }
 
-function selectVarFuncByCat(categoryId: number, varFunc: any) {
-  let test;
-  try {
-    test = varFunc.filter(function (itm: any) {
-      let ret = [];
-      if (itm.category === categoryId) {
-        ret.push(itm);
-      }
-      return ret;
-    })
-  } catch (ex) {
-    console.error('error listing functions by category result', ex);
-  }
-  return test;
-}
 
-function selectCategoryFuncByName(categories: any, name: string) {
+
+function selectCategoryByName(categories: any, name: string) {
   let test;
   try {
     test = categories.filter(function (itm: any) {
@@ -114,7 +67,7 @@ function selectCategoryFuncByName(categories: any, name: string) {
       return ret;
     })
   } catch (ex) {
-    console.error('error selecting function category by name result', ex);
+    console.error('error selecting category by name result', ex);
   }
   return test;
 }
@@ -159,9 +112,9 @@ function selectCategoryGUIByName(categories: any, name: string) {
   let test;
   try {
     test = categories.filter(function (itm: any) {
-      let ret ="";
+      let ret = "";
       if (itm.name === name) {
-        ret= itm;
+        ret = itm;
       }
       return ret;
     })
@@ -172,20 +125,11 @@ function selectCategoryGUIByName(categories: any, name: string) {
 }
 
 /*Params results*/
-const paramsResults = async (token: string) => {
-  try {
-    const  varParam : any = await paramFunctionCategoryRepository.list(token);
-    return varParam;
-  } catch (ex) {
-    console.error('error listing params function result', ex);
-  }
-}
-
 const paramsFunctionResults = async (token: string, idList: Array<number>) => {
   try {
     let params: Array<any> = [];
-    let paramVar:any;
-    for (let id of idList){
+    let paramVar: any;
+    for (let id of idList) {
       paramVar = await paramFunctionCategoryRepository.get(id, token);
       params.push(paramVar);
     }
@@ -199,6 +143,10 @@ const ScreenshotVariability: React.FC = () => {
   const { elements } = useSelector(wizardSelector);
   var initialElements: IElements = { ...elements }
   var initialStateCoordinates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component: 0, params: {} };
+  var initialVarFunction: VariabilityFunctionDTO[] = []
+  var initialparams: FunctionParamDTO[] = []
+  var initialguiComponents: GUIComponentDTO[] = []
+
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const url = process.env.PUBLIC_URL + "example_image.png";//TODO:cambiar a la url real
@@ -212,14 +160,79 @@ const ScreenshotVariability: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { token } = useSelector(authSelector);
-  //console.log(categoriesResult(token).results);
-  //TODO: create repository call
-  const variabilityFunctions = selectVarFuncByCat(selectCategoryFuncByName(categoriesFunctionResult(token ?? ''),"Screenshot"), functionVariabilityResults(token ?? ''));
-  const params = paramList;//paramsResults(token ?? '');
-  const guiComponents = selectGUIByCat(selectCategoryGUIByName(categoriesGUIResult(token ?? ''),"Screenshot"), guiResults(token ?? ''));
-  //TODO: si no hay imagen que cargar, redireccionar a lista
+  const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
+  const [paramsList, setParamsFunctions] = useState(initialparams);
+  const [params, setParams] = useState(initialparams);
+  const [guiComponents, setGuiComponents] = useState(initialguiComponents);
+
+  //create repository call
+  //Functions by category name
+  const selectVarFuncByCat = async (token: string, name: string) => {
+    let categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
+    let categoryId = selectCategoryByName(categories.results, name);
+    let varFunc = await variabilityFunctionRepository.list(token);
+    let test;
+    try {
+      let ret: VariabilityFunctionDTO[] = [];
+      test = varFunc.results.filter(function (itm: any) {
+        if (itm.variability_function_category === categoryId[0].id) {
+          ret.push(itm);
+        }
+        setVariabilityFunctions([...ret]);
+        return ret;
+      })
+    } catch (ex) {
+      console.error('error listing functions by category result', ex);
+    }
+    return test;
+  }
+  //GUI components by category name
+  const selectGUIByCat = async (token: string, name: string) => {
+    let categories: CategoryResponse = await guiComponentCategoryRepository.list(token);
+    let categoryId = selectCategoryByName(categories.results, name);
+    let guiComp = await guiComponentRepository.list(token);
+    let test;
+    try {
+      let ret: GUIComponentDTO[] = [];
+      test = guiComp.results.filter(function (itm: any) {
+        if (itm.gui_component_category === categoryId[0].id) {
+          ret.push(itm);
+        }
+        setGuiComponents([...ret]);
+        return ret;
+      })
+    } catch (ex) {
+      console.error('error listing functions by category result', ex);
+    }
+    return test;
+  }
+  //Params
+  const paramsListResults = async (token: string) => {
+    try {
+      let paramTMP: FunctionParamResponse = await paramFunctionCategoryRepository.list(token);
+      setParamsFunctions([...paramTMP.results]);
+      return paramTMP.results;
+    } catch (ex) {
+      console.error('error getting params function result', ex);
+    }
+  }
+
+  function paramsByFunction() {
+    let paramsTMP: FunctionParamDTO[] = [];
+    if (variabilityFunctions[functionID].params !== []) {
+      for (let id2 of paramsList) {
+        if (id2.id in variabilityFunctions[functionID].params) {
+          paramsTMP.push(id2);
+        }
+      }
+    }
+    setParams([...paramsTMP]);
+  }
 
   function onLoadImage() {
+    selectVarFuncByCat(token ?? "", "Screenshot");
+    selectGUIByCat(token ?? "", "Screenshot");
+    paramsListResults(token ?? "");
     getResolutionBRW();
     onEvent();
   }
@@ -273,6 +286,7 @@ const ScreenshotVariability: React.FC = () => {
   function handleChangeFunction(e: any) {
     let functionTMP: number = e.target.value;
     setFunction(functionTMP);
+    paramsByFunction();
   }
 
   function handleChangeGUI(e: any) {
@@ -288,22 +302,16 @@ const ScreenshotVariability: React.FC = () => {
     let paramsTMP = variabilityFunctions.filter(function (itm: any) {
       let ret;
       if (itm.id === functionID && itm.params.length > 0) {
-        ret= itm;
-      }
-      if (itm.params.length === 0) {
-        ret= []
+        ret = itm;
       }
       return ret;
-    })
-    if (Array.isArray(paramsTMP[0].params)) {
-      for (var j in paramsTMP[0].params) {
-        if ((document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value !== null) {
-          coor[paramsTMP[0].params[j]] = (document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value;
-        }
+    })/*
+    for (var j in paramsTMP.params) {
+      if ((document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value !== null) {
+        coor[paramsTMP.params[j]] = (document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value;
       }
-    } else {
-      coor = {}
-    }
+    }*/
+
     coordinateTMP.params = coor
     coordinateTMP.processed = true
     coordinateTMP.function_variability = functionID

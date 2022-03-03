@@ -62,7 +62,5 @@ export const wizardSlice = createSlice({
         seed
     }));
   }
- 
-
   export default wizardSlice.reducer;
   

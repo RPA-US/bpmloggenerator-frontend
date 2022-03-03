@@ -23,8 +23,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     dispatch(wizardSlice.actions.setElements(elements));
-    //TODO: si no hay imagen que cargar, redireccionar a lista
-
+    //TODO: si no hay imagen que cargar, redireccionar a tabla
+    //TODO: conseguir la screenshot del wizard en función de la URL
+    //TODO: el save lo haga directamente sobre el json dentro de state
+    //
     window.onresize = function () {
         var imgRect: any = document.getElementById('imgRect');
         var width: number = imgRect.clientWidth;
