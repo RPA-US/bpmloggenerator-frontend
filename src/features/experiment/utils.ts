@@ -57,7 +57,14 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
   let res: {[key:string]: any} = {};
   const results = Papa.parse(seed, { header: true, skipEmptyLines: true }) // object with { data, errors, meta }
   const rows = results.data // array of objects
+  let variant: string = "";
+  let id = 0;
   rows.forEach((row: any, index: number) => {
+    if(variant!=row[colnames.Variant]){
+      id = 1;
+    } else {
+      id++;
+    }
     let columns_conf: {[key:string]: any} = {};
     let has_values: boolean = false;
     Object.entries(row).forEach((col: any) => {
@@ -72,8 +79,8 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
         has_values = true;
       }
     });
-    const variant: string = row[colnames.Variant];
-    const activity: string = row[colnames.Activity];
+    variant = row[colnames.Variant];
+    const activity: string = id+"_"+row[colnames.Activity];
     if(has_values){
       if (!res.hasOwnProperty(variant)) {
         let aux: { [key: string]: any } = {};
@@ -83,27 +90,6 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
         res[variant][activity] = columns_conf;
       }
     }
-    // Object.entries(row).forEach((c: any) => {
-    //     const key = c[0];
-    //     const value = c[1];
-
-    //     switch (key) {
-    //       case colnames.Case:
-    //         cases.push(value)
-    //         break;
-    //       case colnames.Activity:
-    //         activities.push(index+"_"+value)
-    //         break;
-    //       case colnames.Variant:
-    //         variants.push(value)
-    //         break;
-    //       default:
-    //         if (index === 0 && key !="") { // && !Object.values(colnames).includes(key)
-    //           headers.push(c)
-    //         }
-    //         break;
-    //     }
-    //   });
   });
   if(res.hasOwnProperty("")){
     delete res[""]

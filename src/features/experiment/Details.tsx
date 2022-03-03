@@ -99,10 +99,8 @@ const ExperimentDetails: React.FC = () => {
           initialValues={ experiment }
           onSubmit={(data: any) => {
             console.log('Edit component data received:', data);
-            dispatch(saveExperiment({
-              id,
-              ...data,
-            }, () => {
+            data.set('id', id);
+            dispatch(saveExperiment(data, () => {
               history.push('/')
             }));
           }}

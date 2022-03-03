@@ -33,7 +33,7 @@ const CreateExperiment: React.FC = () => {
               history.push('/');
             } else {
               if(status === "PRE_SAVED"){
-                history.push('/column-variability');
+                history.push('/experiment-wizard');
               } else {
                 history.push('/');
               }

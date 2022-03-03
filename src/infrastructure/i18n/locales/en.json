@@ -55,6 +55,20 @@
         "login": "Login"
       }
     },
+    "wizard": {
+      "activitySelection": {
+        "variant": "Variant",
+        "variate": "Variate?",
+        "activity": "Activity"
+      },
+      "columnVariability": {
+        "variate": "Variate?",
+        "columnName": "Column Name",
+        "variabilityFunction": "Variability Function",
+        "variabilityParams": "Params",
+        "screenshotVariability": "Screenshot Variability"
+      }
+    }, 
     "experiment": {
       "list": {
         "title": "Experiment list",
