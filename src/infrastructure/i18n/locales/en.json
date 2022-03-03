@@ -82,7 +82,8 @@
       "assist":{
         "function": {
           "variability_function": "Function variability",
-          "params_function": "Param for selected function"
+          "params_function": "Param for selected function",
+          "gui_components": "GUI component to edit"
         },
         "title":{
           "elementselector": "Select image element to use"

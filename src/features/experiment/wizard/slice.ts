@@ -10,7 +10,6 @@ export const guiComponentCategoryRepository = new GUIComponentCategoryRepository
 export const guiComponentRepository = new GUIComponentRepository();
 export const variabilityFunctionCategoryRepository = new VariabilityFunctionCategoryRepository();
 // ================================== REDUCERS ==================================
-export const variabilityFunctionRepository = new VariabilityFunctionRepository();
 
 
 

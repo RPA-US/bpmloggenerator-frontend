@@ -7,10 +7,11 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ICoordinates, IElements } from './types';
 import { wizardSlice } from './slice';
+import { useHistory } from 'react-router-dom';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
-    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, params: {} };
+    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {} };
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
     const [coordinates, setcoordinates] = useState(initialCoordenates);
@@ -22,8 +23,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const actualCapture = 1; //TODO:numero actual de capturas
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const dispatch = useDispatch();
+    const history = useHistory();
     dispatch(wizardSlice.actions.setElements(elements));
-
+    //TODO: si no hay imagen que cargar, redireccionar a lista
 
     window.onresize = function () {
         var imgRect: any = document.getElementById('imgRect');
@@ -149,6 +151,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function saveElements() {
         if (Object.keys(elements).length > 0) {
             dispatch(wizardSlice.actions.setElements(elements))
+            history.push('/screenshot-variability')
+        }else{
+            history.push('/assist-experiment')
         }
     }
 
@@ -160,9 +165,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             <Button
                 onClick={saveElements}
                 variant="outlined"
-                disabled={numberCaptures !== actualCapture}
-                component={RouterLink}
-                to="/screenshot-variability"
                 style={{ fontSize: "small", marginLeft: 4 }}
                 endIcon={<SettingsSuggestIcon />}>
                 {t('features.experiment.assist.next')}</Button>
