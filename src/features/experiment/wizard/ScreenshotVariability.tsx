@@ -13,132 +13,6 @@ import { authSelector } from 'features/auth/slice';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 
 
-const guiList = [
-  {
-    "id": 1,
-    "name": "inputText",
-    "id_code": "element1",
-    "filename": "",
-    "path": "",
-    "description": "GUI element to change with the function",
-    "gui_component_category_id": 2
-  },
-  {
-    "id": 2,
-    "name": "Button",
-    "id_code": "element2",
-    "filename": "",
-    "path": "",
-    "description": "GUI element to change with the function",
-    "gui_component_category_id": 2
-  }
-]
-
-
-/*Function category and results*/
-const categoriesFunctionResult = async (token: string) => {
-  try {
-    const categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
-    return categories;
-  } catch (ex) {
-    console.error('error listing function categories result', ex);
-  }
-}
-
-const functionVariabilityResults = async (token: string) => {
-  try {
-    const { varFunc }: any = await variabilityFunctionRepository.list(token);
-    return varFunc;
-  } catch (ex) {
-    console.error('error listing variability functions result', ex);
-  }
-}
-
-
-
-function selectCategoryByName(categories: any, name: string) {
-  let test;
-  try {
-    test = categories.filter(function (itm: any) {
-      let ret = "";
-      if (itm.name === name) {
-        return ret = itm;
-      }
-      return ret;
-    })
-  } catch (ex) {
-    console.error('error selecting category by name result', ex);
-  }
-  return test;
-}
-
-/*GUI category and components*/
-
-const categoriesGUIResult = async (token: string) => {
-  try {
-    const categories: any = await guiComponentCategoryRepository.list(token);
-    return categories;
-  } catch (ex) {
-    console.error('error listing GUI categories result', ex);
-  }
-}
-
-const guiResults = async (token: string) => {
-  try {
-    const { varGUI }: any = await guiComponentRepository.list(token);
-    return varGUI;
-  } catch (ex) {
-    console.error('error listing GUI components result', ex);
-  }
-}
-
-function selectGUIByCat(categoryId: number, GUI: any) {
-  let test;
-  try {
-    test = GUI.filter(function (itm: any) {
-      let ret = [];
-      if (itm.gui_component_category_id === categoryId) {
-        ret.push(itm);
-      }
-      return ret;
-    })
-  } catch (ex) {
-    console.error('error selecting GUI by ID category result', ex);
-  }
-  return test;
-}
-
-function selectCategoryGUIByName(categories: any, name: string) {
-  let test;
-  try {
-    test = categories.filter(function (itm: any) {
-      let ret = "";
-      if (itm.name === name) {
-        ret = itm;
-      }
-      return ret;
-    })
-  } catch (ex) {
-    console.error('error selectiong category GUI by name result', ex);
-  }
-  return test;
-}
-
-/*Params results*/
-const paramsFunctionResults = async (token: string, idList: Array<number>) => {
-  try {
-    let params: Array<any> = [];
-    let paramVar: any;
-    for (let id of idList) {
-      paramVar = await paramFunctionCategoryRepository.get(id, token);
-      params.push(paramVar);
-    }
-    return params;
-  } catch (ex) {
-    console.error('error getting params function result', ex);
-  }
-}
-
 const ScreenshotVariability: React.FC = () => {
   const { elements } = useSelector(wizardSelector);
   var initialElements: IElements = { ...elements }
@@ -217,12 +91,14 @@ const ScreenshotVariability: React.FC = () => {
     }
   }
 
-  function paramsByFunction() {
+  function paramsByFunction(functionTMP: number) {
     let paramsTMP: FunctionParamDTO[] = [];
-    if (variabilityFunctions[functionID].params !== []) {
-      for (let id2 of paramsList) {
-        if (id2.id in variabilityFunctions[functionID].params) {
-          paramsTMP.push(id2);
+    for (let f of variabilityFunctions) {
+      if (f.id === functionTMP && f.params !== []) {
+        for (let id2 of paramsList) {
+          if (id2.id in f.params) {
+            paramsTMP.push(id2);
+          }
         }
       }
     }
@@ -255,6 +131,23 @@ const ScreenshotVariability: React.FC = () => {
       }
     }
   }
+
+  function selectCategoryByName(categories: any, name: string) {
+    let test;
+    try {
+      test = categories.filter(function (itm: any) {
+        let ret = "";
+        if (itm.name === name) {
+          return ret = itm;
+        }
+        return ret;
+      })
+    } catch (ex) {
+      console.error('error selecting category by name result', ex);
+    }
+    return test;
+  }
+
   window.onresize = function () {
     getResolutionBRW()
   }
@@ -286,7 +179,7 @@ const ScreenshotVariability: React.FC = () => {
   function handleChangeFunction(e: any) {
     let functionTMP: number = e.target.value;
     setFunction(functionTMP);
-    paramsByFunction();
+    paramsByFunction(functionTMP);
   }
 
   function handleChangeGUI(e: any) {
