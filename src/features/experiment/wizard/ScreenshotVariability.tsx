@@ -6,10 +6,11 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import Tooltip from '@mui/material/Tooltip';
 import { ICoordinates, IElements } from './types';
 import { useSelector, useDispatch } from 'react-redux';
-import { wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository } from './slice';
+import { wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { Link as RouterLink } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { authSelector } from 'features/auth/slice';
+import {FunctionParamResponse} from 'infrastructure/http/dto/wizard'
 
 const funcitonList = [
   {
@@ -35,16 +36,16 @@ const guiList = [
     "path": "",
     "description": "GUI element to change with the function",
     "gui_component_category_id": 2
-    },
-    {
-      "id": 2,
-      "name": "Button",
-      "id_code": "element2",
-      "filename": "",
-      "path": "",
-      "description": "GUI element to change with the function",
-      "gui_component_category_id": 2
-      }
+  },
+  {
+    "id": 2,
+    "name": "Button",
+    "id_code": "element2",
+    "filename": "",
+    "path": "",
+    "description": "GUI element to change with the function",
+    "gui_component_category_id": 2
+  }
 ]
 
 const paramList = [
@@ -66,50 +67,132 @@ const paramList = [
   }
 ]
 
-const funcitonVariabilityResults = async (token: string) => {
-  try {
-    const { varFunc }: any = await variabilityFunctionCategoryRepository.list(token);
-    return varFunc;
-  } catch (ex) {
-    console.error('error listing categories result', ex);
-  }
-}
+/*Function category and results*/
 
-const categoriesResult = async (token: string) => {
+const categoriesFunctionResult = async (token: string) => {
   try {
-    const categories : any = await variabilityFunctionCategoryRepository.list(token);
+    const categories: any = await variabilityFunctionCategoryRepository.list(token);
     return categories;
   } catch (ex) {
-    console.error('error listing categories result', ex);
+    console.error('error listing function categories result', ex);
   }
 }
 
-function selectCategoryByName(categories: any, name: string) {
-  let test;
+const functionVariabilityResults = async (token: string) => {
   try {
-    test = categories.filter(function (itm: any) {
-      if (itm.name === name) {
-        return itm;
-      }
-    })
+    const { varFunc }: any = await variabilityFunctionRepository.list(token);
+    return varFunc;
   } catch (ex) {
-    console.error('error listing categories result', ex);
+    console.error('error listing variability functions result', ex);
   }
-  return test;
 }
 
 function selectVarFuncByCat(categoryId: number, varFunc: any) {
   let test;
   try {
     test = varFunc.filter(function (itm: any) {
+      let ret = [];
       if (itm.category === categoryId) {
-        return itm;
+        ret.push(itm);
       }
+      return ret;
     })
   } catch (ex) {
-    console.error('error listing categories result', ex);
+    console.error('error listing functions by category result', ex);
   }
   return test;
+}
+
+function selectCategoryFuncByName(categories: any, name: string) {
+  let test;
+  try {
+    test = categories.filter(function (itm: any) {
+      let ret = "";
+      if (itm.name === name) {
+        return ret = itm;
+      }
+      return ret;
+    })
+  } catch (ex) {
+    console.error('error selecting function category by name result', ex);
+  }
+  return test;
+}
+
+/*GUI category and components*/
+
+const categoriesGUIResult = async (token: string) => {
+  try {
+    const categories: any = await guiComponentCategoryRepository.list(token);
+    return categories;
+  } catch (ex) {
+    console.error('error listing GUI categories result', ex);
+  }
+}
+
+const guiResults = async (token: string) => {
+  try {
+    const { varGUI }: any = await guiComponentRepository.list(token);
+    return varGUI;
+  } catch (ex) {
+    console.error('error listing GUI components result', ex);
+  }
+}
+
+function selectGUIByCat(categoryId: number, GUI: any) {
+  let test;
+  try {
+    test = GUI.filter(function (itm: any) {
+      let ret = [];
+      if (itm.gui_component_category_id === categoryId) {
+        ret.push(itm);
+      }
+      return ret;
+    })
+  } catch (ex) {
+    console.error('error selecting GUI by ID category result', ex);
+  }
+  return test;
+}
+
+function selectCategoryGUIByName(categories: any, name: string) {
+  let test;
+  try {
+    test = categories.filter(function (itm: any) {
+      let ret ="";
+      if (itm.name === name) {
+        ret= itm;
+      }
+      return ret;
+    })
+  } catch (ex) {
+    console.error('error selectiong category GUI by name result', ex);
+  }
+  return test;
+}
+
+/*Params results*/
+const paramsResults = async (token: string) => {
+  try {
+    const  varParam : any = await paramFunctionCategoryRepository.list(token);
+    return varParam;
+  } catch (ex) {
+    console.error('error listing params function result', ex);
+  }
+}
+
+const paramsFunctionResults = async (token: string, idList: Array<number>) => {
+  try {
+    let params: Array<any> = [];
+    let paramVar:any;
+    for (let id of idList){
+      paramVar = await paramFunctionCategoryRepository.get(id, token);
+      params.push(paramVar);
+    }
+    return params;
+  } catch (ex) {
+    console.error('error getting params function result', ex);
+  }
 }
 
 const ScreenshotVariability: React.FC = () => {
@@ -128,12 +211,12 @@ const ScreenshotVariability: React.FC = () => {
   const [elementName, setName] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
-  //const { token } = useSelector(authSelector);
+  const { token } = useSelector(authSelector);
   //console.log(categoriesResult(token).results);
   //TODO: create repository call
-  const variabilityFunctions = funcitonList;//selectVarFuncByCat(selectCategoryByName(categoriesResult(token),"Screenshot"), funcitonVariabilityResults(token));
-  const params = paramList;
-  const guiComponents = guiList;
+  const variabilityFunctions = selectVarFuncByCat(selectCategoryFuncByName(categoriesFunctionResult(token ?? ''),"Screenshot"), functionVariabilityResults(token ?? ''));
+  const params = paramList;//paramsResults(token ?? '');
+  const guiComponents = selectGUIByCat(selectCategoryGUIByName(categoriesGUIResult(token ?? ''),"Screenshot"), guiResults(token ?? ''));
   //TODO: si no hay imagen que cargar, redireccionar a lista
 
   function onLoadImage() {
@@ -196,25 +279,26 @@ const ScreenshotVariability: React.FC = () => {
     let guiTMP: number = e.target.value;
     setGUI(guiTMP);
   }
-  
+
 
   function saveElements() {
     let coordinateTMP = coordinates
     let elementsTMP2 = elementsTMP;
     let coor: any = {};
     let paramsTMP = variabilityFunctions.filter(function (itm: any) {
+      let ret;
       if (itm.id === functionID && itm.params.length > 0) {
-        return itm;
+        ret= itm;
       }
-      if(itm.params.length === 0){
-        return []
+      if (itm.params.length === 0) {
+        ret= []
       }
+      return ret;
     })
     if (Array.isArray(paramsTMP[0].params)) {
       for (var j in paramsTMP[0].params) {
-        console.log((document.getElementById(paramsTMP[0].params[j].toString())as HTMLInputElement).value)
-        if((document.getElementById(paramsTMP[0].params[j].toString())as HTMLInputElement).value!==null){
-          coor[paramsTMP[0].params[j]] = (document.getElementById(paramsTMP[0].params[j].toString())as HTMLInputElement).value;
+        if ((document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value !== null) {
+          coor[paramsTMP[0].params[j]] = (document.getElementById(paramsTMP[0].params[j].toString()) as HTMLInputElement).value;
         }
       }
     } else {
