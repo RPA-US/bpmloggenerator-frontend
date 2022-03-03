@@ -13,6 +13,7 @@ export interface IParams {
     randomColor: string,
     processed: boolean,
     function_variability: number,
+    gui_component: number,
     params: IParams
   }
   
