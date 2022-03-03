@@ -113,14 +113,8 @@ export const addExperiment = (experimentOb: Experiment): AppThunk => async (disp
 
 export const saveExperiment = (experimentData: any, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth, experiment } = getState();
-  const hasPreviousId = experimentData.id;
-  // const entries = experimentData.entries();
-  // for (let entry of entries) {
-  //   const key = entry[0];
-  //   const val = entry[1];
-  //   console.log(key, val);
-  // }
-  const seed = csvLogToJSON(experimentData.get("seedLog"), experimentData.get("special_colnames"));
+  const hasPreviousId = experimentData.get("id");
+  const data = experimentData;
   delete experimentData.seedLog;
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
@@ -130,7 +124,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
         dispatch(
           setExperiment({
             detail: experimentDTOToExperimentType(savedExperimentData),
-            seed: seed
+            seed: csvLogToJSON(data.get("seedLog"), data.get("special_colnames"))
         }));
       } else {
         const { experiments, pagination } = experiment;

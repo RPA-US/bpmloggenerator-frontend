@@ -46,7 +46,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements } = wizardSlice.actions
+  const { setElements, setVariabilityConfiguration } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -54,5 +54,15 @@ export const wizardSlice = createSlice({
   
   // ================================== THUNK middleware ==================================
   
+  export const updateJsonConf = (variant: string, act: string, event: any): AppThunk => async (dispatch: AppDispatch, getState) => {
+    const { wizard } = getState();
+    let seed = wizard.seed;
+    dispatch(
+      setVariabilityConfiguration({
+        seed
+    }));
+  }
+ 
+
   export default wizardSlice.reducer;
   
