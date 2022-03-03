@@ -57,6 +57,9 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
         <TableBody>
         {
           Object.entries(json_conf[variant][act]).map(entry => {
+            const aux1 = entry[0];
+            const aux2: any = entry[1];
+            // const value: ColumnConf = entry[1];
             return (
             <TableRow
               key={variant}
@@ -72,22 +75,23 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                       defaultChecked />
                   </TableCell>
                   <TableCell>
-                    Function
+                      { entry[0] === "Screenshot"? '' : `Function` }
                   </TableCell>
                   <TableCell>
-                    Params
+                      { entry[0] === "Screenshot"?
+                      <Button
+                        variant="contained"
+                        component={RouterLink}
+                        to={`/get-gui-component-coordinates/${variant}/${act}/${aux2.initValue}`}
+                        >
+                        {t("features.wizard.columnVariability.screenshotVariability")}
+                      </Button> : `Params`
+                      }
                   </TableCell>
               </TableRow>
         )})}
         </TableBody>
       </Table>
-      <Button
-        variant="contained"
-        component={RouterLink}
-        to={`/get-gui-component-coordinates`}
-        >
-        {t("features.wizard.columnVariability.screenshotVariability")}
-      </Button>
     </TableContainer>
   );
 }

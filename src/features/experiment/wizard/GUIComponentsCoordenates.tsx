@@ -7,13 +7,17 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ICoordinates, IElements } from './types';
 import { wizardSlice } from './slice';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
     var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {} };
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
+    // const { variant } = useParams<{ variant: string }>();
+    // const { act } = useParams<{ act: string }>();
+    // const { seed } = useSelector(experimentsSelector);
+    const { screenshot_filename } = useParams<{ screenshot_filename: string }>();
     const [coordinates, setcoordinates] = useState(initialCoordenates);
     const [elements, setElementsTMP] = useState(initialElements);
     const textRef = useRef<any>('');
