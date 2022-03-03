@@ -69,7 +69,7 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
         Object.entries(json_conf).map(entry => (
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-          <TableRow>
+          <TableRow key="headers">
             <TableCell align="center">{`${t("features.wizard.activitySelection.variant")} ${entry[0]}`}</TableCell>
             <TableCell>{t("features.wizard.activitySelection.variate")}</TableCell>
           </TableRow>
