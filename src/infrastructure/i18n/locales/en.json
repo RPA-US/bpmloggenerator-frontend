@@ -83,7 +83,9 @@
         "function": {
           "variability_function": "Function variability",
           "params_function": "Param for selected function",
-          "gui_components": "GUI component to edit"
+          "gui_components": "GUI component to edit",
+          "activity_dependency": "Activity dependency",
+          "variant_dependency": "Variant dependency"
         },
         "title":{
           "elementselector": "Select image element to use"

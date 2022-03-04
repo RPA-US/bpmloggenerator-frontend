@@ -11,26 +11,26 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
-    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {} };
+    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {},dependency:{Activity:"", V:0,id:0}  };
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
-    // const { variant } = useParams<{ variant: string }>();
-    // const { act } = useParams<{ act: string }>();
-    // const { seed } = useSelector(experimentsSelector);
+    const { variant } = useParams<{ variant: string }>();
+    const { act } = useParams<{ act: string }>();
+    //const { seed } = useSelector(experimentsSelector);
     const { screenshot_filename } = useParams<{ screenshot_filename: string }>();
     const [coordinates, setcoordinates] = useState(initialCoordenates);
     const [elements, setElementsTMP] = useState(initialElements);
     const textRef = useRef<any>('');
     const url = process.env.PUBLIC_URL + "example_image.png";//TODO:cambiar a la url real
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
-    const numberCaptures = 1; //TODO:cambiar al número de capturas a tratar
-    const actualCapture = 1; //TODO:numero actual de capturas
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const dispatch = useDispatch();
     const history = useHistory();
     dispatch(wizardSlice.actions.setElements(elements));
-    //TODO: si no hay imagen que cargar, redireccionar a lista
-
+    //TODO: si no hay imagen que cargar, redireccionar a tabla
+    //TODO: conseguir la screenshot del wizard en función de la URL
+    //TODO: el save lo haga directamente sobre el json dentro de state
+    //
     window.onresize = function () {
         var imgRect: any = document.getElementById('imgRect');
         var width: number = imgRect.clientWidth;
@@ -87,7 +87,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     const handleMouseEnter = (e: any) => {
-        //startDrag(e);
         var x: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 1)
         var y: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 1)
         setcoordinates({
@@ -98,7 +97,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     const handleMouseLeave = (e: any) => {
-        //stopDrag(e);
         var tx: number = (e.nativeEvent.offsetX > 0 ? e.nativeEvent.offsetX : 1)
         var ty: number = (e.nativeEvent.offsetY > 0 ? e.nativeEvent.offsetY : 1)
         var x1, y1, x2, y2: number
@@ -155,7 +153,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function saveElements() {
         if (Object.keys(elements).length > 0) {
             dispatch(wizardSlice.actions.setElements(elements))
-            history.push('/screenshot-variability')
+            history.push('/screenshot-variability'+'/'+act+'/'+variant+'/'+screenshot_filename)
         }else{
             history.push('/assist-experiment')
         }
@@ -279,11 +277,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     height: "auto",
                                     maxWidth: "100%"
                                 }}
-                                /*onMouseMove={drawRightBottomCorner}*/
                                 onLoad={getResolution}
                                 onMouseDown={handleMouseEnter}
                                 onMouseUp={handleMouseLeave}
-                                /*onMouseLeave={stopDrag}*/
                                 draggable={false}
                             />
                         </Box>

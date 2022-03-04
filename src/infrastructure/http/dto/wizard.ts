@@ -5,7 +5,7 @@ export interface VariabilityFunctionDTO {
     filename: string
     path: string
     description: string
-    params: FunctionParamDTO[]
+    params: number[]
     variability_function_category: CategoryDTO[]
 }
 

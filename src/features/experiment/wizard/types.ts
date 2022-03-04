@@ -1,7 +1,7 @@
 
 
 export interface IParams {
-    [id: number]: any
+    [id: string]: any
   }
   
   export interface ICoordinates {
@@ -14,7 +14,8 @@ export interface IParams {
     processed: boolean,
     function_variability: number,
     gui_component: number,
-    params: IParams
+    params: IParams,
+    dependency:IDependency
   }
   
   export interface IElements {
@@ -31,3 +32,21 @@ export interface IParams {
     scenario_variability: any,
     case_variability: any
   }
+
+export interface IArguments{
+    id: number,
+    coordinates: number[],
+    name: string,
+    dependency?: IDependency,
+    args: IParams
+}
+
+export interface IScreenshot{
+  [name: string]: IArguments[]
+}
+
+export interface IDependency{
+  Activity: string,
+  V: number,
+  id: number
+}

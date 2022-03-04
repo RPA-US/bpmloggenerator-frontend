@@ -5,10 +5,14 @@ import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-comp
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
 import VariabilityFunctionRepository from 'infrastructure/repositories/variability-function';
+import ParamFunctionRepository from 'infrastructure/repositories/params';
 
 export const guiComponentCategoryRepository = new GUIComponentCategoryRepository();
 export const guiComponentRepository = new GUIComponentRepository();
 export const variabilityFunctionCategoryRepository = new VariabilityFunctionCategoryRepository();
+export const variabilityFunctionRepository = new VariabilityFunctionRepository();
+export const paramFunctionCategoryRepository = new ParamFunctionRepository();
+
 // ================================== REDUCERS ==================================
 
 
@@ -58,7 +62,5 @@ export const wizardSlice = createSlice({
         seed
     }));
   }
- 
-
   export default wizardSlice.reducer;
   
