@@ -11,12 +11,12 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     var initialElements: IElements = {};
-    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {} };
+    var initialCoordenates: ICoordinates = { x1: 0, y1: 0, x2: 0, y2: 0, resolutionIMG: [0, 0], randomColor: "", processed: false, function_variability: 0, gui_component:0, params: {},dependency:{Activity:"", V:0,id:0}  };
     const { t } = useTranslation();
     const theme = useContext(ThemeContext) as Theme;
-    // const { variant } = useParams<{ variant: string }>();
-    // const { act } = useParams<{ act: string }>();
-    // const { seed } = useSelector(experimentsSelector);
+    const { variant } = useParams<{ variant: string }>();
+    const { act } = useParams<{ act: string }>();
+    //const { seed } = useSelector(experimentsSelector);
     const { screenshot_filename } = useParams<{ screenshot_filename: string }>();
     const [coordinates, setcoordinates] = useState(initialCoordenates);
     const [elements, setElementsTMP] = useState(initialElements);
@@ -87,7 +87,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     const handleMouseEnter = (e: any) => {
-        //startDrag(e);
         var x: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 1)
         var y: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 1)
         setcoordinates({
@@ -98,7 +97,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     const handleMouseLeave = (e: any) => {
-        //stopDrag(e);
         var tx: number = (e.nativeEvent.offsetX > 0 ? e.nativeEvent.offsetX : 1)
         var ty: number = (e.nativeEvent.offsetY > 0 ? e.nativeEvent.offsetY : 1)
         var x1, y1, x2, y2: number
@@ -155,7 +153,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function saveElements() {
         if (Object.keys(elements).length > 0) {
             dispatch(wizardSlice.actions.setElements(elements))
-            history.push('/screenshot-variability')
+            history.push('/screenshot-variability'+'/'+act+'/'+variant+'/'+screenshot_filename)
         }else{
             history.push('/assist-experiment')
         }
@@ -279,11 +277,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     height: "auto",
                                     maxWidth: "100%"
                                 }}
-                                /*onMouseMove={drawRightBottomCorner}*/
                                 onLoad={getResolution}
                                 onMouseDown={handleMouseEnter}
                                 onMouseUp={handleMouseLeave}
-                                /*onMouseLeave={stopDrag}*/
                                 draggable={false}
                             />
                         </Box>
