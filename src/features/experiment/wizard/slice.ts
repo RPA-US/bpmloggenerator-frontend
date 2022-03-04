@@ -35,7 +35,7 @@ export const wizardSlice = createSlice({
       state,
       { payload }: PayloadAction<{ seed: any }>
     ) => {
-      state.seed = payload.seed;
+      state.seed = payload;
     },
   },
 });

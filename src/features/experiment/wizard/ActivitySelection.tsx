@@ -19,7 +19,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
-import { wizardSelector } from 'features/experiment/wizard/slice';
+import { wizardSelector, wizardSlice } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 
 export interface ExperimentFormProperties {
@@ -32,8 +32,29 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { seed } = useSelector(experimentsSelector);
-  const json_conf = seed;
+  const dispatch = useDispatch();
+  // const { wizard } = useSelector(wizardSelector);
+  const [ json_conf, setConfig ] = useState({ ...seed });
+  dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
+  
 
+
+  const updateJsonConf = (variant: string, act: string, event: any) => {
+      let aux = 0;
+      const event_checkbox: any = event.target.checked;
+      if (event_checkbox) {
+        aux = 1;
+      }
+      // Object.keys(json_conf[variant][act]).forEach((column)=>{
+      //   setConfig({
+      //     ...json_conf,
+      //     [json_conf[variant][act][column]["variate"]]: aux
+      //   })
+      // });
+      
+      dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
+  }
+  
   const variantActivities = (entry: any) => {
     let variant = entry[0];
     let acts = entry[1];
@@ -53,11 +74,9 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
             </TableCell>
             <TableCell>
               <Checkbox
-                aria-label={act}
-                // onClick={(event) => updateJsonConf(variant, act, event)}
+                aria-label={`${variant}-${act}`}
+                onClick={(event) => updateJsonConf(variant, act, event)}
                 defaultChecked />
-
-              {act}
             </TableCell>
           </TableRow>
       ))};
