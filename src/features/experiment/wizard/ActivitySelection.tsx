@@ -34,26 +34,35 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
   const { seed } = useSelector(experimentsSelector);
   const dispatch = useDispatch();
   // const { wizard } = useSelector(wizardSelector);
-  const [ json_conf, setConfig ] = useState({ ...seed });
+  const json_conf = { ...seed };
   dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
   
 
 
-  const updateJsonConf = (variant: string, act: string, event: any) => {
-      let aux = 0;
-      const event_checkbox: any = event.target.checked;
-      if (event_checkbox) {
-        aux = 1;
-      }
-      // Object.keys(json_conf[variant][act]).forEach((column)=>{
-      //   setConfig({
-      //     ...json_conf,
-      //     [json_conf[variant][act][column]["variate"]]: aux
-      //   })
-      // });
+  // const updateJsonConf = (variant: string, act: string, event: any) => {
+  //     let aux = 0;
+  //     if (event.target.checked) {
+  //       aux = 1;
+  //     }
+  //     Object.keys(json_conf[variant][act]).forEach((column)=>{
+  //       // another possible solution could be Immutable
+  //       setJSONConfig({
+  //         ...json_conf,
+  //         [variant]: {
+  //           ...json_conf[variant],
+  //           [act]:{
+  //             ...json_conf[variant][act],
+  //             [column]: {
+  //               ...json_conf[variant][act][column],
+  //               variate: aux
+  //             }
+  //           }
+  //         }
+  //       })
+  //     });
       
-      dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
-  }
+  //     dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
+  // }
   
   const variantActivities = (entry: any) => {
     let variant = entry[0];
@@ -73,10 +82,13 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
               </Button>
             </TableCell>
             <TableCell>
-              <Checkbox
-                aria-label={`${variant}-${act}`}
-                onClick={(event) => updateJsonConf(variant, act, event)}
-                defaultChecked />
+              {Object.keys(acts).some(column => acts[column]['variate'] === '1') && (
+                  "Variability configured"
+              )}
+
+              {!Object.keys(acts).some(column => acts[column]['variate'] === '1') && (
+                  "Variability is not configured"
+              )}
             </TableCell>
           </TableRow>
       ))};

@@ -62,7 +62,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
             // const value: ColumnConf = entry[1];
             return (
             <TableRow
-              key={variant}
+              key={`${variant}-${act}`}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                   <TableCell align="center">
