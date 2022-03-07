@@ -5,7 +5,7 @@ import { Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typ
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
+import { updateJsonConf,wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
@@ -269,10 +269,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //TODO: llamar a esta funcion en el boton de finalizar
     function saveAndEnd() {
         if (Object.keys(screenshots).length > 0) {
-            let jsonTMP = json_conf;
             let screenTMP = screenshots;
-            jsonTMP[variant][act].Screenshot.args = screenTMP;
-            dispatch(wizardSlice.actions.setVariabilityConfiguration({...jsonTMP,}))
+            updateJsonConf(variant,act,"Screenshot",screenTMP,"");
         }
         //history.push('/experiment-wizard')
 
