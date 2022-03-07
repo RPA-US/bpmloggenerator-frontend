@@ -1,3 +1,4 @@
+import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from "infrastructure/http/dto/wizard"
 
 
 export interface IParams {
@@ -30,7 +31,14 @@ export interface IParams {
     elements: {[name: string]: ICoordinates},
     seed: any,
     scenario_variability: any,
-    case_variability: any
+    case_variability: any,
+    functions: VariabilityFunctionDTO[] | null,
+    params: FunctionParamDTO[] | null,
+    category_functions: CategoryDTO[] | null,
+    gui_components: GUIComponentDTO[] | null,
+    category_gui_components: CategoryDTO[] | null,
+    isLoading: boolean,
+    error: string | null
   }
 
 export interface IArguments{

@@ -58,15 +58,17 @@
     "wizard": {
       "activitySelection": {
         "variant": "Variant",
-        "variate": "Variate?",
+        "variate": "Variability configuration",
         "activity": "Activity"
       },
       "columnVariability": {
-        "variate": "Variate?",
+        "variate": "Variate",
         "columnName": "Column Name",
         "variabilityFunction": "Variability Function",
         "variabilityParams": "Params",
-        "screenshotVariability": "Screenshot Variability"
+        "screenshotVariability": "Screenshot Variability",
+        "variability_function_label": "Variability Function",
+        "function_param_label": "Function param"
       }
     }, 
     "experiment": {
