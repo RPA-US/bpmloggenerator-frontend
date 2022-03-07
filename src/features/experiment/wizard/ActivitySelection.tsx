@@ -1,15 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
+import React, { useContext } from 'react';
+import { Button, Theme } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import FormInput from 'components/FormInput';
-import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { ErrorOption, SubmitHandler, useForm, ValidationRule } from 'react-hook-form';
-import styled from '@emotion/styled';
-import Spacer from 'components/Spacer';
 import { Link as RouterLink } from 'react-router-dom';
-import Validations from 'infrastructure/util/validations';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,7 +11,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
 import { wizardSelector, wizardSlice } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
@@ -37,36 +30,9 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
   const json_conf = { ...seed };
   dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
   
-
-
-  // const updateJsonConf = (variant: string, act: string, event: any) => {
-  //     let aux = 0;
-  //     if (event.target.checked) {
-  //       aux = 1;
-  //     }
-  //     Object.keys(json_conf[variant][act]).forEach((column)=>{
-  //       // another possible solution could be Immutable
-  //       setJSONConfig({
-  //         ...json_conf,
-  //         [variant]: {
-  //           ...json_conf[variant],
-  //           [act]:{
-  //             ...json_conf[variant][act],
-  //             [column]: {
-  //               ...json_conf[variant][act][column],
-  //               variate: aux
-  //             }
-  //           }
-  //         }
-  //       })
-  //     });
-      
-  //     dispatch(wizardSlice.actions.setVariabilityConfiguration(json_conf));
-  // }
-  
   const variantActivities = (entry: any) => {
-    let variant = entry[0];
-    let acts = entry[1];
+    const variant = entry[0];
+    const acts = entry[1];
     return Object.keys(acts).map( act => (
       <TableRow
         key={`${variant}-${act}`}
@@ -98,7 +64,7 @@ const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabl
     <TableContainer sx={{ maxHeight: '100%' }}>
       {
         Object.entries(json_conf).map(entry => (
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} key={`${entry[0]}`} aria-label="variant activity selection">
           <TableHead>
           <TableRow key="headers">
             <TableCell align="center">{`${t("features.wizard.activitySelection.variant")} ${entry[0]}`}</TableCell>

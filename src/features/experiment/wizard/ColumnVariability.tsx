@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, TextField, Theme, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import FormInput from 'components/FormInput';
 import Grid from '@mui/material/Grid';
@@ -18,10 +18,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
-import { wizardSelector } from 'features/experiment/wizard/slice';
+import { wizardSelector, loadFunctionsAndCategories } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -40,8 +46,50 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
   const theme = useContext(ThemeContext) as Theme;
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
-  const { seed } = useSelector(experimentsSelector);
+  const dispatch = useDispatch();
+  dispatch(loadFunctionsAndCategories());
+  const { seed, functions, params, category_functions, gui_components, category_gui_components } = useSelector(wizardSelector);
   const json_conf = seed;
+  const [age, setAge] = React.useState('');
+  const [initialFunctions, initialParams] = initialColumnVariabilityValues(seed);
+  const handleChange = (event: SelectChangeEvent) => {
+    setAge(event.target.value);
+  };
+
+  function initialColumnVariabilityValues(seed: any) {
+    let initialParams = new Map();
+    let initialFunctions = new Map();
+    Object.entries({...seed[variant][act]}).forEach(entry => {
+      const val: any = entry[1]; 
+      initialFunctions.set(entry[0], val.name);
+      initialParams.set(entry[0], val.args);
+    });
+    return [initialFunctions, initialParams]
+  }
+
+
+  function paramsByFunction(functionTMP: number) {
+    let paramsTMP: FunctionParamDTO[] = [];
+    let paramsID = []
+    // for (let f of functions) {
+    //   if (f.id === functionTMP && f.params.length > 0) {
+    //     for (let id2 of params) {
+    //       paramsID = f.params.filter(c => { (id2.id===c)?c:""});
+    //       if (paramsID.length > 0) {
+    //         paramsTMP.push(id2);
+    //       }
+    //     }
+    //   }
+    // }
+    // setParams([...paramsTMP]);
+  }
+
+  function handleChangeFunction(e: any) {
+    let functionTMP: number = e.target.value;
+    // setFunction(functionTMP);
+    paramsByFunction(functionTMP);
+  }
+
 
   return (
     <TableContainer component={Paper}>
@@ -56,36 +104,81 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
         </TableHead>
         <TableBody>
         {
-          Object.entries(json_conf[variant][act]).map(entry => {
-            const aux1 = entry[0];
-            const aux2: any = entry[1];
+          Object.entries(json_conf[variant][act]).map( entry => {
+            const log_column_name = entry[0];
+            const log_column: any = entry[1];
             // const value: ColumnConf = entry[1];
             return (
             <TableRow
-              key={`${variant}-${act}`}
+              key={`${variant}-${act}-${log_column_name}`}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                   <TableCell align="center">
-                    {entry[0]}
+                    {log_column_name}
                   </TableCell>
                   <TableCell>
                     <Checkbox
-                      aria-label={`${variant}-${act}-${entry[0]}`}
+                      aria-label={`variate-${variant}-${act}-${log_column_name}`}
+                      defaultChecked={ log_column.variate }
                       // onClick={(event) => updateJsonConf(variant, act, event)}
-                      defaultChecked />
+                      />
                   </TableCell>
                   <TableCell>
-                      { entry[0] === "Screenshot"? '' : `Function` }
+                      { entry[0] === "Screenshot"? '' : 
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                          <InputLabel id={`function-${variant}-${act}-${log_column}`}>
+                          <Typography component="div" >
+                          {t('features.wizard.columnVariability.variability_function_label')}
+                          </Typography>
+                          </InputLabel>
+                          <Select
+                            id={`function-${variant}-${act}-${log_column}`}
+                            label={t('features.wizard.columnVariability.variability_function_label')}
+                            onChange={handleChange}
+                            defaultValue={log_column.variate ? initialFunctions.get(log_column_name) : "" }
+                            disabled={!log_column.variate}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            {functions!= null && Object.values({...functions}).map((f:any) => (
+                                <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                      }
                   </TableCell>
                   <TableCell>
                       { entry[0] === "Screenshot"?
                       <Button
                         variant="contained"
                         component={RouterLink}
-                        to={`/get-gui-component-coordinates/${variant}/${act}/${aux2.initValue}`}
+                        to={`/get-gui-component-coordinates/${variant}/${act}/${log_column.initValue}`}
                         >
                         {t("features.wizard.columnVariability.screenshotVariability")}
-                      </Button> : `Params`
+                      </Button> : 
+                      <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id={`params-${variant}-${act}-${log_column}`}>
+                        <Typography component="div" >
+                          {t('features.wizard.columnVariability.function_param_label')}:
+                        </Typography>
+                        </InputLabel>
+                        <Select
+                          id={`params-${variant}-${act}-${log_column}`}
+                          label={t('features.wizard.columnVariability.function_param_label')}
+                          onChange={handleChangeFunction}
+                          defaultValue={log_column.variate ? initialParams.get(log_column_name) : "" }
+                          disabled={!log_column.variate}
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {params!= null && Object.keys({...params}).map((key, index) => (
+                            <MenuItem value={params[index].id}>{params[index].label}</MenuItem>
+                            ))}
+                        </Select>
+                        {/* <FormHelperText>With label + helper text</FormHelperText> */}
+                      </FormControl>
                       }
                   </TableCell>
               </TableRow>
