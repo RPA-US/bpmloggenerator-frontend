@@ -5,15 +5,27 @@ import { Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typ
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateJsonConf,wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
+import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
 import Tooltip from '@mui/material/Tooltip';
-import { IDependency, ICoordinates, IElements, IScreenshot, IArguments } from './types';
+import { IDependency, IScreenshotColumn, ICoordinates, IElements, IScreenshot, IArguments } from './types';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
+import BackButton from 'components/BackButton';
+
+//TODO: [X]1 Meter contenido en el state 
+//TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
+//TODO: []3 cambiar la forma del funcionamiento de dependencias
+//TODO: []4 Boton anterior y siguientes con un estilo diferente y posiciones
+//TODO: []5 Alert si se pulsa hacia atras con un continuar o cancelar
+//TODO: []6 Usar el random color en la tabla y en la imagen
+//TODO: []7 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
+//TODO: []8 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
+//TODO: []9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
+//TODO: []10 meter los resultados de los funciones/params/gui en el wizard
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
@@ -58,34 +70,13 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [paramsList, setParamsFunctions] = useState(initialparams);
     const [guiComponents, setGuiComponents] = useState(initialguiComponents);
     const [params, setParams] = useState(initialparams);
-    //TODO:cambiar a la url real
 
-    /*async function getScreenshot2(token: string, path: string) {
-        let urlTMP = '';
-        try {
-            // Fetch the image.
-            const res = await screenshotRepository.get(path, token);
-            // Convert the data to Base64 and build a data URL.
-            const imageBlob = await res.blob();
-            urlTMP = URL.createObjectURL(imageBlob);
-            setUrl(urlTMP);
-        } catch (ex) {
-            console.error('error screenshot show', ex);
-        }
-        return urlTMP;
-
-    }*/
-    function fetchWithAuthentication(url: string, authToken: string) {
-        const headers = new Headers();
-        headers.set('Authorization', `Token ${authToken}`);
-        return fetch(Http.buildURL(`/private-media/${url}`), { headers });
-    }
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
         if (url === "") {
 
             try {
-                const res = await fetchWithAuthentication(
+                const res = await screenshotRepository.get(
                     path, token
                 );
                 const imageBlob = await res.blob();
@@ -98,11 +89,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
         return src;
     }
-    //TODO: []1 conseguir la screenshot del wizard en función de la URL
-    //TODO: []2 si no hay imagen que cargar, redireccionar a tabla
-    //TODO: []3 mensaje de error si no hay funciones/params/gui seleccionadas
-    //TODO: []4 mensaje de error si no se carga el contenido
-    //TODO: []5 meter los resultados de los funciones/params/gui en el wizard
+
     //Peticiones a BD
     const selectVarFuncByCat = async (token: string, name: string) => {
         let categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
@@ -170,7 +157,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         setParams([...paramsTMP]);
     }
 
-    //Resoluciones en variables temporales
     function getResolutionBRW() {
         var imgRect: any = document.getElementById('imgRect');
         var width: number = imgRect.clientWidth;
@@ -194,13 +180,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     useEffect(() => {
         let aux: string[] = [];
-        if (detail !== null) {
+        if (detail !== null && url === "") {
             aux = detail.screenshotsPath.split("/");
             getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
-
         }
         getResolution();
-    });
+    }, []);
 
     window.onresize = function () {
         getResolutionBRW();
@@ -258,7 +243,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const removeElement = (key: string, id: number) => {
         let screenTMP = screenshots;
         screenTMP[key].splice(id, 1);
-        if(screenTMP[key].length ===0){
+        if (screenTMP[key].length === 0) {
             delete screenTMP[key];
         }
         setScreenshot(
@@ -266,14 +251,29 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         )
     }
 
-    //TODO: llamar a esta funcion en el boton de finalizar
     function saveAndEnd() {
         if (Object.keys(screenshots).length > 0) {
             let screenTMP = screenshots;
-            updateJsonConf(variant,act,"Screenshot",screenTMP);
+            let screenColumn: IScreenshotColumn = {
+                initValue: json_conf[variant][act].Screenshot.initValue,
+                name: json_conf[variant][act].Screenshot.name,
+                variate: 1,
+                args: screenTMP
+            };
+            dispatch(wizardSlice.actions.setVariabilityConfiguration({
+                   ...json_conf,
+                   [variant]: {
+                     ...json_conf[variant],
+                     [act]:{
+                       ...json_conf[variant][act],
+                       ["Screenshot"]: screenColumn
+                     }
+                   }
+             }));
+            history.push('/column-variability/'+variant+'/'+act)
+        }else{
+            history.push('/column-variability/'+variant+'/'+act)
         }
-        //history.push('/experiment-wizard')
-
     }
 
     function onLoadImage() {
@@ -338,6 +338,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     }
                 }
                 if (actRef.current.value !== "" && varRef.current.value !== 0) {
+                    dependencyTMP.id = count
                     dependencyTMP.Activity = actRef.current.value.trim()
                     dependencyTMP.V = varRef.current.value.trim()
                     argumentTMP.dependency = dependencyTMP;
@@ -363,9 +364,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
     }
 
+    function confirmBack() {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm(t('features.experiment.assist.title.elementselector'))) {
+            history.push("/experiment-wizard")
+        }
+    }
+
     return (
         <>
             <Typography variant="h4">
+                <BackButton />
                 {t('features.experiment.assist.title.elementselector')}
             </Typography>
             <Button
@@ -512,7 +521,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     </Card>
                 </Grid>
                 {Object.keys(screenshots).length > 0 &&
-                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2) }}>
+                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
                         <Card>
                             <TableContainer component={Paper} >
                                 <Table aria-label="simple table">

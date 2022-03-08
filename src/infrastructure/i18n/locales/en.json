@@ -87,6 +87,7 @@
           "variability_function": "Function variability",
           "params_function": "Param for selected function",
           "gui_components": "GUI component to edit",
+          "dependency": "Add dependency",
           "activity_dependency": "Activity dependency",
           "variant_dependency": "Variant dependency"
         },
