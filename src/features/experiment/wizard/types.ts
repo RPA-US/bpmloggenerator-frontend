@@ -53,7 +53,7 @@ export interface IArguments{
     id: number,
     coordinates: number[],
     name: string,
-    dependency?: IDependency,
+    args_dependency?: IDependency,
     args: IParams
 }
 

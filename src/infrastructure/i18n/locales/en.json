@@ -1,41 +1,41 @@
 {
   "genaral": {
-      "agosuirpa": {
-          "label": "AGOSUIRPA",
-          "tooltip": "AGOSUIRPA's platform is motivated by the difficulty of finding real logs to test on them. Due to the intrusive nature of keyloggers in terms of operator privacy and customer data involved in the business processes to be automated, companies cannot share this data with third parties without the express consent of those involved. Therefore, we developed a platform, which from a seed and some configuration parameters, allows us to generate logs of the dimension we want with their associated captures."
-      },
-      "log": {
-          "label": "UI log",
-          "tooltip": "A UI log is an XML file whose grammar allows expressing event logs in Process Mining. This extension incorporates: the standard attributes of the concept, application name, event type (i.e., mouse click or keystroke), click type (i.e., left, right or center), click coordinates (i.e., mouse position on the screen) and keystroke (i.e., the keys being typed)."
-      },
-      "seed": {
-          "label": "seed",
-          "tooltip": "A seed corresponds to a small log, which has one instance for each variant of the log we want to generate. And obviously the captures associated with the activities of those cases."
-      },
-      "activity": {
-          "label": "Activity",
-          "tooltip": "They correspond to a set of tasks or actions whose sequence results in a process. For example: opening an email, registering a user in a CRM, etc."
-      },
-      "variant": {
-          "label": "Variant",
-          "tooltip": "A process variant is a sequence of process activities with a start event and an end event. Each variant differs from the others by at least one activity."
-      },
-      "case": {
-          "label": "case",
-          "tooltip": "Describes a business case that is executed through a particular process variant. Therefore, it is the image of exactly one process cycle."
-      },
-      "scenario": {
-          "label": "scenario",
-          "tooltip": "A scenario corresponds to the ecosystem of different applications that a user is going to use during the process. When we refer to variability at the scenario level, we mean that we will vary the GUI components relative to the look and feel of the different applications that appear in the process snapshots. Using the seed screenshots and varying them for the X different scenarios that we want to obtain. Those variations will be carried out once and will result in X seeds with different looks and feels."
-      },
-      "experiment": {
-         "label": "experiment",
-         "tooltip": "An experiment will consist of a seed, a configuration where we will indicate the size of the logs and how we want the imbalanced logs to be generated, a case-level variability configuration and optionally, scenario-level variability. Experiments will be the core of our system. We will launch an experiment every time we want to generate a series of logs associated to a process. That is, having clear the process on which we want to obtain synthetic logs, defining the experiment, we will be able to obtain the UI logs and the captures associated to that process, with the number of rows indicated in the size and the unbalanced indicated in the percentages for unbalanced logs."
-      },
-      "balance":{
-          "label": "balancing",
-          "tooltip": "The balancing that each variant will have, for example, values such as [0.4,0.6], indicates that 40% of cases are from V1 and 60% of cases are from V2."
-      }
+    "agosuirpa": {
+      "label": "AGOSUIRPA",
+      "tooltip": "AGOSUIRPA's platform is motivated by the difficulty of finding real logs to test on them. Due to the intrusive nature of keyloggers in terms of operator privacy and customer data involved in the business processes to be automated, companies cannot share this data with third parties without the express consent of those involved. Therefore, we developed a platform, which from a seed and some configuration parameters, allows us to generate logs of the dimension we want with their associated captures."
+    },
+    "log": {
+      "label": "UI log",
+      "tooltip": "A UI log is an XML file whose grammar allows expressing event logs in Process Mining. This extension incorporates: the standard attributes of the concept, application name, event type (i.e., mouse click or keystroke), click type (i.e., left, right or center), click coordinates (i.e., mouse position on the screen) and keystroke (i.e., the keys being typed)."
+    },
+    "seed": {
+      "label": "seed",
+      "tooltip": "A seed corresponds to a small log, which has one instance for each variant of the log we want to generate. And obviously the captures associated with the activities of those cases."
+    },
+    "activity": {
+      "label": "Activity",
+      "tooltip": "They correspond to a set of tasks or actions whose sequence results in a process. For example: opening an email, registering a user in a CRM, etc."
+    },
+    "variant": {
+      "label": "Variant",
+      "tooltip": "A process variant is a sequence of process activities with a start event and an end event. Each variant differs from the others by at least one activity."
+    },
+    "case": {
+      "label": "case",
+      "tooltip": "Describes a business case that is executed through a particular process variant. Therefore, it is the image of exactly one process cycle."
+    },
+    "scenario": {
+      "label": "scenario",
+      "tooltip": "A scenario corresponds to the ecosystem of different applications that a user is going to use during the process. When we refer to variability at the scenario level, we mean that we will vary the GUI components relative to the look and feel of the different applications that appear in the process snapshots. Using the seed screenshots and varying them for the X different scenarios that we want to obtain. Those variations will be carried out once and will result in X seeds with different looks and feels."
+    },
+    "experiment": {
+      "label": "experiment",
+      "tooltip": "An experiment will consist of a seed, a configuration where we will indicate the size of the logs and how we want the imbalanced logs to be generated, a case-level variability configuration and optionally, scenario-level variability. Experiments will be the core of our system. We will launch an experiment every time we want to generate a series of logs associated to a process. That is, having clear the process on which we want to obtain synthetic logs, defining the experiment, we will be able to obtain the UI logs and the captures associated to that process, with the number of rows indicated in the size and the unbalanced indicated in the percentages for unbalanced logs."
+    },
+    "balance": {
+      "label": "balancing",
+      "tooltip": "The balancing that each variant will have, for example, values such as [0.4,0.6], indicates that 40% of cases are from V1 and 60% of cases are from V2."
+    }
   },
   "input": {
     "attach": "Select file",
@@ -71,7 +71,7 @@
         "variability_function_label": "Variability Function",
         "function_param_label": "Function param"
       }
-    }, 
+    },
     "experiment": {
       "list": {
         "title": "Experiment list",
@@ -82,7 +82,8 @@
         "downloadResults": "Download results",
         "viewMore": "View More"
       },
-      "assist":{
+      "assist": {        
+        "empty" : "To add a modification you need to select a GUI component to edit, the coordinates, the edit function and fill in its parameters",
         "function": {
           "variability_function": "Function variability",
           "params_function": "Param for selected function",
@@ -91,10 +92,11 @@
           "activity_dependency": "Activity dependency",
           "variant_dependency": "Variant dependency"
         },
-        "title":{
+        "title": {
           "elementselector": "Select image element to use"
         },
-        "coordinates":{
+        "back": "When you go back, the changes made in the capture will be lost. Are you sure?",
+        "coordinates": {
           "coordinates": "Coordinates",
           "topleft": "Top-Left coordinate",
           "rightbot": "Bot-Right coordinate"

@@ -65,6 +65,7 @@
         "viewMore": "Ver más"
       },
       "assist":{
+        "empty" : "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
         "function": {
           "variability_function": "Función de variabilidad",
           "params_function": "Parámetros de la función seleccionada",
@@ -76,6 +77,7 @@
         "title":{
           "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
         },
+        "back": "Al volver se perderán los cambios realizados en la captura. ¿Está seguro?",
         "coordinates":{
           "coordinates": "Coordenadas",
           "topleft": "Coordenada superior izquierda",

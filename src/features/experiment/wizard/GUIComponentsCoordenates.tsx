@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
@@ -14,18 +14,23 @@ import { IDependency, IScreenshotColumn, ICoordinates, IElements, IScreenshot, I
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
-import BackButton from 'components/BackButton';
+import { json } from 'stream/consumers';
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
 
 //TODO: [X]1 Meter contenido en el state 
 //TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
-//TODO: []3 cambiar la forma del funcionamiento de dependencias
-//TODO: []4 Boton anterior y siguientes con un estilo diferente y posiciones
-//TODO: []5 Alert si se pulsa hacia atras con un continuar o cancelar
-//TODO: []6 Usar el random color en la tabla y en la imagen
+//TODO: [-]3 cambiar la forma del funcionamiento de dependencias
+//TODO: [X]4 Boton anterior y siguientes con un estilo diferente y posiciones
+//TODO: [X]5 Alert si se pulsa hacia atras con un continuar o cancelar
+//TODO: [-]6 Usar el random color en la tabla y en la imagen
 //TODO: []7 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
 //TODO: []8 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
-//TODO: []9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
-//TODO: []10 meter los resultados de los funciones/params/gui en el wizard
+//TODO: [X]9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
+//TODO: [?]10 meter los resultados de los funciones/params/gui en el wizard
+
+export interface IRandomColor {
+    [name: string]: string[]
+}
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
@@ -48,6 +53,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialparams: FunctionParamDTO[] = []
     const initialVarFunction: VariabilityFunctionDTO[] = []
     const initialguiComponents: GUIComponentDTO[] = []
+    const initialColors: IRandomColor = {}
 
     //Argumentos de screenshots a almacenar
     const [json_conf, setjJon_conf] = useState({ ...seed });
@@ -61,16 +67,16 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [url, setUrl] = useState("");//process.env.PUBLIC_URL + "example_image.png"
     const [screenshots, setScreenshot] = useState(initialScreen);
     const [argumentsCoor, setArgumentsCoor] = useState(initialArgs);
-
+    const [randomColor, setRandomColor] = useState(initialColors);
     const actRef = useRef<any>('');
     const varRef = useRef<any>(0);
-
+    const [errorMessage, setErrorMessage] = useState(false);
     //Cargas de BD temporales
     const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
     const [paramsList, setParamsFunctions] = useState(initialparams);
     const [guiComponents, setGuiComponents] = useState(initialguiComponents);
     const [params, setParams] = useState(initialparams);
-
+    const [variantDepedency, setVariantDependency] = useState("");
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
         if (url === "") {
@@ -156,7 +162,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         setParams([...paramsTMP]);
     }
+    //Seed variants
 
+    //Seed activities by variant
     function getResolutionBRW() {
         var imgRect: any = document.getElementById('imgRect');
         var width: number = imgRect.clientWidth;
@@ -242,13 +250,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     const removeElement = (key: string, id: number) => {
         let screenTMP = screenshots;
+        let colorTMP = randomColor;
         screenTMP[key].splice(id, 1);
+        colorTMP[key].splice(id, 1);
         if (screenTMP[key].length === 0) {
             delete screenTMP[key];
+            delete colorTMP[key];
         }
         setScreenshot(
             { ...screenTMP }
         )
+        setRandomColor({ ...colorTMP })
     }
 
     function saveAndEnd() {
@@ -261,19 +273,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 args: screenTMP
             };
             dispatch(wizardSlice.actions.setVariabilityConfiguration({
-                   ...json_conf,
-                   [variant]: {
-                     ...json_conf[variant],
-                     [act]:{
-                       ...json_conf[variant][act],
-                       ["Screenshot"]: screenColumn
-                     }
-                   }
-             }));
-            history.push('/column-variability/'+variant+'/'+act)
-        }else{
-            history.push('/column-variability/'+variant+'/'+act)
+                ...json_conf,
+                [variant]: {
+                    ...json_conf[variant],
+                    [act]: {
+                        ...json_conf[variant][act],
+                        ["Screenshot"]: screenColumn
+                    }
+                }
+            }));
         }
+        history.push('/column-variability/' + variant + '/' + act)
     }
 
     function onLoadImage() {
@@ -320,69 +330,113 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     function addElementToTable() {
-        if (functionID !== 0 && guiID !== 0) {
-            let countTMP = count;
+        let argumentTMP = argumentsCoor;
+        let countTMP = count;
+        let screenTMP = screenshots;
+        if (guiID !== 0) {
             let guiName: GUIComponentDTO = getByID(guiComponents, guiID);
-            let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
-            let paramsTMP: FunctionParamDTO[] = params;
-            let dependencyTMP: IDependency = initialDependency;
-            let screenTMP = screenshots;
-            let argumentTMP = argumentsCoor;
-            if (guiName !== null && functionName !== null) {
-                argumentTMP.id = countTMP;
-                if (paramsTMP.length > 0 && functionName.params.length > 0) {
-                    for (let j in paramsTMP) {
-                        if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
-                            argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+            if (functionID !== 1000) {
+                let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
+                let paramsTMP: FunctionParamDTO[] = params;
+                if (guiName !== null && functionName !== null) {
+                    argumentTMP.id = countTMP;
+                    if (paramsTMP.length > 0 && functionName.params.length > 0) {
+                        for (let j in paramsTMP) {
+                            if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
+                                argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+                            }
                         }
                     }
+                    argumentTMP.name = functionName.id_code;
+                    if (guiName !== null) {
+                        let colorTMP = randomColor;
+                        if (screenTMP.hasOwnProperty(guiName.id_code)) {
+                            let listARGS = screenTMP[guiName.id_code!]
+                            listARGS.push(argumentTMP)
+                            screenTMP[guiName.id_code] = listARGS
+                            let listColor = colorTMP[guiName.id_code!]
+                            listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+                            colorTMP[guiName.id_code] = listColor
+                        } else {
+                            screenTMP[guiName.id_code] = [argumentTMP]
+                            colorTMP[guiName.id_code] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+                        }
+                        setScreenshot({
+                            ...screenTMP
+                        })
+                        setRandomColor({ ...colorTMP })
+                    }
+                    setErrorMessage(false)
+                } else {
+                    setErrorMessage(true)
                 }
-                if (actRef.current.value !== "" && varRef.current.value !== 0) {
+            } else {
+                let dependencyTMP: IDependency = initialDependency;
+                if (guiName !== null && actRef.current.value !== "" && varRef.current.value !== 0) {
+                    argumentTMP.id = countTMP;
+                    argumentTMP.name = ""
                     dependencyTMP.id = count
                     dependencyTMP.Activity = actRef.current.value.trim()
                     dependencyTMP.V = varRef.current.value.trim()
-                    argumentTMP.dependency = dependencyTMP;
-                }
-                argumentTMP.name = functionName.id_code;
-                if (guiName !== null) {
-                    if (screenTMP.hasOwnProperty(guiName.id_code)) {
-                        let listARGS = screenTMP[guiName.id_code!]
-                        listARGS.push(argumentTMP)
-                        screenTMP[guiName.id_code] = listARGS
-                    } else {
-                        screenTMP[guiName.id_code] = [argumentTMP]
+                    argumentTMP.args_dependency = dependencyTMP;
+                    if (guiName !== null) {
+                        if (screenTMP.hasOwnProperty(guiName.id_code)) {
+                            let listARGS = screenTMP[guiName.id_code!]
+                            listARGS.push(argumentTMP)
+                            screenTMP[guiName.id_code] = listARGS
+                        } else {
+                            screenTMP[guiName.id_code] = [argumentTMP]
+                        }
+                        setScreenshot({
+                            ...screenTMP
+                        })
                     }
-                    setScreenshot({
-                        ...screenTMP
-                    })
+                    countTMP = countTMP + 1
+                    setCount(countTMP);
+                    setErrorMessage(false)
+                } else {
+                    setErrorMessage(true)
                 }
             }
-            countTMP = countTMP + 1
-            setCount(countTMP);
-            argumentTMP = initialArgs;
-            setArgumentsCoor({ ...argumentTMP });
+        } else {
+            setErrorMessage(true)
         }
+        argumentTMP = initialArgs
+        setArgumentsCoor({ ...argumentTMP });
     }
 
     function confirmBack() {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm(t('features.experiment.assist.title.elementselector'))) {
-            history.push("/experiment-wizard")
+        if (window.confirm(t('features.experiment.assist.back'))) {
+            history.push('/column-variability/' + variant + '/' + act)
         }
     }
 
     return (
-        <>
-            <Typography variant="h4">
-                <BackButton />
-                {t('features.experiment.assist.title.elementselector')}
-            </Typography>
-            <Button
-                onClick={saveAndEnd}
-                variant="outlined"
-                style={{ fontSize: "small", marginLeft: 4 }}
-                endIcon={<SettingsSuggestIcon />}>
-                {t('features.experiment.assist.next')}</Button>
+        <> <Grid
+            container
+            direction="row"
+            spacing={4}>
+            <Grid xs={10} lg={10} item style={{ marginTop: theme.spacing(2) }}>
+                <Typography variant="h4">
+                    <IconButton color="primary" aria-label="go back" component="span" onClick={confirmBack}>
+                        <ChevronLeft />
+                    </IconButton>
+                    {t('features.experiment.assist.title.elementselector')}
+                </Typography>
+            </Grid>
+            <Grid xs={2} lg={2} item style={{ marginTop: theme.spacing(2) }}>
+                <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
+                    {t('features.experiment.assist.next')}
+                </Button>
+            </Grid>
+            {errorMessage &&
+                <Grid xs={12} lg={12} item style={{ marginTop: theme.spacing(2) }}>
+                    <Typography variant="h5" color="red" >
+                        {t('features.experiment.assist.empty')}
+                    </Typography>
+                </Grid>
+            }
+        </Grid>
             <Grid
                 container
                 direction="row"
@@ -394,16 +448,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 {
                                     position: "relative"
                                 }}>
-                            <Box component={"div"}
-                                id="overlay"
-                                sx={
-                                    {
-                                        position: "absolute",
-                                        outline: "2px solid black",
-                                        backgroundColor: "blue",
-                                        opacity: 0.3
-                                    }}
-                            ></Box>
                             {Object.keys(screenshots).length > 0 && Object.keys(screenshots).map((key, index) => (
                                 Object.keys(screenshots[key]).map((key2, index2) => (
                                     < Box component={"div"}
@@ -436,7 +480,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         </Box>
                     </Card>
                 </Grid>
-
                 <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2) }} >
                     <Card>
                         <CardContent>
@@ -475,18 +518,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2) }} >
-                    <Card>
-                        <CardContent>
-                            <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
-                                <TextField inputRef={actRef} placeholder={t('features.experiment.assist.function.activity_dependency')} label={t('features.experiment.assist.function.activity_dependency')} />
-                            </Box>
-                            <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
-                                <TextField inputRef={varRef} placeholder={t('features.experiment.assist.function.variant_dependency')} label={t('features.experiment.assist.function.variant_dependency')} />
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
                 <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} >
                     <Card>
                         <CardContent>
@@ -499,10 +530,22 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 label={t('features.experiment.assist.function.variability_function')}
                                 onChange={handleChangeFunction}
                             >
+                                <MenuItem value={1000}>{t('features.experiment.assist.function.dependency')}</MenuItem>
                                 {Object.keys(variabilityFunctions).map((key, index) => (
                                     <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
                                 ))}
                             </Select>
+                            {functionID === 1000 &&
+                                <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
+                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                    <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
+                                        <TextField inputRef={actRef} placeholder={t('features.experiment.assist.function.activity_dependency')} label={t('features.experiment.assist.function.activity_dependency')} />
+                                    </Box>
+                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                    <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
+                                        <TextField inputRef={varRef} placeholder={t('features.experiment.assist.function.variant_dependency')} label={t('features.experiment.assist.function.variant_dependency')} />
+                                    </Box>
+                                </Box>}
                             {Object.keys(variabilityFunctions).map((key, index) => (
                                 variabilityFunctions[index].id === functionID && variabilityFunctions[index].params.length > 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
@@ -528,6 +571,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell align="center">{t('features.experiment.assist.element.name')}</TableCell>
+                                            <TableCell align="center">{t('features.experiment.assist.element.color')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.topleft')}&nbsp;(x,y)</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.botright')}&nbsp;(x,y)</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.delete')}</TableCell>
@@ -543,6 +587,11 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     <TableCell align="center" component="th" scope="row">
                                                         {key}
                                                     </TableCell>
+                                                    <TableCell align="center" sx={{
+                                                        backgroundColor: "blue",
+                                                        opacity: 0.3
+                                                    }}></TableCell>
+                                                    <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[2]}, {screenshots[key][index2].coordinates[3]}</TableCell>
                                                     <TableCell align="center" >
