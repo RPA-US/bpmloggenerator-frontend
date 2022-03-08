@@ -27,8 +27,11 @@ const initialState: wizardState = {
   seed: null,
   scenario_variability: null,
   case_variability: null,
-  initialFunctions: new Map(),
-  initialParams: new Map(),
+  initialValues: {
+    initialFunctions: new Map(),
+    initialParams: new Map(),
+    initialVariate: new Map()
+  },
   functions: null,
   params: null,
   category_functions: null,
@@ -58,13 +61,19 @@ export const wizardSlice = createSlice({
       state,
       { payload }: PayloadAction<Map<any,any>>
     ) => {
-      state.initialParams = payload;
+      state.initialValues.initialParams = payload;
     },
     setInitialFunctions: (
       state,
       { payload }: PayloadAction<Map<any,any>>
     ) => {
-      state.initialFunctions = payload;
+      state.initialValues.initialFunctions = payload;
+    },
+    setInitialVariate: (
+      state,
+      { payload }: PayloadAction<Map<any,any>>
+    ) => {
+      state.initialValues.initialVariate = payload;
     },
     setParams: (
       state,
@@ -104,7 +113,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions } = wizardSlice.actions
+  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions, setInitialVariate } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -123,6 +132,25 @@ export const wizardSlice = createSlice({
             [act]:{
               ...json_conf[variant][act],
               [column]: log_column_conf
+            }
+          }
+    }));
+  }
+
+  export const updateVariateValue = (variant: string, act: string, column: string, variate_value: number): AppThunk => async (dispatch: AppDispatch, getState) => {
+    const { wizard } = getState();
+    let json_conf = wizard.seed;
+    dispatch(
+      setVariabilityConfiguration({
+          ...json_conf,
+          [variant]: {
+            ...json_conf[variant],
+            [act]:{
+              ...json_conf[variant][act],
+              [column]: {
+                ...json_conf[variant][act][column],
+                variate: variate_value
+              }
             }
           }
     }));
@@ -156,6 +184,7 @@ export const wizardSlice = createSlice({
       
       let aux_params = new Map();
       let aux_functions = new Map();
+      let aux_variate = new Map();
       Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
         const val: any = entry[1];
         aux_functions.set(entry[0], val.name);
@@ -163,9 +192,11 @@ export const wizardSlice = createSlice({
           possible_params: {},
           args: val.args
         });
+        aux_variate.set(entry[0], val.variate);
       });
       dispatch(setInitialParams(aux_params));
       dispatch(setInitialFunctions(aux_functions));
+      dispatch(setInitialVariate(aux_variate));
     } catch (error) {  
       dispatch(setError(error as string))
     } finally {

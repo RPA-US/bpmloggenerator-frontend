@@ -21,7 +21,7 @@ export interface ExperimentFormProperties {
   initialValues?: any
 }
 
-const ExperimentAssist: React.FC<ExperimentFormProperties> = ({ onSubmit, disabled = false, initialValues = {}}) => {
+const ExperimentAssist: React.FC = () => {
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { seed } = useSelector(experimentsSelector);

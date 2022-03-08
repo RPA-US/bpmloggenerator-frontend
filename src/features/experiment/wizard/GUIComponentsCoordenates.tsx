@@ -270,7 +270,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function saveAndEnd() {
         if (Object.keys(screenshots).length > 0) {
             let screenTMP = screenshots;
-            updateJsonConf(variant,act,"Screenshot",screenTMP,"");
+            updateJsonConf(variant,act,"Screenshot",screenTMP);
         }
         //history.push('/experiment-wizard')
 
