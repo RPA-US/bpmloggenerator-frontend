@@ -55,6 +55,13 @@ export interface IScreenshot{
   [name: string]: IArguments[]
 }
 
+export interface IScreenshotColumn{
+  initValue: string,
+  variate: number,
+  name: string,
+  args: IScreenshot
+}
+
 export interface IDependency{
   Activity: string,
   V: number,

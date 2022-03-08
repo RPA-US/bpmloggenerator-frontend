@@ -6,6 +6,7 @@ import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
 import VariabilityFunctionRepository from 'infrastructure/repositories/variability-function';
 import ParamFunctionRepository from 'infrastructure/repositories/params';
+import ScreenshotRepository from 'infrastructure/repositories/image';
 import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 
 export const guiComponentCategoryRepository = new GUIComponentCategoryRepository();
@@ -13,6 +14,7 @@ export const guiComponentRepository = new GUIComponentRepository();
 export const variabilityFunctionCategoryRepository = new VariabilityFunctionCategoryRepository();
 export const variabilityFunctionRepository = new VariabilityFunctionRepository();
 export const paramFunctionCategoryRepository = new ParamFunctionRepository();
+export const screenshotRepository = new ScreenshotRepository();
 
 // ================================== REDUCERS ==================================
 
