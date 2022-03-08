@@ -21,7 +21,7 @@ import Paper from '@mui/material/Paper';
 import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
-import { wizardSelector, loadFunctionsAndCategories, updateJsonConf, updateVariateValue } from 'features/experiment/wizard/slice';
+import { wizardSelector, loadFunctionsAndCategories, updateJsonConf, updateVariateValue, loadInitValues } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -48,12 +48,18 @@ const ColumnVariability: React.FC = () => {
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
   const { seed, functions, params, category_functions, screenshot_functions, initialValues } = useSelector(wizardSelector);
+  if (functions === null || params === null || category_functions === null) {
+    dispatch(loadFunctionsAndCategories());
+  }
   useEffect(() => {
-    if (functions === null || params === null) {
-      dispatch(loadFunctionsAndCategories(variant, act));
+    if (functions === null || params === null || category_functions === null) {
+      dispatch(loadFunctionsAndCategories());
     }
   }, [ dispatch ])
-  const json_conf = seed;
+
+  useEffect(() => {
+    dispatch(loadInitValues(variant, act));
+  }, [ seed ])
 
   const handleChangeFunction = (variant: string, act: string, column: string, log_column_conf: any, event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
@@ -82,22 +88,6 @@ const ColumnVariability: React.FC = () => {
     const selectedValue = event.target.checked ? 1 : 0;
     dispatch(updateVariateValue(variant, act, log_column_name, selectedValue))
   };
-  
-  // function paramsByFunction(functionTMP: number) {
-  //   let paramsTMP: FunctionParamDTO[] = [];
-  //   let paramsID = []
-  //   for (let f of functions) {
-  //     if (f.id === functionTMP && f.params.length > 0) {
-  //       for (let id2 of params) {
-  //         paramsID = f.params.filter(c => { (id2.id===c)?c:""});
-  //         if (paramsID.length > 0) {
-  //           paramsTMP.push(id2);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   setParams([...paramsTMP]);
-  // }
 
   return (
     <TableContainer component={Paper}>
@@ -112,7 +102,7 @@ const ColumnVariability: React.FC = () => {
         </TableHead>
         <TableBody>
         {
-          Object.entries(json_conf[variant][act]).map( entry => {
+          Object.entries(seed[variant][act]).map( entry => {
             const log_column_name = entry[0];
             const log_column: any = entry[1];
             // const value: ColumnConf = entry[1];

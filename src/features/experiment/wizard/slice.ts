@@ -163,7 +163,25 @@ export const wizardSlice = createSlice({
     }));
   }
 
-  export const loadFunctionsAndCategories = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
+  export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
+      const { wizard } = getState();
+      let aux_params = new Map();
+      let aux_functions = new Map();
+      let aux_variate = new Map();
+      Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
+        const val: any = entry[1];
+        aux_functions.set(entry[0], val.name);
+        aux_params.set(entry[0], {
+          possible_params: {},
+          args: val.args
+        });
+        aux_variate.set(entry[0], val.variate);
+      });
+      dispatch(setInitialParams(aux_params));
+      dispatch(setInitialFunctions(aux_functions));
+      dispatch(setInitialVariate(aux_variate));
+  }
+  export const loadFunctionsAndCategories = (): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
     try {
       dispatch(setLoading(true))
@@ -192,22 +210,6 @@ export const wizardSlice = createSlice({
         const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
         dispatch(setParams(paramsResponse.results));
       }
-      
-      let aux_params = new Map();
-      let aux_functions = new Map();
-      let aux_variate = new Map();
-      Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
-        const val: any = entry[1];
-        aux_functions.set(entry[0], val.name);
-        aux_params.set(entry[0], {
-          possible_params: {},
-          args: val.args
-        });
-        aux_variate.set(entry[0], val.variate);
-      });
-      dispatch(setInitialParams(aux_params));
-      dispatch(setInitialFunctions(aux_functions));
-      dispatch(setInitialVariate(aux_variate));
     } catch (error) {  
       dispatch(setError(error as string))
     } finally {

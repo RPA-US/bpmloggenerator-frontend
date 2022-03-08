@@ -4,6 +4,7 @@ import { Experiment, ExperimentError, ExperimentsState, Pagination } from './typ
 import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
+import { wizardSlice } from './wizard/slice';
 
 export const experimentRepository = new ExperimentRepository();
 
@@ -17,7 +18,7 @@ const initialState: ExperimentsState =  {
     hasNext: true
   },
   detail: null,
-  seed: null,
+  seed_log: null,
   isLoading: false,
   error: null
 }
@@ -55,10 +56,10 @@ export const experimentsSlice = createSlice({
     },
     setExperiment: (
       state,
-      { payload }: PayloadAction<{ detail: Experiment; seed: any }>
+      { payload }: PayloadAction<{ detail: Experiment; seed_log: any }>
     ) => {
       state.detail = payload.detail;
-      state.seed = payload.seed;
+      state.seed_log = payload.seed_log;
     },
     setError: (state, { payload }: PayloadAction<ExperimentError>) => {
       state.error = payload;
@@ -121,11 +122,13 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     if (!hasPreviousId && experimentResponse.id != null) {
       const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
+        const aux_seed = csvLogToJSON(data.get("seedLog"), data.get("special_colnames"))
         dispatch(
           setExperiment({
             detail: experimentDTOToExperimentType(savedExperimentData),
-            seed: csvLogToJSON(data.get("seedLog"), data.get("special_colnames"))
-        }));
+            seed_log: aux_seed
+        }))
+        dispatch(wizardSlice.actions.setVariabilityConfiguration(aux_seed))
       } else {
         const { experiments, pagination } = experiment;
         dispatch(setExperiments({
