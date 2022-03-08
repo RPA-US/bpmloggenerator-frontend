@@ -34,6 +34,7 @@ const initialState: wizardState = {
   },
   functions: null,
   params: null,
+  screenshot_functions: null,
   category_functions: null,
   gui_components: null,
   category_gui_components: null,
@@ -87,6 +88,12 @@ export const wizardSlice = createSlice({
     ) => {
       state.functions = payload;
     },
+    setScreenshotFunctions: (
+      state,
+      { payload }: PayloadAction<VariabilityFunctionDTO[]>
+    ) => {
+      state.screenshot_functions = payload;
+    },
     setFunctionCategories: (
       state,
       { payload }: PayloadAction<CategoryDTO[]>
@@ -113,7 +120,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions, setInitialVariate } = wizardSlice.actions
+  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions, setInitialVariate } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -161,22 +168,26 @@ export const wizardSlice = createSlice({
     try {
       dispatch(setLoading(true))
       // const currentPage = experiment.pagination.page;
-      if (wizard.functions === null) {
-        const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
-        dispatch(setFunctions(functionsResponse.results));
-      }
       if (wizard.category_functions === null) {
         const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
         dispatch(setFunctionCategories(functionCategoriesResponse.results));
       }
-      if (wizard.gui_components === null) {
-        const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
-        dispatch(setGUIComponents(guiComponentsResponse.results));
+      if (wizard.functions === null) {
+        const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
+        const screenshot_functions: any = wizard.category_functions?.filter(c => c.name==="Screenshot");
+        const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
+        const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
+        dispatch(setFunctions(functions_no_screenshot));
+        dispatch(setScreenshotFunctions(functions_screenshot));
       }
-      if (wizard.category_gui_components === null) {
-        const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
-        dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));
-      }
+      // if (wizard.gui_components === null) {
+      //   const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
+      //   dispatch(setGUIComponents(guiComponentsResponse.results));
+      // }
+      // if (wizard.category_gui_components === null) {
+      //   const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
+      //   dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));
+      // }
       if (wizard.params === null) {
         const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
         dispatch(setParams(paramsResponse.results));

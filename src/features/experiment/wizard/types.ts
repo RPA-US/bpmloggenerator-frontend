@@ -41,6 +41,7 @@ export interface IParams {
     initialValues: InitialValues,
     functions: VariabilityFunctionDTO[] | null,
     params: FunctionParamDTO[] | null,
+    screenshot_functions: VariabilityFunctionDTO[] | null,
     category_functions: CategoryDTO[] | null,
     gui_components: GUIComponentDTO[] | null,
     category_gui_components: CategoryDTO[] | null,

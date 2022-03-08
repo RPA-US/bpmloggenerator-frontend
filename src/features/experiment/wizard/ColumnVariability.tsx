@@ -47,9 +47,9 @@ const ColumnVariability: React.FC = () => {
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
-  const { seed, functions, params, category_functions, gui_components, category_gui_components, initialValues } = useSelector(wizardSelector);
+  const { seed, functions, params, category_functions, screenshot_functions, initialValues } = useSelector(wizardSelector);
   useEffect(() => {
-    if (functions?.length === 0 || params?.length === 0) {
+    if (functions === null || params === null) {
       dispatch(loadFunctionsAndCategories(variant, act));
     }
   }, [ dispatch ])
@@ -57,17 +57,21 @@ const ColumnVariability: React.FC = () => {
 
   const handleChangeFunction = (variant: string, act: string, column: string, log_column_conf: any, event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
-    const log_column_conf_updated = {
-      ...log_column_conf,
-      name: selectedValue
+    if(selectedValue !== ""){
+      const log_column_conf_updated = {
+        ...log_column_conf,
+        name: selectedValue
+      }
+      const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)
+      let aux_params = initialValues.initialParams.get(column);
+      aux_params = {
+        ...aux_params,
+        possible_params: functionSelected.params
+      } 
+      dispatch(updateJsonConf(variant, act, column, log_column_conf_updated));
+    } else {
+      dispatch(updateVariateValue(variant, act, column, 0));
     }
-    const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)
-    let aux_params = initialValues.initialParams.get(column);
-    aux_params = {
-      ...aux_params,
-      possible_params: functionSelected.params
-    } 
-    dispatch(updateJsonConf(variant, act, column, log_column_conf_updated));
   };
   const handleChangeParam = (event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
@@ -123,12 +127,33 @@ const ColumnVariability: React.FC = () => {
                   <TableCell>
                     <Checkbox
                       aria-label={`variate-${variant}-${act}-${log_column_name}`}
-                      defaultChecked={ log_column.variate === 1 }
+                      defaultChecked={ initialValues.initialVariate.get(log_column_name) === 1 }
                       onClick={(e) => handleVariateOnClick(variant, act, log_column_name, e)}
                       />
                   </TableCell>
                   <TableCell>
-                      { entry[0] === "Screenshot"? '' : 
+                      { entry[0] === "Screenshot"?
+                          <FormControl sx={{ m: 1, minWidth: 120 }}>
+                          <InputLabel id={`function-${variant}-${act}-${log_column}`}>
+                          <Typography component="div" >
+                          {t('features.wizard.columnVariability.screenshot_name_function')}
+                          </Typography>
+                          </InputLabel>
+                          <Select
+                            id={`function-${variant}-${act}-${log_column}`}
+                            label={t('features.wizard.columnVariability.screenshot_name_function')}
+                            onChange={(e:any) => handleChangeFunction(variant, act, log_column_name, log_column, e)}
+                            disabled={log_column.variate}
+                            >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            {screenshot_functions!= null && Object.values({...screenshot_functions}).map((f:any) => (
+                              <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
+                              ))}
+                          </Select>
+                        </FormControl>
+                        : 
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
                           <InputLabel id={`function-${variant}-${act}-${log_column}`}>
                           <Typography component="div" >
@@ -139,14 +164,14 @@ const ColumnVariability: React.FC = () => {
                             id={`function-${variant}-${act}-${log_column}`}
                             label={t('features.wizard.columnVariability.variability_function_label')}
                             onChange={e => handleChangeFunction(variant, act, log_column_name, log_column, e)}
-                            defaultValue={log_column.variate===1 ? initialValues.initialFunctions.get(log_column_name) : "" }
+                            defaultValue={initialValues.initialVariate.get(log_column_name)===1 ? initialValues.initialFunctions.get(log_column_name) : "" }
                             disabled={!log_column.variate}
-                          >
+                            >
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
                             {functions!= null && Object.values({...functions}).map((f:any) => (
-                                <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
+                              <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
                               ))}
                           </Select>
                         </FormControl>
@@ -155,6 +180,7 @@ const ColumnVariability: React.FC = () => {
                   <TableCell>
                       { entry[0] === "Screenshot"?
                       <Button
+                        disabled={!log_column.variate}
                         variant="contained"
                         component={RouterLink}
                         to={`/get-gui-component-coordinates/${variant}/${act}/${log_column.initValue}`}
