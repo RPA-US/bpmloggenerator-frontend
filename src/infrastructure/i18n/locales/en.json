@@ -63,6 +63,7 @@
       },
       "columnVariability": {
         "variate": "Variate",
+        "screenshot_name_function": "Rename screenshot function",
         "columnName": "Column Name",
         "variabilityFunction": "Variability Function",
         "variabilityParams": "Params",
