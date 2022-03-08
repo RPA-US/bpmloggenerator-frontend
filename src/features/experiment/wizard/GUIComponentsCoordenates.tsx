@@ -19,7 +19,7 @@ import ChevronLeft from "@mui/icons-material/ChevronLeft";
 
 //TODO: [X]1 Meter contenido en el state 
 //TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
-//TODO: [-]3 cambiar la forma del funcionamiento de dependencias
+//TODO: [X]3 cambiar la forma del funcionamiento de dependencias
 //TODO: [X]4 Boton anterior y siguientes con un estilo diferente y posiciones
 //TODO: [X]5 Alert si se pulsa hacia atras con un continuar o cancelar
 //TODO: [-]6 Usar el random color en la tabla y en la imagen
@@ -335,7 +335,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         let screenTMP = screenshots;
         if (guiID !== 0) {
             let guiName: GUIComponentDTO = getByID(guiComponents, guiID);
-            if (functionID !== 1000) {
+            if (functionID !== 0) {
                 let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
                 let paramsTMP: FunctionParamDTO[] = params;
                 if (guiName !== null && functionName !== null) {
@@ -530,12 +530,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 label={t('features.experiment.assist.function.variability_function')}
                                 onChange={handleChangeFunction}
                             >
-                                <MenuItem value={1000}>{t('features.experiment.assist.function.dependency')}</MenuItem>
+                                <MenuItem value={0}>{t('features.experiment.assist.function.dependency')}</MenuItem>
                                 {Object.keys(variabilityFunctions).map((key, index) => (
                                     <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
                                 ))}
                             </Select>
-                            {functionID === 1000 &&
+                            {functionID === 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                                     <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
