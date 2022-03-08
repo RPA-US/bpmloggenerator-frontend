@@ -304,7 +304,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             />
             <Button
               type="submit" name="scenarioVariability"
-              disabled={ disabled || wizzardDisabled }
+              disabled={ disabled || scenariosConfDisabled || wizzardDisabled }
               variant="outlined"
               style={{ fontSize: "small", marginLeft: 4 }}
               endIcon={<SettingsSuggestIcon />}>{t('features.experiment.form.assistant')}</Button>
