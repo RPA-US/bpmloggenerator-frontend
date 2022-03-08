@@ -27,6 +27,8 @@ const initialState: wizardState = {
   seed: null,
   scenario_variability: null,
   case_variability: null,
+  initialFunctions: new Map(),
+  initialParams: new Map(),
   functions: null,
   params: null,
   category_functions: null,
@@ -51,6 +53,18 @@ export const wizardSlice = createSlice({
       { payload }: PayloadAction<{ seed: any }>
     ) => {
       state.seed = payload;
+    },
+    setInitialParams: (
+      state,
+      { payload }: PayloadAction<Map<any,any>>
+    ) => {
+      state.initialParams = payload;
+    },
+    setInitialFunctions: (
+      state,
+      { payload }: PayloadAction<Map<any,any>>
+    ) => {
+      state.initialFunctions = payload;
     },
     setParams: (
       state,
@@ -90,7 +104,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setGUIComponents, setGUIComponentCategories, setParams } = wizardSlice.actions
+  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -98,7 +112,7 @@ export const wizardSlice = createSlice({
   
   // ================================== THUNK middleware ==================================
   
-  export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any, event: any): AppThunk => async (dispatch: AppDispatch, getState) => {
+  export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { wizard } = getState();
     let json_conf = wizard.seed;
     dispatch(
@@ -114,7 +128,7 @@ export const wizardSlice = createSlice({
     }));
   }
 
-  export const loadFunctionsAndCategories = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+  export const loadFunctionsAndCategories = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
     try {
       dispatch(setLoading(true))
@@ -139,6 +153,19 @@ export const wizardSlice = createSlice({
         const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
         dispatch(setParams(paramsResponse.results));
       }
+      
+      let aux_params = new Map();
+      let aux_functions = new Map();
+      Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
+        const val: any = entry[1];
+        aux_functions.set(entry[0], val.name);
+        aux_params.set(entry[0], {
+          possible_params: {},
+          args: val.args
+        });
+      });
+      dispatch(setInitialParams(aux_params));
+      dispatch(setInitialFunctions(aux_functions));
     } catch (error) {  
       dispatch(setError(error as string))
     } finally {

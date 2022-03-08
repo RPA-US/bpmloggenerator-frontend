@@ -21,7 +21,7 @@ import Paper from '@mui/material/Paper';
 import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
-import { wizardSelector, loadFunctionsAndCategories } from 'features/experiment/wizard/slice';
+import { wizardSelector, loadFunctionsAndCategories, updateJsonConf } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -47,49 +47,48 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
-  dispatch(loadFunctionsAndCategories());
-  const { seed, functions, params, category_functions, gui_components, category_gui_components } = useSelector(wizardSelector);
+  const { seed, functions, params, category_functions, gui_components, category_gui_components, initialParams, initialFunctions } = useSelector(wizardSelector);
+  useEffect(() => {
+    if (functions?.length === 0 || params?.length === 0) {
+      dispatch(loadFunctionsAndCategories(variant, act));
+    }
+  }, [ dispatch ])
   const json_conf = seed;
-  const [age, setAge] = React.useState('');
-  const [initialFunctions, initialParams] = initialColumnVariabilityValues(seed);
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
+
+  const handleChangeFunction = (variant: string, act: string, column: string, log_column_conf: any, event: SelectChangeEvent) => {
+    const selectedValue = event.target.value;
+    const log_column_conf_updated = {
+      ...log_column_conf,
+      name: selectedValue
+    }
+    const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)
+    let aux_params = initialParams.get(column);
+    aux_params = {
+      ...aux_params,
+      possible_params: functionSelected.params
+    } 
+    dispatch(updateJsonConf(variant, act, column, log_column_conf_updated));
   };
-
-  function initialColumnVariabilityValues(seed: any) {
-    let initialParams = new Map();
-    let initialFunctions = new Map();
-    Object.entries({...seed[variant][act]}).forEach(entry => {
-      const val: any = entry[1]; 
-      initialFunctions.set(entry[0], val.name);
-      initialParams.set(entry[0], val.args);
-    });
-    return [initialFunctions, initialParams]
-  }
-
-
-  function paramsByFunction(functionTMP: number) {
-    let paramsTMP: FunctionParamDTO[] = [];
-    let paramsID = []
-    // for (let f of functions) {
-    //   if (f.id === functionTMP && f.params.length > 0) {
-    //     for (let id2 of params) {
-    //       paramsID = f.params.filter(c => { (id2.id===c)?c:""});
-    //       if (paramsID.length > 0) {
-    //         paramsTMP.push(id2);
-    //       }
-    //     }
-    //   }
-    // }
-    // setParams([...paramsTMP]);
-  }
-
-  function handleChangeFunction(e: any) {
-    let functionTMP: number = e.target.value;
-    // setFunction(functionTMP);
-    paramsByFunction(functionTMP);
-  }
-
+  const handleChangeParam = (event: SelectChangeEvent) => {
+    const selectedValue = event.target.value;
+    console.log(selectedValue)
+  };
+  
+  // function paramsByFunction(functionTMP: number) {
+  //   let paramsTMP: FunctionParamDTO[] = [];
+  //   let paramsID = []
+  //   for (let f of functions) {
+  //     if (f.id === functionTMP && f.params.length > 0) {
+  //       for (let id2 of params) {
+  //         paramsID = f.params.filter(c => { (id2.id===c)?c:""});
+  //         if (paramsID.length > 0) {
+  //           paramsTMP.push(id2);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   setParams([...paramsTMP]);
+  // }
 
   return (
     <TableContainer component={Paper}>
@@ -119,7 +118,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                   <TableCell>
                     <Checkbox
                       aria-label={`variate-${variant}-${act}-${log_column_name}`}
-                      defaultChecked={ log_column.variate }
+                      defaultChecked={ log_column.variate === 1 }
                       // onClick={(event) => updateJsonConf(variant, act, event)}
                       />
                   </TableCell>
@@ -134,8 +133,8 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                           <Select
                             id={`function-${variant}-${act}-${log_column}`}
                             label={t('features.wizard.columnVariability.variability_function_label')}
-                            onChange={handleChange}
-                            defaultValue={log_column.variate ? initialFunctions.get(log_column_name) : "" }
+                            onChange={e => handleChangeFunction(variant, act, log_column_name, log_column, e)}
+                            defaultValue={log_column.variate===1 ? initialFunctions.get(log_column_name) : "" }
                             disabled={!log_column.variate}
                           >
                             <MenuItem value="">
@@ -166,8 +165,8 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                         <Select
                           id={`params-${variant}-${act}-${log_column}`}
                           label={t('features.wizard.columnVariability.function_param_label')}
-                          onChange={handleChangeFunction}
-                          defaultValue={log_column.variate ? initialParams.get(log_column_name) : "" }
+                          onChange={handleChangeParam}
+                          defaultValue={log_column.variate===1 ? initialParams.get(log_column_name) : "" }
                           disabled={!log_column.variate}
                         >
                           <MenuItem value="">

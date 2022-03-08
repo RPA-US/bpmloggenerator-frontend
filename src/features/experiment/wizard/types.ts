@@ -32,6 +32,8 @@ export interface IParams {
     seed: any,
     scenario_variability: any,
     case_variability: any,
+    initialFunctions: Map<any, any>,
+    initialParams: Map<any, any>,
     functions: VariabilityFunctionDTO[] | null,
     params: FunctionParamDTO[] | null,
     category_functions: CategoryDTO[] | null,
