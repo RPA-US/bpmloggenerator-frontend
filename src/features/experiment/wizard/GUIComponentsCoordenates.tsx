@@ -17,16 +17,9 @@ import Http from "infrastructure/http/http";
 import { json } from 'stream/consumers';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 
-//TODO: [X]1 Meter contenido en el state 
-//TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
-//TODO: [X]3 cambiar la forma del funcionamiento de dependencias
-//TODO: [X]4 Boton anterior y siguientes con un estilo diferente y posiciones
-//TODO: [X]5 Alert si se pulsa hacia atras con un continuar o cancelar
-//TODO: [-]6 Usar el random color en la tabla y en la imagen
-//TODO: []7 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
-//TODO: []8 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
-//TODO: [X]9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
-//TODO: [?]10 meter los resultados de los funciones/params/gui en el wizard
+
+//TODO: FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
+//TODO: meter los resultados de los funciones/params/gui en el wizard
 
 export interface IRandomColor {
     [name: string]: string[]
@@ -54,6 +47,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialVarFunction: VariabilityFunctionDTO[] = []
     const initialguiComponents: GUIComponentDTO[] = []
     const initialColors: IRandomColor = {}
+    const initialVariants: string[] = []
 
     //Argumentos de screenshots a almacenar
     const [json_conf, setjJon_conf] = useState({ ...seed });
@@ -76,7 +70,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [paramsList, setParamsFunctions] = useState(initialparams);
     const [guiComponents, setGuiComponents] = useState(initialguiComponents);
     const [params, setParams] = useState(initialparams);
-    const [variantDepedency, setVariantDependency] = useState("");
+    const [variantDependency, setVariantDependency] = useState(initialVariants);
+    const [activityDependency, setActivityDependency] = useState(initialVariants);
+    const [varAct, setVarAct] = useState(["", ""]);
+
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
         if (url === "") {
@@ -163,8 +160,18 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         setParams([...paramsTMP]);
     }
     //Seed variants
+    function seedVariants() {
+        let variantListTMP: string[] = []
+        Object.keys(json_conf).map((key) => (variantListTMP.push(key)))
+        setVariantDependency([...variantListTMP])
+    }
 
-    //Seed activities by variant
+    function activitiesByVariant(variantKey: string) {
+        let activityListTMP: string[] = []
+        Object.keys(json_conf[variantKey]).map((key) => (activityListTMP.push(key)))
+        setActivityDependency([...activityListTMP])
+    }
+
     function getResolutionBRW() {
         var imgRect: any = document.getElementById('imgRect');
         var width: number = imgRect.clientWidth;
@@ -192,6 +199,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             aux = detail.screenshotsPath.split("/");
             getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
         }
+        seedVariants();
         getResolution();
     }, []);
 
@@ -233,8 +241,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         } else {
             y2 = ty
         }
-        //TODO: que hacer con el randomColor
-        //var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
         if (resolutionIMG !== resolutionBRW) {
             x1 = Math.round(resolutionIMG[0] * x1 / resolutionBRW[0])
             y1 = Math.round(resolutionIMG[1] * y1 / resolutionBRW[1])
@@ -324,6 +330,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         paramsByFunction(functionTMP);
     }
 
+    function handleChangeVariantDependency(e: any) {
+        let variantTMP: string = e.target.value;
+        setVarAct([variantTMP, ""]);
+        activitiesByVariant(variantTMP)
+    }
+
+    function handleChangeActivityDependency(e: any) {
+        let activityTMP: string = e.target.value;
+        setVarAct([varAct[0], activityTMP]);
+    }
+
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
         setGUI(guiTMP);
@@ -372,20 +389,27 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             } else {
                 let dependencyTMP: IDependency = initialDependency;
-                if (guiName !== null && actRef.current.value !== "" && varRef.current.value !== 0) {
+                if (guiName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "") {
                     argumentTMP.id = countTMP;
                     argumentTMP.name = ""
                     dependencyTMP.id = count
-                    dependencyTMP.Activity = actRef.current.value.trim()
-                    dependencyTMP.V = varRef.current.value.trim()
+                    dependencyTMP.Activity = varAct[1].trim()
+                    dependencyTMP.V = +varAct[0].trim()
                     argumentTMP.args_dependency = dependencyTMP;
                     if (guiName !== null) {
+                        let colorTMP = randomColor;
+
                         if (screenTMP.hasOwnProperty(guiName.id_code)) {
                             let listARGS = screenTMP[guiName.id_code!]
                             listARGS.push(argumentTMP)
                             screenTMP[guiName.id_code] = listARGS
+                            let listColor = colorTMP[guiName.id_code!]
+                            listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+                            colorTMP[guiName.id_code] = listColor
                         } else {
                             screenTMP[guiName.id_code] = [argumentTMP]
+                            colorTMP[guiName.id_code] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+
                         }
                         setScreenshot({
                             ...screenTMP
@@ -458,7 +482,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                             width: resizeRect(screenshots[key][index2].coordinates[2], resolutionBRW[0], resolutionIMG[0]) - resizeRect(screenshots[key][index2].coordinates[0], resolutionBRW[0], resolutionIMG[0]),
                                             height: resizeRect(screenshots[key][index2].coordinates[3], resolutionBRW[1], resolutionIMG[1]) - resizeRect(screenshots[key][index2].coordinates[1], resolutionBRW[1], resolutionIMG[1]),
                                             outline: "2px solid black",
-                                            backgroundColor: "blue",
+                                            backgroundColor: randomColor[key][index2],
                                             opacity: 0.3
                                         }}
                                     ></Box>))))
@@ -538,12 +562,31 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                             {functionID === 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                                    <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
-                                        <TextField inputRef={actRef} placeholder={t('features.experiment.assist.function.activity_dependency')} label={t('features.experiment.assist.function.activity_dependency')} />
+                                        <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
+                                        <Select
+                                            id="select_variant"
+                                            value={varAct[0]}
+                                            label={t('features.experiment.assist.function.variability_function')}
+                                            onChange={handleChangeVariantDependency}
+                                        >
+                                            {Object.keys(variantDependency).map((key, index) => (
+                                                <MenuItem value={variantDependency[index]}>{variantDependency[index]}</MenuItem>
+                                            ))}
+                                        </Select>
                                     </Box>
                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                                    <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
-                                        <TextField inputRef={varRef} placeholder={t('features.experiment.assist.function.variant_dependency')} label={t('features.experiment.assist.function.variant_dependency')} />
+                                        <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
+                                        <Select
+                                            disabled={+varAct[0].trim() === 0}
+                                            id="select_activity"
+                                            value={varAct[1]}
+                                            label={t('features.experiment.assist.function.variability_function')}
+                                            onChange={handleChangeActivityDependency}
+                                        >
+                                            {Object.keys(activityDependency).map((key, index) => (
+                                                <MenuItem value={activityDependency[index]}>{activityDependency[index]}</MenuItem>
+                                            ))}
+                                        </Select>
                                     </Box>
                                 </Box>}
                             {Object.keys(variabilityFunctions).map((key, index) => (
@@ -588,10 +631,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                         {key}
                                                     </TableCell>
                                                     <TableCell align="center" sx={{
-                                                        backgroundColor: "blue",
+                                                        backgroundColor: randomColor[key][index2],
                                                         opacity: 0.3
                                                     }}></TableCell>
-                                                    <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[2]}, {screenshots[key][index2].coordinates[3]}</TableCell>
                                                     <TableCell align="center" >
