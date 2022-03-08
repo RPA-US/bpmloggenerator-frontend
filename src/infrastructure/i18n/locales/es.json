@@ -69,6 +69,7 @@
           "variability_function": "Función de variabilidad",
           "params_function": "Parámetros de la función seleccionada",
           "gui_components": "Componente GUI a editar",
+          "dependency": "Añadir dependencia",
           "activity_dependency": "Actividad dependiente",
           "variant_dependency": "Variante dependiente"
         },

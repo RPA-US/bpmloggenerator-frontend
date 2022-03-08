@@ -27,13 +27,18 @@ export interface IParams {
     code: string
   }
   
+  export interface InitialValues {
+    initialFunctions: Map<any, any>,
+    initialParams: Map<any, any>,
+    initialVariate: Map<any, any>
+  }
+
   export interface wizardState{
     elements: {[name: string]: ICoordinates},
     seed: any,
     scenario_variability: any,
     case_variability: any,
-    initialFunctions: Map<any, any>,
-    initialParams: Map<any, any>,
+    initialValues: InitialValues,
     functions: VariabilityFunctionDTO[] | null,
     params: FunctionParamDTO[] | null,
     category_functions: CategoryDTO[] | null,

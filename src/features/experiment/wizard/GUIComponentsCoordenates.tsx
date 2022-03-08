@@ -5,7 +5,7 @@ import { Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typ
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { screenshotRepository,updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
+import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
@@ -14,16 +14,18 @@ import { IDependency, IScreenshotColumn, ICoordinates, IElements, IScreenshot, I
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
+import BackButton from 'components/BackButton';
 
-//TODO: []1 Meter contenido en el state 
-//TODO: []2 Si se pulsa siguiente, cambiar variate del screenshot a 1
-//TODO: []3 Boton anterior y siguientes con un estilo diferente y posiciones
-//TODO: []4 Alert si se pulsa hacia atras con un continuar o cancelar
-//TODO: []5 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
-//TODO: []6 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
-//TODO: []7 Usar el random color en la tabla y en la imagen
-//TODO: []8 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
-//TODO: []9 meter los resultados de los funciones/params/gui en el wizard
+//TODO: [X]1 Meter contenido en el state 
+//TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
+//TODO: []3 cambiar la forma del funcionamiento de dependencias
+//TODO: []4 Boton anterior y siguientes con un estilo diferente y posiciones
+//TODO: []5 Alert si se pulsa hacia atras con un continuar o cancelar
+//TODO: []6 Usar el random color en la tabla y en la imagen
+//TODO: []7 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
+//TODO: []8 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
+//TODO: []9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
+//TODO: []10 meter los resultados de los funciones/params/gui en el wizard
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
@@ -178,13 +180,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     useEffect(() => {
         let aux: string[] = [];
-        if (detail !== null) {
+        if (detail !== null && url === "") {
             aux = detail.screenshotsPath.split("/");
             getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
-
         }
         getResolution();
-    });
+    }, []);
 
     window.onresize = function () {
         getResolutionBRW();
@@ -255,13 +256,24 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             let screenTMP = screenshots;
             let screenColumn: IScreenshotColumn = {
                 initValue: json_conf[variant][act].Screenshot.initValue,
-                 name: json_conf[variant][act].Screenshot.name, 
-                 variate: 1, 
-                 args: screenTMP };
-            updateJsonConf(variant, act, "Screenshot", screenColumn);
+                name: json_conf[variant][act].Screenshot.name,
+                variate: 1,
+                args: screenTMP
+            };
+            dispatch(wizardSlice.actions.setVariabilityConfiguration({
+                   ...json_conf,
+                   [variant]: {
+                     ...json_conf[variant],
+                     [act]:{
+                       ...json_conf[variant][act],
+                       ["Screenshot"]: screenColumn
+                     }
+                   }
+             }));
+            history.push('/column-variability/'+variant+'/'+act)
+        }else{
+            history.push('/column-variability/'+variant+'/'+act)
         }
-        history.push('/experiment-wizard')
-
     }
 
     function onLoadImage() {
@@ -352,9 +364,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
     }
 
+    function confirmBack() {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm(t('features.experiment.assist.title.elementselector'))) {
+            history.push("/experiment-wizard")
+        }
+    }
+
     return (
         <>
             <Typography variant="h4">
+                <BackButton />
                 {t('features.experiment.assist.title.elementselector')}
             </Typography>
             <Button

@@ -21,7 +21,7 @@ import Paper from '@mui/material/Paper';
 import { CategoryDTO, FunctionParamDTO, GUIComponentDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 import { authSelector } from 'features/auth/slice';
 import { experimentsSelector } from 'features/experiment/slice';
-import { wizardSelector, loadFunctionsAndCategories, updateJsonConf } from 'features/experiment/wizard/slice';
+import { wizardSelector, loadFunctionsAndCategories, updateJsonConf, updateVariateValue } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -41,13 +41,13 @@ export interface ColumnConf {
   args: any
 }
 
-const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disabled = false, initialValues = {}}) => {
+const ColumnVariability: React.FC = () => {
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
-  const { seed, functions, params, category_functions, gui_components, category_gui_components, initialParams, initialFunctions } = useSelector(wizardSelector);
+  const { seed, functions, params, category_functions, gui_components, category_gui_components, initialValues } = useSelector(wizardSelector);
   useEffect(() => {
     if (functions?.length === 0 || params?.length === 0) {
       dispatch(loadFunctionsAndCategories(variant, act));
@@ -62,7 +62,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
       name: selectedValue
     }
     const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)
-    let aux_params = initialParams.get(column);
+    let aux_params = initialValues.initialParams.get(column);
     aux_params = {
       ...aux_params,
       possible_params: functionSelected.params
@@ -72,6 +72,11 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
   const handleChangeParam = (event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
     console.log(selectedValue)
+  };
+
+  const handleVariateOnClick = (variant: string, act: string, log_column_name: string, event: any) => {
+    const selectedValue = event.target.checked ? 1 : 0;
+    dispatch(updateVariateValue(variant, act, log_column_name, selectedValue))
   };
   
   // function paramsByFunction(functionTMP: number) {
@@ -119,7 +124,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                     <Checkbox
                       aria-label={`variate-${variant}-${act}-${log_column_name}`}
                       defaultChecked={ log_column.variate === 1 }
-                      // onClick={(event) => updateJsonConf(variant, act, event)}
+                      onClick={(e) => handleVariateOnClick(variant, act, log_column_name, e)}
                       />
                   </TableCell>
                   <TableCell>
@@ -134,7 +139,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                             id={`function-${variant}-${act}-${log_column}`}
                             label={t('features.wizard.columnVariability.variability_function_label')}
                             onChange={e => handleChangeFunction(variant, act, log_column_name, log_column, e)}
-                            defaultValue={log_column.variate===1 ? initialFunctions.get(log_column_name) : "" }
+                            defaultValue={log_column.variate===1 ? initialValues.initialFunctions.get(log_column_name) : "" }
                             disabled={!log_column.variate}
                           >
                             <MenuItem value="">
@@ -166,7 +171,7 @@ const ColumnVariability: React.FC<ExperimentFormProperties> = ({ onSubmit, disab
                           id={`params-${variant}-${act}-${log_column}`}
                           label={t('features.wizard.columnVariability.function_param_label')}
                           onChange={handleChangeParam}
-                          defaultValue={log_column.variate===1 ? initialParams.get(log_column_name) : "" }
+                          defaultValue={log_column.variate===1 ? initialValues.initialParams.get(log_column_name) : "" }
                           disabled={!log_column.variate}
                         >
                           <MenuItem value="">
