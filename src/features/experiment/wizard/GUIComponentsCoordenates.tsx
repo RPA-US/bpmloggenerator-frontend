@@ -10,13 +10,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
 import Tooltip from '@mui/material/Tooltip';
-import { IDependency, IScreenshotColumn, ICoordinates, IElements, IScreenshot, IArguments } from './types';
+import { IDependency, IScreenshotColumn, ICoordinates, IScreenshot, IArguments } from './types';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
 import { json } from 'stream/consumers';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
-
 
 //TODO: FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
 //TODO: meter los resultados de los funciones/params/gui en el wizard
@@ -45,9 +44,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialDependency: IDependency = { Activity: "", V: 0, id: 0 }
     const initialparams: FunctionParamDTO[] = []
     const initialVarFunction: VariabilityFunctionDTO[] = []
-    const initialguiComponents: GUIComponentDTO[] = []
+    const initialguiComponents: CategoryDTO[] = []
     const initialColors: IRandomColor = {}
     const initialVariants: string[] = []
+    const initialElements: GUIComponentDTO[] = []
+    const initialElementID: number[] = []
+
 
     //Argumentos de screenshots a almacenar
     const [json_conf, setjJon_conf] = useState({ ...seed });
@@ -56,22 +58,23 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const [functionID, setFunction] = useState(0);
-    const [guiID, setGUI] = useState(0);
+    const [guicatID, setGUIcatID] = useState(0);
+    const [elementID, setElementID] = useState(initialElementID);
     const [count, setCount] = useState(countID);
     const [url, setUrl] = useState("");//process.env.PUBLIC_URL + "example_image.png"
     const [screenshots, setScreenshot] = useState(initialScreen);
     const [argumentsCoor, setArgumentsCoor] = useState(initialArgs);
     const [randomColor, setRandomColor] = useState(initialColors);
-    const actRef = useRef<any>('');
-    const varRef = useRef<any>(0);
     const [errorMessage, setErrorMessage] = useState(false);
+
     //Cargas de BD temporales
     const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
     const [paramsList, setParamsFunctions] = useState(initialparams);
-    const [guiComponents, setGuiComponents] = useState(initialguiComponents);
+    const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
     const [params, setParams] = useState(initialparams);
     const [variantDependency, setVariantDependency] = useState(initialVariants);
     const [activityDependency, setActivityDependency] = useState(initialVariants);
+    const [elements, setElements] = useState(initialElements);
     const [varAct, setVarAct] = useState(["", ""]);
 
     const getScreenshot = async (token: string, path: string) => {
@@ -113,26 +116,32 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         return test;
     }
+
     //GUI components by category name
-    const selectGUIByCat = async (token: string, name: string) => {
+    const selectGUICat = async (token: string) => {
         let categories: CategoryResponse = await guiComponentCategoryRepository.list(token);
-        let categoryId = selectCategoryByName(categories.results, name);
-        let guiComp = await guiComponentRepository.list(token);
-        let test;
+        let test: CategoryDTO[] = [];
         try {
-            let ret: GUIComponentDTO[] = [];
-            test = guiComp.results.filter(function (itm: any) {
-                if (itm.gui_component_category === categoryId[0].id) {
-                    ret.push(itm);
-                }
-                setGuiComponents([...ret]);
-                return ret;
-            })
+            test = categories.results
+            setGuiComponentsCat([...test])
         } catch (ex) {
             console.error('error listing functions by category result', ex);
         }
         return test;
     }
+
+    const selectElement = async (token: string) => {
+        let categories: GUIComponentResponse = await guiComponentRepository.list(token);
+        let test: GUIComponentDTO[] = [];
+        try {
+            test = categories.results
+            setElements([...test])
+        } catch (ex) {
+            console.error('error listing functions by category result', ex);
+        }
+        return test;
+    }
+
     //Params
     const paramsListResults = async (token: string) => {
         try {
@@ -289,13 +298,14 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             }));
         }
-        history.push('/column-variability/' + variant + '/' + act)
+        history.push("/experiment-wizard")//'/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
     }
 
     function onLoadImage() {
         selectVarFuncByCat(token ?? "", "Screenshot");
-        selectGUIByCat(token ?? "", "Screenshot");
+        selectGUICat(token ?? "");
         paramsListResults(token ?? "");
+        selectElement(token ?? "");
         getResolution();
         getResolutionBRW();
     }
@@ -343,40 +353,49 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
-        setGUI(guiTMP);
+        setGUIcatID(guiTMP);
+        console.log(elements)
+    }
+
+    function handleChangeElement(e: any) {
+        let guiElement: number[] = e.target.value.split(',');
+        setElementID([...guiElement]);
     }
 
     function addElementToTable() {
         let argumentTMP = argumentsCoor;
         let countTMP = count;
         let screenTMP = screenshots;
-        if (guiID !== 0) {
-            let guiName: GUIComponentDTO = getByID(guiComponents, guiID);
+        if (guicatID !== 0) {
+            let guiCatName: CategoryDTO = getByID(guiComponentsCat, guicatID);
             if (functionID !== 0) {
                 let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
                 let paramsTMP: FunctionParamDTO[] = params;
-                if (guiName !== null && functionName !== null) {
+                if (guiCatName !== null && functionName !== null) {
                     argumentTMP.id = countTMP;
                     if (paramsTMP.length > 0 && functionName.params.length > 0) {
                         for (let j in paramsTMP) {
                             if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
                                 argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
                             }
+                            if (elementID.length > 0){
+
+                            }
                         }
                     }
                     argumentTMP.name = functionName.id_code;
-                    if (guiName !== null) {
+                    if (guiCatName !== null) {
                         let colorTMP = randomColor;
-                        if (screenTMP.hasOwnProperty(guiName.id_code)) {
-                            let listARGS = screenTMP[guiName.id_code!]
+                        if (screenTMP.hasOwnProperty(guiCatName.name)) {
+                            let listARGS = screenTMP[guiCatName.name!]
                             listARGS.push(argumentTMP)
-                            screenTMP[guiName.id_code] = listARGS
-                            let listColor = colorTMP[guiName.id_code!]
+                            screenTMP[guiCatName.name] = listARGS
+                            let listColor = colorTMP[guiCatName.name!]
                             listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
-                            colorTMP[guiName.id_code] = listColor
+                            colorTMP[guiCatName.name] = listColor
                         } else {
-                            screenTMP[guiName.id_code] = [argumentTMP]
-                            colorTMP[guiName.id_code] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+                            screenTMP[guiCatName.name] = [argumentTMP]
+                            colorTMP[guiCatName.name] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
                         }
                         setScreenshot({
                             ...screenTMP
@@ -389,26 +408,26 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             } else {
                 let dependencyTMP: IDependency = initialDependency;
-                if (guiName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "") {
+                if (guiCatName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "") {
                     argumentTMP.id = countTMP;
                     argumentTMP.name = ""
                     dependencyTMP.id = count
                     dependencyTMP.Activity = varAct[1].trim()
                     dependencyTMP.V = +varAct[0].trim()
                     argumentTMP.args_dependency = dependencyTMP;
-                    if (guiName !== null) {
+                    if (guiCatName !== null) {
                         let colorTMP = randomColor;
 
-                        if (screenTMP.hasOwnProperty(guiName.id_code)) {
-                            let listARGS = screenTMP[guiName.id_code!]
+                        if (screenTMP.hasOwnProperty(guiCatName.name)) {
+                            let listARGS = screenTMP[guiCatName.name!]
                             listARGS.push(argumentTMP)
-                            screenTMP[guiName.id_code] = listARGS
-                            let listColor = colorTMP[guiName.id_code!]
+                            screenTMP[guiCatName.name] = listARGS
+                            let listColor = colorTMP[guiCatName.name!]
                             listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
-                            colorTMP[guiName.id_code] = listColor
+                            colorTMP[guiCatName.name] = listColor
                         } else {
-                            screenTMP[guiName.id_code] = [argumentTMP]
-                            colorTMP[guiName.id_code] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+                            screenTMP[guiCatName.name] = [argumentTMP]
+                            colorTMP[guiCatName.name] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
 
                         }
                         setScreenshot({
@@ -513,12 +532,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 </Typography>
                                 <Select
                                     id="select_gui"
-                                    value={guiID}
+                                    value={guicatID}
                                     label={t('features.experiment.assist.function.gui_components')}
                                     onChange={handleChangeGUI}
                                 >
-                                    {Object.keys(guiComponents).map((key, index) => (
-                                        <MenuItem value={guiComponents[index].id}>{guiComponents[index].name}</MenuItem>
+                                    {Object.keys(guiComponentsCat).map((key, index) => (
+                                        <MenuItem value={guiComponentsCat[index].id}>{guiComponentsCat[index].name}</MenuItem>
                                     ))}
                                 </Select>
                             </Box>
@@ -598,7 +617,22 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     {Object.keys(params).map((key2, index2) => (
                                         <Box component={"div"}>
                                             <Typography component="div">{params[index2].description}:</Typography>
-                                            <TextField id={params[index2].id + ""} required={params[index2].validation_needs === "required"} placeholder={params[index2].placeholder} label={params[index2].label} type={params[index2].data_type} />
+                                            {(params[index2].data_type === "element") &&
+                                                <Select
+                                                    id="select_element"
+                                                    multiple
+                                                    value={elementID}
+                                                    label={t('features.experiment.assist.function.variability_function')}
+                                                    onChange={handleChangeElement}
+                                                >
+                                                    {Object.keys(elements).map((key, index) => (
+                                                        <MenuItem value={elements[index].id}>{elements[index].name}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            }
+                                            {(params[index2].data_type !== "element") &&
+                                                <TextField id={params[index2].id + ""} placeholder={params[index2].placeholder} label={params[index2].label} type={params[index2].data_type} />
+                                            }
                                         </Box>
                                     ))}
                                 </Box>
