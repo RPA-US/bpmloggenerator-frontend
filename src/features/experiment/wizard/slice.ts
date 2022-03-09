@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { IElements, IScreenshotColumn, wizardState } from './types';
+import { IElements, IScreenshotColumn, wizardState, InitialValues } from './types';
 import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
@@ -18,8 +18,6 @@ export const screenshotRepository = new ScreenshotRepository();
 
 // ================================== REDUCERS ==================================
 
-
-
 const { localStorage } = window;
 
 // ================================== REDUCERS ==================================
@@ -29,11 +27,7 @@ const initialState: wizardState = {
   seed: null,
   scenario_variability: null,
   case_variability: null,
-  initialValues: {
-    initialFunctions: new Map(),
-    initialParams: new Map(),
-    initialVariate: new Map()
-  },
+  initialValues: {},
   functions: null,
   params: null,
   screenshot_functions: null,
@@ -60,23 +54,11 @@ export const wizardSlice = createSlice({
     ) => {
       state.seed = payload;
     },
-    setInitialParams: (
+    setInitialValues: (
       state,
-      { payload }: PayloadAction<Map<any,any>>
+      { payload }: PayloadAction<any>
     ) => {
-      state.initialValues.initialParams = payload;
-    },
-    setInitialFunctions: (
-      state,
-      { payload }: PayloadAction<Map<any,any>>
-    ) => {
-      state.initialValues.initialFunctions = payload;
-    },
-    setInitialVariate: (
-      state,
-      { payload }: PayloadAction<Map<any,any>>
-    ) => {
-      state.initialValues.initialVariate = payload;
+      state.initialValues = payload;
     },
     setParams: (
       state,
@@ -122,7 +104,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions, setInitialVariate } = wizardSlice.actions
+  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -167,21 +149,24 @@ export const wizardSlice = createSlice({
 
   export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
       const { wizard } = getState();
-      let aux_params = new Map();
-      let aux_functions = new Map();
-      let aux_variate = new Map();
+      let aux_values = {};
       Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
+        const key: string = entry[0];
         const val: any = entry[1];
-        aux_functions.set(entry[0], val.name);
-        aux_params.set(entry[0], {
-          possible_params: {},
-          args: val.args
-        });
-        aux_variate.set(entry[0], val.variate);
+        let aux: InitialValues = {
+          function: val.name,
+          params: {
+            possible_params: {},
+            args: val.args
+          },
+          variate: val.variate
+        }
+        aux_values = {
+          ...aux_values,
+          [key]: aux
+        };
       });
-      dispatch(setInitialParams(aux_params));
-      dispatch(setInitialFunctions(aux_functions));
-      dispatch(setInitialVariate(aux_variate));
+      dispatch(setInitialValues(aux_values));
   }
   export const loadFunctionsAndCategories = (): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
