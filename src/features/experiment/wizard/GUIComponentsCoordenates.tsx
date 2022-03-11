@@ -380,8 +380,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             <Button
                 onClick={saveAndEnd}
                 variant="outlined"
-                style={{ fontSize: "small", marginLeft: 4 }}
-                endIcon={<SettingsSuggestIcon />}>
+                style={{ fontSize: "small", marginLeft: 4 }}>
                 {t('features.experiment.assist.next')}</Button>
             <Grid
                 container

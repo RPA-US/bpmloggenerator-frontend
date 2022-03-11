@@ -60,6 +60,21 @@ export const wizardSlice = createSlice({
     ) => {
       state.initialValues = payload;
     },
+    setPossibleParamsInitialValues: (
+      state,
+      { payload }: PayloadAction<{params: any, column: string}>
+    ) => {
+      state.initialValues = {
+        ...state.initialValues,
+        [payload.column]:{
+          ...state.initialValues[payload.column],
+          params: {
+            ...state.initialValues[payload.column].params,
+            possible_params: payload.params
+          }
+        } 
+      }
+    },
     setParams: (
       state,
       { payload }: PayloadAction<FunctionParamDTO[]>
@@ -104,7 +119,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
+  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
