@@ -48,7 +48,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialColors: IRandomColor = {}
     const initialVariants: string[] = []
     const initialElements: GUIComponentDTO[] = []
-    const initialElementID: number[] = []
+    const initialElementID: string[] = []
 
 
     //Argumentos de screenshots a almacenar
@@ -59,6 +59,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const [functionID, setFunction] = useState(0);
     const [guicatID, setGUIcatID] = useState(0);
+    const [fontID, setFontID] = useState('');
     const [elementID, setElementID] = useState(initialElementID);
     const [count, setCount] = useState(countID);
     const [url, setUrl] = useState("");//process.env.PUBLIC_URL + "example_image.png"
@@ -76,6 +77,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [activityDependency, setActivityDependency] = useState(initialVariants);
     const [elements, setElements] = useState(initialElements);
     const [varAct, setVarAct] = useState(["", ""]);
+    const colorRef = useRef<any>('');
+    const sizeRef = useRef<any>(0);
 
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
@@ -302,7 +305,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     function onLoadImage() {
-        selectVarFuncByCat(token ?? "", "Screenshot");
+        selectVarFuncByCat(token ?? "", "features.experiment.function_category.name.screenshot");
         selectGUICat(token ?? "");
         paramsListResults(token ?? "");
         selectElement(token ?? "");
@@ -354,12 +357,16 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
         setGUIcatID(guiTMP);
-        console.log(elements)
     }
 
     function handleChangeElement(e: any) {
-        let guiElement: number[] = e.target.value.split(',');
+        let guiElement: string[] = e.target.value.split(',');
         setElementID([...guiElement]);
+    }
+
+    function handleChangeFont(e: any) {
+        let fontTMP: string = e.target.value;
+        setFontID(fontTMP);
     }
 
     function addElementToTable() {
@@ -375,11 +382,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     argumentTMP.id = countTMP;
                     if (paramsTMP.length > 0 && functionName.params.length > 0) {
                         for (let j in paramsTMP) {
-                            if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
-                                argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+                            if (paramsTMP[j].data_type === "element") {
+                                argumentTMP.args[paramsTMP[j].label] = elementID;
                             }
-                            if (elementID.length > 0){
+                            if (paramsTMP[j].data_type === "font") {
+                                argumentTMP.args[paramsTMP[j].label] = [fontID, sizeRef.current.value, colorRef.current.value]
+                            }
+                            if (paramsTMP[j].data_type !== "font" && paramsTMP[j].data_type !== "element") {
 
+                                if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
+                                    argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+                                }
                             }
                         }
                     }
@@ -537,7 +550,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     onChange={handleChangeGUI}
                                 >
                                     {Object.keys(guiComponentsCat).map((key, index) => (
-                                        <MenuItem value={guiComponentsCat[index].id}>{guiComponentsCat[index].name}</MenuItem>
+                                        <MenuItem value={guiComponentsCat[index].id}>{t(guiComponentsCat[index].name)}</MenuItem>
                                     ))}
                                 </Select>
                             </Box>
@@ -575,7 +588,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                             >
                                 <MenuItem value={0}>{t('features.experiment.assist.function.dependency')}</MenuItem>
                                 {Object.keys(variabilityFunctions).map((key, index) => (
-                                    <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
+                                    <MenuItem value={variabilityFunctions[index].id}>{t(variabilityFunctions[index].function_name)}</MenuItem>
                                 ))}
                             </Select>
                             {functionID === 0 &&
@@ -616,22 +629,40 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     </Typography>
                                     {Object.keys(params).map((key2, index2) => (
                                         <Box component={"div"}>
-                                            <Typography component="div">{params[index2].description}:</Typography>
-                                            {(params[index2].data_type === "element") &&
+                                            <Typography component="div">{t(params[index2].description)}:</Typography>
+                                            {(params[index2].data_type === "element") && (params[index2].data_type !== "font") &&
                                                 <Select
                                                     id="select_element"
-                                                    multiple
                                                     value={elementID}
                                                     label={t('features.experiment.assist.function.variability_function')}
                                                     onChange={handleChangeElement}
                                                 >
                                                     {Object.keys(elements).map((key, index) => (
-                                                        <MenuItem value={elements[index].id}>{elements[index].name}</MenuItem>
+                                                        <MenuItem value={elements[index].id_code}>{t(elements[index].name)}</MenuItem>
                                                     ))}
                                                 </Select>
                                             }
-                                            {(params[index2].data_type !== "element") &&
-                                                <TextField id={params[index2].id + ""} placeholder={params[index2].placeholder} label={params[index2].label} type={params[index2].data_type} />
+                                            {(params[index2].data_type !== "element") && (params[index2].data_type !== "font") &&
+                                                <TextField id={params[index2].id + ""} placeholder={t(params[index2].placeholder)} label={t(params[index2].label)} type={params[index2].data_type} />
+                                            }
+                                            {(params[index2].data_type !== "element") && (params[index2].data_type === "font") &&
+                                                <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                    <Select
+                                                        id="select_font"
+                                                        required={true}
+                                                        value={fontID}
+                                                        label={t('features.experiment.assist.function.variability_function')}
+                                                        onChange={handleChangeFont}
+                                                    >
+                                                        <MenuItem value={'resources/Roboto-Black.ttf'}>Roboto_font</MenuItem>
+                                                    </Select>
+                                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                        <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number" />
+                                                    </Box>
+                                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                        <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" />
+                                                    </Box>
+                                                </Box>
                                             }
                                         </Box>
                                     ))}
@@ -662,7 +693,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                 >
                                                     <TableCell align="center" component="th" scope="row">
-                                                        {key}
+                                                        {t(key)}
                                                     </TableCell>
                                                     <TableCell align="center" sx={{
                                                         backgroundColor: randomColor[key][index2],
