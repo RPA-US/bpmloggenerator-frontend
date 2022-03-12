@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
@@ -10,22 +10,19 @@ import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
 import Tooltip from '@mui/material/Tooltip';
-import { IDependency, IScreenshotColumn, ICoordinates, IElements, IScreenshot, IArguments } from './types';
+import { IDependency, IScreenshotColumn, ICoordinates, IScreenshot, IArguments } from './types';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
-import BackButton from 'components/BackButton';
+import { json } from 'stream/consumers';
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
 
-//TODO: [X]1 Meter contenido en el state 
-//TODO: [X]2 Si se pulsa siguiente, cambiar variate del screenshot a 1
-//TODO: []3 cambiar la forma del funcionamiento de dependencias
-//TODO: []4 Boton anterior y siguientes con un estilo diferente y posiciones
-//TODO: []5 Alert si se pulsa hacia atras con un continuar o cancelar
-//TODO: []6 Usar el random color en la tabla y en la imagen
-//TODO: []7 Para dependencia un select con el contenido del seed. Si variante lleno, activar el select de actividad con el contenido del variante seleccionado
-//TODO: []8 FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
-//TODO: []9 mensaje de error si no hay funciones/params/gui seleccionadas, o contenido de las listas vacías.
-//TODO: []10 meter los resultados de los funciones/params/gui en el wizard
+//TODO: FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
+//TODO: meter los resultados de los funciones/params/gui en el wizard
+
+export interface IRandomColor {
+    [name: string]: string[]
+}
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
@@ -47,7 +44,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialDependency: IDependency = { Activity: "", V: 0, id: 0 }
     const initialparams: FunctionParamDTO[] = []
     const initialVarFunction: VariabilityFunctionDTO[] = []
-    const initialguiComponents: GUIComponentDTO[] = []
+    const initialguiComponents: CategoryDTO[] = []
+    const initialColors: IRandomColor = {}
+    const initialVariants: string[] = []
+    const initialElements: GUIComponentDTO[] = []
+    const initialElementID: string[] = []
+
 
     //Argumentos de screenshots a almacenar
     const [json_conf, setjJon_conf] = useState({ ...seed });
@@ -56,20 +58,27 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const [functionID, setFunction] = useState(0);
-    const [guiID, setGUI] = useState(0);
+    const [guicatID, setGUIcatID] = useState(0);
+    const [fontID, setFontID] = useState('');
+    const [elementID, setElementID] = useState(initialElementID);
     const [count, setCount] = useState(countID);
     const [url, setUrl] = useState("");//process.env.PUBLIC_URL + "example_image.png"
     const [screenshots, setScreenshot] = useState(initialScreen);
     const [argumentsCoor, setArgumentsCoor] = useState(initialArgs);
-
-    const actRef = useRef<any>('');
-    const varRef = useRef<any>(0);
+    const [randomColor, setRandomColor] = useState(initialColors);
+    const [errorMessage, setErrorMessage] = useState(false);
 
     //Cargas de BD temporales
     const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
     const [paramsList, setParamsFunctions] = useState(initialparams);
-    const [guiComponents, setGuiComponents] = useState(initialguiComponents);
+    const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
     const [params, setParams] = useState(initialparams);
+    const [variantDependency, setVariantDependency] = useState(initialVariants);
+    const [activityDependency, setActivityDependency] = useState(initialVariants);
+    const [elements, setElements] = useState(initialElements);
+    const [varAct, setVarAct] = useState(["", ""]);
+    const colorRef = useRef<any>('');
+    const sizeRef = useRef<any>(0);
 
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
@@ -110,26 +119,32 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         return test;
     }
+
     //GUI components by category name
-    const selectGUIByCat = async (token: string, name: string) => {
+    const selectGUICat = async (token: string) => {
         let categories: CategoryResponse = await guiComponentCategoryRepository.list(token);
-        let categoryId = selectCategoryByName(categories.results, name);
-        let guiComp = await guiComponentRepository.list(token);
-        let test;
+        let test: CategoryDTO[] = [];
         try {
-            let ret: GUIComponentDTO[] = [];
-            test = guiComp.results.filter(function (itm: any) {
-                if (itm.gui_component_category === categoryId[0].id) {
-                    ret.push(itm);
-                }
-                setGuiComponents([...ret]);
-                return ret;
-            })
+            test = categories.results
+            setGuiComponentsCat([...test])
         } catch (ex) {
             console.error('error listing functions by category result', ex);
         }
         return test;
     }
+
+    const selectElement = async (token: string) => {
+        let categories: GUIComponentResponse = await guiComponentRepository.list(token);
+        let test: GUIComponentDTO[] = [];
+        try {
+            test = categories.results
+            setElements([...test])
+        } catch (ex) {
+            console.error('error listing functions by category result', ex);
+        }
+        return test;
+    }
+
     //Params
     const paramsListResults = async (token: string) => {
         try {
@@ -155,6 +170,18 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             }
         }
         setParams([...paramsTMP]);
+    }
+    //Seed variants
+    function seedVariants() {
+        let variantListTMP: string[] = []
+        Object.keys(json_conf).map((key) => (variantListTMP.push(key)))
+        setVariantDependency([...variantListTMP])
+    }
+
+    function activitiesByVariant(variantKey: string) {
+        let activityListTMP: string[] = []
+        Object.keys(json_conf[variantKey]).map((key) => (activityListTMP.push(key)))
+        setActivityDependency([...activityListTMP])
     }
 
     function getResolutionBRW() {
@@ -184,6 +211,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             aux = detail.screenshotsPath.split("/");
             getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
         }
+        seedVariants();
         getResolution();
     }, []);
 
@@ -225,8 +253,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         } else {
             y2 = ty
         }
-        //TODO: que hacer con el randomColor
-        //var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
         if (resolutionIMG !== resolutionBRW) {
             x1 = Math.round(resolutionIMG[0] * x1 / resolutionBRW[0])
             y1 = Math.round(resolutionIMG[1] * y1 / resolutionBRW[1])
@@ -242,13 +268,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     const removeElement = (key: string, id: number) => {
         let screenTMP = screenshots;
+        let colorTMP = randomColor;
         screenTMP[key].splice(id, 1);
+        colorTMP[key].splice(id, 1);
         if (screenTMP[key].length === 0) {
             delete screenTMP[key];
+            delete colorTMP[key];
         }
         setScreenshot(
             { ...screenTMP }
         )
+        setRandomColor({ ...colorTMP })
     }
 
     function saveAndEnd() {
@@ -261,25 +291,24 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 args: screenTMP
             };
             dispatch(wizardSlice.actions.setVariabilityConfiguration({
-                   ...json_conf,
-                   [variant]: {
-                     ...json_conf[variant],
-                     [act]:{
-                       ...json_conf[variant][act],
-                       ["Screenshot"]: screenColumn
-                     }
-                   }
-             }));
-            history.push('/column-variability/'+variant+'/'+act)
-        }else{
-            history.push('/column-variability/'+variant+'/'+act)
+                ...json_conf,
+                [variant]: {
+                    ...json_conf[variant],
+                    [act]: {
+                        ...json_conf[variant][act],
+                        ["Screenshot"]: screenColumn
+                    }
+                }
+            }));
         }
+        history.push("/experiment-wizard")//'/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
     }
 
     function onLoadImage() {
-        selectVarFuncByCat(token ?? "", "Screenshot");
-        selectGUIByCat(token ?? "", "Screenshot");
+        selectVarFuncByCat(token ?? "", "features.experiment.function_category.name.screenshot");
+        selectGUICat(token ?? "");
         paramsListResults(token ?? "");
+        selectElement(token ?? "");
         getResolution();
         getResolutionBRW();
     }
@@ -314,74 +343,156 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         paramsByFunction(functionTMP);
     }
 
+    function handleChangeVariantDependency(e: any) {
+        let variantTMP: string = e.target.value;
+        setVarAct([variantTMP, ""]);
+        activitiesByVariant(variantTMP)
+    }
+
+    function handleChangeActivityDependency(e: any) {
+        let activityTMP: string = e.target.value;
+        setVarAct([varAct[0], activityTMP]);
+    }
+
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
-        setGUI(guiTMP);
+        setGUIcatID(guiTMP);
+    }
+
+    function handleChangeElement(e: any) {
+        let guiElement: string[] = e.target.value.split(',');
+        setElementID([...guiElement]);
+    }
+
+    function handleChangeFont(e: any) {
+        let fontTMP: string = e.target.value;
+        setFontID(fontTMP);
     }
 
     function addElementToTable() {
-        if (functionID !== 0 && guiID !== 0) {
-            let countTMP = count;
-            let guiName: GUIComponentDTO = getByID(guiComponents, guiID);
-            let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
-            let paramsTMP: FunctionParamDTO[] = params;
-            let dependencyTMP: IDependency = initialDependency;
-            let screenTMP = screenshots;
-            let argumentTMP = argumentsCoor;
-            if (guiName !== null && functionName !== null) {
-                argumentTMP.id = countTMP;
-                if (paramsTMP.length > 0 && functionName.params.length > 0) {
-                    for (let j in paramsTMP) {
-                        if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
-                            argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+        let argumentTMP = argumentsCoor;
+        let countTMP = count;
+        let screenTMP = screenshots;
+        if (guicatID !== 0) {
+            let guiCatName: CategoryDTO = getByID(guiComponentsCat, guicatID);
+            if (functionID !== 0) {
+                let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
+                let paramsTMP: FunctionParamDTO[] = params;
+                if (guiCatName !== null && functionName !== null) {
+                    argumentTMP.id = countTMP;
+                    if (paramsTMP.length > 0 && functionName.params.length > 0) {
+                        for (let j in paramsTMP) {
+                            if (paramsTMP[j].data_type === "element") {
+                                argumentTMP.args[paramsTMP[j].label] = elementID;
+                            }
+                            if (paramsTMP[j].data_type === "font") {
+                                argumentTMP.args[paramsTMP[j].label] = [fontID, sizeRef.current.value, colorRef.current.value]
+                            }
+                            if (paramsTMP[j].data_type !== "font" && paramsTMP[j].data_type !== "element") {
+
+                                if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
+                                    argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+                                }
+                            }
                         }
                     }
-                }
-                if (actRef.current.value !== "" && varRef.current.value !== 0) {
-                    dependencyTMP.id = count
-                    dependencyTMP.Activity = actRef.current.value.trim()
-                    dependencyTMP.V = varRef.current.value.trim()
-                    argumentTMP.dependency = dependencyTMP;
-                }
-                argumentTMP.name = functionName.id_code;
-                if (guiName !== null) {
-                    if (screenTMP.hasOwnProperty(guiName.id_code)) {
-                        let listARGS = screenTMP[guiName.id_code!]
-                        listARGS.push(argumentTMP)
-                        screenTMP[guiName.id_code] = listARGS
-                    } else {
-                        screenTMP[guiName.id_code] = [argumentTMP]
+                    argumentTMP.name = functionName.id_code;
+                    if (guiCatName !== null) {
+                        let colorTMP = randomColor;
+                        if (screenTMP.hasOwnProperty(guiCatName.name)) {
+                            let listARGS = screenTMP[guiCatName.name!]
+                            listARGS.push(argumentTMP)
+                            screenTMP[guiCatName.name] = listARGS
+                            let listColor = colorTMP[guiCatName.name!]
+                            listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+                            colorTMP[guiCatName.name] = listColor
+                        } else {
+                            screenTMP[guiCatName.name] = [argumentTMP]
+                            colorTMP[guiCatName.name] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+                        }
+                        setScreenshot({
+                            ...screenTMP
+                        })
+                        setRandomColor({ ...colorTMP })
                     }
-                    setScreenshot({
-                        ...screenTMP
-                    })
+                    setErrorMessage(false)
+                } else {
+                    setErrorMessage(true)
+                }
+            } else {
+                let dependencyTMP: IDependency = initialDependency;
+                if (guiCatName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "") {
+                    argumentTMP.id = countTMP;
+                    argumentTMP.name = ""
+                    dependencyTMP.id = count
+                    dependencyTMP.Activity = varAct[1].trim()
+                    dependencyTMP.V = +varAct[0].trim()
+                    argumentTMP.args_dependency = dependencyTMP;
+                    if (guiCatName !== null) {
+                        let colorTMP = randomColor;
+
+                        if (screenTMP.hasOwnProperty(guiCatName.name)) {
+                            let listARGS = screenTMP[guiCatName.name!]
+                            listARGS.push(argumentTMP)
+                            screenTMP[guiCatName.name] = listARGS
+                            let listColor = colorTMP[guiCatName.name!]
+                            listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+                            colorTMP[guiCatName.name] = listColor
+                        } else {
+                            screenTMP[guiCatName.name] = [argumentTMP]
+                            colorTMP[guiCatName.name] = ["#" + Math.floor(Math.random() * 16777215).toString(16)]
+
+                        }
+                        setScreenshot({
+                            ...screenTMP
+                        })
+                    }
+                    countTMP = countTMP + 1
+                    setCount(countTMP);
+                    setErrorMessage(false)
+                } else {
+                    setErrorMessage(true)
                 }
             }
-            countTMP = countTMP + 1
-            setCount(countTMP);
-            argumentTMP = initialArgs;
-            setArgumentsCoor({ ...argumentTMP });
+        } else {
+            setErrorMessage(true)
         }
+        argumentTMP = initialArgs
+        setArgumentsCoor({ ...argumentTMP });
     }
 
     function confirmBack() {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm(t('features.experiment.assist.title.elementselector'))) {
-            history.push("/experiment-wizard")
+        if (window.confirm(t('features.experiment.assist.back'))) {
+            history.push('/column-variability/' + variant + '/' + act)
         }
     }
 
     return (
-        <>
-            <Typography variant="h4">
-                <BackButton />
-                {t('features.experiment.assist.title.elementselector')}
-            </Typography>
-            <Button
-                onClick={saveAndEnd}
-                variant="outlined"
-                style={{ fontSize: "small", marginLeft: 4 }}>
-                {t('features.experiment.assist.next')}</Button>
+        <> <Grid
+            container
+            direction="row"
+            spacing={4}>
+            <Grid xs={10} lg={10} item style={{ marginTop: theme.spacing(2) }}>
+                <Typography variant="h4">
+                    <IconButton color="primary" aria-label="go back" component="span" onClick={confirmBack}>
+                        <ChevronLeft />
+                    </IconButton>
+                    {t('features.experiment.assist.title.elementselector')}
+                </Typography>
+            </Grid>
+            <Grid xs={2} lg={2} item style={{ marginTop: theme.spacing(2) }}>
+                <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
+                    {t('features.experiment.assist.next')}
+                </Button>
+            </Grid>
+            {errorMessage &&
+                <Grid xs={12} lg={12} item style={{ marginTop: theme.spacing(2) }}>
+                    <Typography variant="h5" color="red" >
+                        {t('features.experiment.assist.empty')}
+                    </Typography>
+                </Grid>
+            }
+        </Grid>
             <Grid
                 container
                 direction="row"
@@ -393,16 +504,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 {
                                     position: "relative"
                                 }}>
-                            <Box component={"div"}
-                                id="overlay"
-                                sx={
-                                    {
-                                        position: "absolute",
-                                        outline: "2px solid black",
-                                        backgroundColor: "blue",
-                                        opacity: 0.3
-                                    }}
-                            ></Box>
                             {Object.keys(screenshots).length > 0 && Object.keys(screenshots).map((key, index) => (
                                 Object.keys(screenshots[key]).map((key2, index2) => (
                                     < Box component={"div"}
@@ -413,7 +514,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                             width: resizeRect(screenshots[key][index2].coordinates[2], resolutionBRW[0], resolutionIMG[0]) - resizeRect(screenshots[key][index2].coordinates[0], resolutionBRW[0], resolutionIMG[0]),
                                             height: resizeRect(screenshots[key][index2].coordinates[3], resolutionBRW[1], resolutionIMG[1]) - resizeRect(screenshots[key][index2].coordinates[1], resolutionBRW[1], resolutionIMG[1]),
                                             outline: "2px solid black",
-                                            backgroundColor: "blue",
+                                            backgroundColor: randomColor[key][index2],
                                             opacity: 0.3
                                         }}
                                     ></Box>))))
@@ -435,7 +536,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         </Box>
                     </Card>
                 </Grid>
-
                 <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2) }} >
                     <Card>
                         <CardContent>
@@ -445,12 +545,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 </Typography>
                                 <Select
                                     id="select_gui"
-                                    value={guiID}
+                                    value={guicatID}
                                     label={t('features.experiment.assist.function.gui_components')}
                                     onChange={handleChangeGUI}
                                 >
-                                    {Object.keys(guiComponents).map((key, index) => (
-                                        <MenuItem value={guiComponents[index].id}>{guiComponents[index].name}</MenuItem>
+                                    {Object.keys(guiComponentsCat).map((key, index) => (
+                                        <MenuItem value={guiComponentsCat[index].id}>{t(guiComponentsCat[index].name)}</MenuItem>
                                     ))}
                                 </Select>
                             </Box>
@@ -474,18 +574,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2) }} >
-                    <Card>
-                        <CardContent>
-                            <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
-                                <TextField inputRef={actRef} placeholder={t('features.experiment.assist.function.activity_dependency')} label={t('features.experiment.assist.function.activity_dependency')} />
-                            </Box>
-                            <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
-                                <TextField inputRef={varRef} placeholder={t('features.experiment.assist.function.variant_dependency')} label={t('features.experiment.assist.function.variant_dependency')} />
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
                 <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} >
                     <Card>
                         <CardContent>
@@ -498,10 +586,41 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 label={t('features.experiment.assist.function.variability_function')}
                                 onChange={handleChangeFunction}
                             >
+                                <MenuItem value={0}>{t('features.experiment.assist.function.dependency')}</MenuItem>
                                 {Object.keys(variabilityFunctions).map((key, index) => (
-                                    <MenuItem value={variabilityFunctions[index].id}>{variabilityFunctions[index].function_name}</MenuItem>
+                                    <MenuItem value={variabilityFunctions[index].id}>{t(variabilityFunctions[index].function_name)}</MenuItem>
                                 ))}
                             </Select>
+                            {functionID === 0 &&
+                                <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
+                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                        <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
+                                        <Select
+                                            id="select_variant"
+                                            value={varAct[0]}
+                                            label={t('features.experiment.assist.function.variability_function')}
+                                            onChange={handleChangeVariantDependency}
+                                        >
+                                            {Object.keys(variantDependency).map((key, index) => (
+                                                <MenuItem value={variantDependency[index]}>{variantDependency[index]}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </Box>
+                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                        <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
+                                        <Select
+                                            disabled={+varAct[0].trim() === 0}
+                                            id="select_activity"
+                                            value={varAct[1]}
+                                            label={t('features.experiment.assist.function.variability_function')}
+                                            onChange={handleChangeActivityDependency}
+                                        >
+                                            {Object.keys(activityDependency).map((key, index) => (
+                                                <MenuItem value={activityDependency[index]}>{activityDependency[index]}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </Box>
+                                </Box>}
                             {Object.keys(variabilityFunctions).map((key, index) => (
                                 variabilityFunctions[index].id === functionID && variabilityFunctions[index].params.length > 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
@@ -510,8 +629,41 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     </Typography>
                                     {Object.keys(params).map((key2, index2) => (
                                         <Box component={"div"}>
-                                            <Typography component="div">{params[index2].description}:</Typography>
-                                            <TextField id={params[index2].id + ""} required={params[index2].validation_needs === "required"} placeholder={params[index2].placeholder} label={params[index2].label} type={params[index2].data_type} />
+                                            <Typography component="div">{t(params[index2].description)}:</Typography>
+                                            {(params[index2].data_type === "element") && (params[index2].data_type !== "font") &&
+                                                <Select
+                                                    id="select_element"
+                                                    value={elementID}
+                                                    label={t('features.experiment.assist.function.variability_function')}
+                                                    onChange={handleChangeElement}
+                                                >
+                                                    {Object.keys(elements).map((key, index) => (
+                                                        <MenuItem value={elements[index].id_code}>{t(elements[index].name)}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            }
+                                            {(params[index2].data_type !== "element") && (params[index2].data_type !== "font") &&
+                                                <TextField id={params[index2].id + ""} placeholder={t(params[index2].placeholder)} label={t(params[index2].label)} type={params[index2].data_type} />
+                                            }
+                                            {(params[index2].data_type !== "element") && (params[index2].data_type === "font") &&
+                                                <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                    <Select
+                                                        id="select_font"
+                                                        required={true}
+                                                        value={fontID}
+                                                        label={t('features.experiment.assist.function.variability_function')}
+                                                        onChange={handleChangeFont}
+                                                    >
+                                                        <MenuItem value={'resources/Roboto-Black.ttf'}>Roboto_font</MenuItem>
+                                                    </Select>
+                                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                        <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number" />
+                                                    </Box>
+                                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                        <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" />
+                                                    </Box>
+                                                </Box>
+                                            }
                                         </Box>
                                     ))}
                                 </Box>
@@ -527,6 +679,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell align="center">{t('features.experiment.assist.element.name')}</TableCell>
+                                            <TableCell align="center">{t('features.experiment.assist.element.color')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.topleft')}&nbsp;(x,y)</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.botright')}&nbsp;(x,y)</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.delete')}</TableCell>
@@ -540,8 +693,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                 >
                                                     <TableCell align="center" component="th" scope="row">
-                                                        {key}
+                                                        {t(key)}
                                                     </TableCell>
+                                                    <TableCell align="center" sx={{
+                                                        backgroundColor: randomColor[key][index2],
+                                                        opacity: 0.3
+                                                    }}></TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[2]}, {screenshots[key][index2].coordinates[3]}</TableCell>
                                                     <TableCell align="center" >
