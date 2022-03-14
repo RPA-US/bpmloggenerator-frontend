@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Table from '@mui/material/Table';
+import { FunctionParamDTO } from 'infrastructure/http/dto/wizard';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -40,8 +41,6 @@ const LogForm: React.FC = () => {
   const dispatch = useDispatch();
   const { seed, functions, params, screenshot_functions, gui_components, initialValues } = useSelector(wizardSelector);
 
-  console.log('LogForm render [functions=', functions, ',screenshot_functions=', screenshot_functions, ']')
-  
   const handleVariateOnClick = (variant: string, act: string, log_column_name: string, event: any) => {
     const selectedValue = event.target.checked ? 1 : 0;
     dispatch(updateVariateValue(variant, act, log_column_name, selectedValue));
@@ -51,7 +50,7 @@ const LogForm: React.FC = () => {
     const selectedValue = event.target.value;
     if(selectedValue !== ""){
       const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)[0];
-      dispatch(wizardSlice.actions.setPossibleParamsInitialValues({column: column, params: functionSelected.params}));
+      dispatch(wizardSlice.actions.setPossibleParamsInitialValues({column: column, function_selected: functionSelected}));
       dispatch(wizardSlice.actions.setFunctionNameVariabilityFunction({variant, act, column, function_name: selectedValue}));
     } else {
       dispatch(updateVariateValue(variant, act, column, 0));
@@ -67,20 +66,8 @@ const LogForm: React.FC = () => {
     setParamColumn(column);
     setOpen(true);
   }
-  const handleClose = () => {
-    dispatch(wizardSlice.actions.setVariabilityConfiguration({
-      ...seed,
-      [variant]: {
-        ...seed[variant],
-        [act]:{
-          ...seed[variant][act],
-          [param_column]: {
-            ...seed[variant][act][param_column],
-            args: {...param_args}
-          }
-        }
-      }
-    }));
+  const handleClose = (column: string) => {
+    dispatch(wizardSlice.actions.setParamsColumnVariabilityColumn({variant, act, column, param_column, param_args}));
     setParamColumn('');
     setParamArgs({});
     setOpen(false);
@@ -99,90 +86,94 @@ const LogForm: React.FC = () => {
 
   const ParamFormModal = (log_column_name: string, log_column: any) => {
     const defaultValue = log_column.variate===1 && initialValues[log_column_name] ? initialValues[log_column_name].params : "";
-    const initial_possible_params = initialValues[log_column_name] && initialValues[log_column_name].params.possible_params;
+    const possible_params: Array<number> = initialValues[log_column_name]?.params?.possible_params;
+    const function_params: FunctionParamDTO[] = params.filter(p => Object.values(possible_params).includes(p.id));
     return (
       <div>
         <Button disabled={!log_column.variate} onClick={() => handleOpen(log_column_name)}>{t("features.wizard.columnVariability.configureParams")}</Button>
         <Modal
           open={open}
-          onClose={handleClose}
+          onClose={() => handleClose(log_column_name)}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
+            <>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {t("features.wizard.columnVariability.paramModalTitle")}
             </Typography>
-            {initial_possible_params && params && params.filter(p => Array(initial_possible_params).indexOf(p.id)).map((function_param: any) => (
-            <div>
-                  <Typography component="div">{t(function_param.description)}:</Typography>
-                  {function_param.data_type === "element" &&
-                    function_param.data_type !== "font" && (
-                      <Select
-                        id="select_element"
-                        defaultValue={defaultValue}
-                        label={t(
-                          "features.experiment.assist.function.variability_function"
+            {Object.values(function_params).map((function_param:FunctionParamDTO) => (
+                <div>
+                    {function_param.description}
+                     <Typography component="div">{t(function_param.description)}:</Typography>
+                      {function_param.data_type === "element" && (
+                          <Select
+                            id="select_element"
+                            defaultValue={defaultValue}
+                            label={t(
+                              "features.experiment.assist.function.variability_function"
+                            )}
+                            onChange={e => handleChangeParam(function_param, e)}
+                          >
+                            {gui_components && Object.keys(gui_components).map((key: any, gui_index) => (
+                              <MenuItem key={`gui-component-menuitem-${variant}-${act}-${log_column[0]}-${gui_index}`} value={key.id_code}>
+                                {t(key.name)}
+                              </MenuItem>
+                            ))}
+                          </Select>
                         )}
-                        onChange={e => handleChangeParam(function_param, e)}
-                      >
-                        {gui_components && Object.keys(gui_components).map((key: any, gui_index) => (
-                          <MenuItem value={key.id_code}>
-                            {t(key.name)}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
-                  {function_param.data_type !== "element" &&
-                    function_param.data_type !== "font" && (
-                      <TextField
-                        id={function_param.id + ""}
-                        placeholder={t(function_param.placeholder)}
-                        label={t(function_param.label)}
-                        type={function_param.data_type}
-                        onChange={e => handleChangeParam(function_param, e)}
-                      />
-                    )}
-                  {function_param.data_type !== "element" &&
-                    function_param.data_type === "font" && (
-                      <Box component={"div"}>
-                        <Select
-                          id="select_font"
-                          required={true}
-                          defaultValue={defaultValue}
-                          label={t(
-                            "features.experiment.assist.function.variability_function"
-                          )}
-                          onChange={e => handleChangeParam(function_param, e)}
-                        >
-                          <MenuItem value={"resources/Roboto-Black.ttf"}>
-                            Roboto_font
-                          </MenuItem>
-                        </Select>
-                        <Box component={"div"}>
+                      {function_param.data_type !== "element" &&
+                        function_param.data_type !== "font" && (
                           <TextField
-                            id="outlined-basic"
-                            inputRef={sizeRef}
-                            label={t("features.experiment.assist.function.font_size")}
-                            variant="outlined"
-                            type="number"
+                            id={function_param.id + ""}
+                            placeholder={t(function_param.placeholder)}
+                            label={t(function_param.label)}
+                            type={function_param.data_type}
                             onChange={e => handleChangeParam(function_param, e)}
                           />
-                        </Box>
-                        <Box component={"div"}>
-                          <TextField
-                            id="outlined-basic"
-                            inputRef={colorRef}
-                            label={t("features.experiment.assist.function.font_color")}
-                            variant="outlined"
-                            type="String"
-                            onChange={e => handleChangeParam(function_param, e)}
-                          />
-                        </Box>
-                      </Box>
-                    )}
-            </div>
-            ))}
+                        )}
+                      {function_param.data_type !== "element" &&
+                        function_param.data_type === "font" && (
+                          <div>
+                            <Select
+                              id="select_font"
+                              required={true}
+                              defaultValue={defaultValue}
+                              label={t(
+                                "features.experiment.assist.function.variability_function"
+                              )}
+                              onChange={e => handleChangeParam(function_param, e)}
+                            >
+                              <MenuItem key={`font-family-menuitem-${variant}-${act}-${log_column[0]}-00`} value={"resources/Roboto-Black.ttf"}>
+                                Roboto_font
+                              </MenuItem>
+                            </Select>
+                            <div>
+                              <TextField
+                                id="outlined-basic"
+                                inputRef={sizeRef}
+                                label={t("features.experiment.assist.function.font_size")}
+                                variant="outlined"
+                                type="number"
+                                onChange={e => handleChangeParam(function_param, e)}
+                              />
+                            </div>
+                            <div>
+                              <TextField
+                                id="outlined-basic"
+                                inputRef={colorRef}
+                                label={t("features.experiment.assist.function.font_color")}
+                                variant="outlined"
+                                type="String"
+                                onChange={e => handleChangeParam(function_param, e)}
+                              />
+                            </div>
+                          </div>
+                        )}
+                </div>
+            )
+            )}
+            </>
           </Box>
         </Modal>
       </div>
@@ -219,11 +210,8 @@ const LogForm: React.FC = () => {
                       onChange={(e:any) => handleChangeFunction(variant, act, log_column[0], log_column[1], e)}
                       disabled={log_column[1].variate===1}
                       >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {screenshot_functions!= null && Object.values({...screenshot_functions}).map((f:any) => (
-                        <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
+                      {screenshot_functions!= null && Object.values({...screenshot_functions}).map((f:any, sc_index) => (
+                        <MenuItem key={`screenshot-function-menuitem-${variant}-${act}-${log_column[0]}-${sc_index}`} value={f.id_code}>{t(f.function_name)}</MenuItem>
                         ))}
                     </Select>
                   </FormControl>
@@ -241,8 +229,8 @@ const LogForm: React.FC = () => {
                       defaultValue={ initialValues[log_column[0]]?.variate===1 ? initialValues[log_column[0]].function : "" }
                       disabled={log_column[1].variate!==1}
                       >
-                      {functions!= null && Object.values({...functions}).map((f:any) => (
-                        <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
+                      {functions!= null && Object.values({...functions}).map((f:any, f_index) => (
+                        <MenuItem key={`function-menuitem-${variant}-${act}-${log_column[0]}-${f_index}`} value={f.id_code}>{t(f.function_name)}</MenuItem>
                         ))}
                     </Select>
                   </FormControl>

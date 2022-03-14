@@ -39,12 +39,12 @@ export interface IParams {
     scenario_variability: any,
     case_variability: any,
     initialValues: {[column: string]: InitialValues},
-    functions: VariabilityFunctionDTO[] | null,
-    params: FunctionParamDTO[] | null,
-    screenshot_functions: VariabilityFunctionDTO[] | null,
-    category_functions: CategoryDTO[] | null,
-    gui_components: GUIComponentDTO[] | null,
-    category_gui_components: CategoryDTO[] | null,
+    functions: VariabilityFunctionDTO[],
+    params: FunctionParamDTO[],
+    screenshot_functions: VariabilityFunctionDTO[],
+    category_functions: CategoryDTO[],
+    gui_components: GUIComponentDTO[],
+    category_gui_components: CategoryDTO[],
     isLoading: boolean,
     error: string | null
   }

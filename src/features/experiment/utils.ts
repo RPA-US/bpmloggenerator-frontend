@@ -18,6 +18,10 @@ export const downloadFile = function downloadFile(filename: string, blob: Blob) 
 }
 
 
+export function getByID(obj: any, idO: number) {
+  return obj.find((o: { id: number; }) => (o.id === idO) ? o : null)
+}
+
 export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experiment {
   let state: ExperimentState;
   if (experiment.is_being_processed === 0) {

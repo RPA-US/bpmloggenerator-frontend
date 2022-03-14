@@ -124,14 +124,12 @@ const ExperimentAssist: React.FC = () => {
         container
         direction="row-reverse"
         spacing={2}>
-        <Grid xs={12} lg={2} item justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
+        <Grid xs={12} lg={4} item justifyContent="center" style={{ margin: theme.spacing(2) }}>
+          <Button type="submit" name="download" variant="contained" color="primary" style={{ margin: theme.spacing(2)}} endIcon={<DownloadIcon />} onClick={handleDownload}>
+            {t('features.experiment.assist.download')}
+          </Button>
           <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />} onClick={handleDownloadAndNext}>
             {t('features.experiment.assist.download_next')}
-          </Button>
-        </Grid>
-        <Grid xs={12} lg={2} item justifyContent="center" style={{ marginTop: theme.spacing(2)}}>
-          <Button type="submit" name="download" variant="contained" color="primary" endIcon={<DownloadIcon />} onClick={handleDownload}>
-            {t('features.experiment.assist.download')}
           </Button>
         </Grid>
       </Grid>
