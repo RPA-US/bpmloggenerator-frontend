@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { IElements, IScreenshotColumn, wizardState, InitialValues } from './types';
+import { IElements, wizardState } from './types';
 import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
@@ -54,7 +54,7 @@ export const wizardSlice = createSlice({
     ) => {
       state.seed = payload;
     },
-    /*setColumnVariabilityConfiguration: (
+    setColumnVariabilityConfiguration: (
       state,
       { payload }: PayloadAction<{ variant: string, act: string, column: string, columnValue: any }>
     ) => {
@@ -64,7 +64,18 @@ export const wizardSlice = createSlice({
       if (actObject[column] != null) {
         actObject[column] = columnValue;
       }
-    },*/
+    },
+    setFunctionNameVariabilityFunction: (
+      state,
+      { payload }: PayloadAction<{ variant: string, act: string, column: string, function_name: string }>
+    ) => {
+      const { seed } = state;
+      const { variant, act, column, function_name } = payload;
+      const value = [variant, act, column].reduce((ob, key) => ob[key] || {}, seed);
+      if (typeof value.name === 'string') {
+        value.name = function_name;
+      }
+    },
     setVariateVariabilityConfiguration: (
       state,
       { payload }: PayloadAction<{ variant: string, act: string, column: string, variate: number }>
@@ -133,6 +144,29 @@ export const wizardSlice = createSlice({
     ) => {
       state.category_gui_components = payload;
     },
+    setLogFormData: (
+      state,
+      { payload }: PayloadAction<{
+        category_functions: CategoryDTO[],
+        functions: VariabilityFunctionDTO[],
+        functions_screenshot: VariabilityFunctionDTO[],
+        gui_components: GUIComponentDTO[],
+        params: FunctionParamDTO[]
+      }>
+    ) => {
+      const {
+        category_functions,
+        functions,
+        functions_screenshot,
+        gui_components,
+        params,
+      } = payload;
+      state.category_functions = category_functions;
+      state.functions = functions;
+      state.screenshot_functions = functions_screenshot;
+      state.gui_components = gui_components;
+      state.params = params;
+    },
     setError: (state, { payload }: PayloadAction<string>) => {
       state.error = payload;
     },
@@ -141,8 +175,8 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setVariateVariabilityConfiguration,
-    setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
+  const { setError, setLoading, setVariabilityConfiguration, setVariateVariabilityConfiguration,
+    setLogFormData, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -150,21 +184,21 @@ export const wizardSlice = createSlice({
   
   // ================================== THUNK middleware ==================================
   
-  export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any): AppThunk => async (dispatch: AppDispatch, getState) => {
-    const { wizard } = getState();
-    let json_conf = wizard.seed;
-    dispatch(
-      setVariabilityConfiguration({
-          ...json_conf,
-          [variant]: {
-            ...json_conf[variant],
-            [act]:{
-              ...json_conf[variant][act],
-              [column]: log_column_conf
-            }
-          }
-    }));
-  }
+  // export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any): AppThunk => async (dispatch: AppDispatch, getState) => {
+  //   const { wizard } = getState();
+  //   let json_conf = wizard.seed;
+  //   dispatch(
+  //     setVariabilityConfiguration({
+  //         ...json_conf,
+  //         [variant]: {
+  //           ...json_conf[variant],
+  //           [act]:{
+  //             ...json_conf[variant][act],
+  //             [column]: log_column_conf
+  //           }
+  //         }
+  //   }));
+  // }
 
   export const updateVariateValue = (variant: string, act: string, column: string, variate_value: number): AppThunk => async (dispatch: AppDispatch, getState) => {
     dispatch(
@@ -183,7 +217,7 @@ export const wizardSlice = createSlice({
               [entry[0]]: {
                 function: entry[1].name,
                 params: {
-                  possible_params: {},
+                  possible_params: wizard.initialValues[entry[0]] ? wizard.initialValues[entry[0]].params.possible_params : {},
                   args: entry[1].args
                 },
                 variate: entry[1].variate
@@ -211,7 +245,7 @@ export const wizardSlice = createSlice({
             [entry[0]]: {
               function: entry[1].name,
               params: {
-                possible_params: {},
+                possible_params: wizard.initialValues[entry[0]] ? wizard.initialValues[entry[0]].params.possible_params : {},
                 args: entry[1].args
               },
               variate: entry[1].variate
@@ -220,35 +254,21 @@ export const wizardSlice = createSlice({
         });
         dispatch(setInitialValues(aux_values));
       }
-      // const currentPage = experiment.pagination.page;
-      if (wizard.category_functions === null) {
-        const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
-        dispatch(setFunctionCategories(functionCategoriesResponse.results));
-      }
-      if (wizard.functions === null) {
-        const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
-        try {
-          const screenshot_functions: any = wizard.category_functions?.filter(c => c.name==="Screenshot");
-          const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
-          const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
-          dispatch(setFunctions(functions_no_screenshot));
-          dispatch(setScreenshotFunctions(functions_screenshot));
-        } catch (ex) {
-          console.error('error setting up wizard functions', ex);
-        }
-      }
-      if (wizard.gui_components === null) {
-        const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
-        dispatch(setGUIComponents(guiComponentsResponse.results));
-      }
-      // if (wizard.category_gui_components === null) {
-      //   const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
-      //   dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));
-      // }
-      if (wizard.params === null) {
-        const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
-        dispatch(setParams(paramsResponse.results));
-      }
+
+      const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
+      const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
+      const screenshot_functions: any = functionCategoriesResponse.results?.filter(c => c.name==="Screenshot");
+      const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
+      const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
+      const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
+      const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
+      dispatch(setLogFormData({
+        category_functions: functionCategoriesResponse.results,
+        functions: functions_no_screenshot,
+        functions_screenshot: functions_screenshot,
+        gui_components: guiComponentsResponse.results,
+        params: paramsResponse.results
+      }))
     } catch (error) {  
       dispatch(setError(error as string))
     } finally {

@@ -464,7 +464,7 @@
       "assist":{
         "empty" : "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
         "download": "Descargar",
-        "download_next": "Descargar y continuar",
+        "download_next": "Finalizar",
         "download_confirmation": "Descargaras el Json de configuración y no podrás seguir configurando esta actividad ¿Está seguro?",
 
         "function": {

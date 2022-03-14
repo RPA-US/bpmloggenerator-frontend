@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Modal, TextField, Theme, Typography, Grid, CircularProgress } from '@mui/material';
+import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext } from '@emotion/react';
 import { Link as RouterLink } from 'react-router-dom';
-// import { useForm } from 'react-hook-form';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,13 +11,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { wizardSelector, loadDataAndInitValues, updateJsonConf, updateVariateValue, wizardSlice } from 'features/experiment/wizard/slice';
+import { wizardSelector, updateVariateValue, wizardSlice } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import NextButton from 'components/NextButton';
 
 
 const style = {
@@ -34,27 +31,14 @@ const style = {
   p: 4,
 };
 
-export interface ExperimentFormProperties {
-  onSubmit: any
-  disabled?: boolean,
-  initialValues?: any
-}
-export interface ColumnConf {
-  initValue: any,
-  variate: any,
-  name: string,
-  args: any
-}
-
 const LogForm: React.FC = () => {
   const { t } = useTranslation();
   const colorRef = useRef<any>("");
   const sizeRef = useRef<any>(0);
-  const theme = useContext(ThemeContext) as Theme;
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
-  const { seed, isLoading, functions, params, screenshot_functions, gui_components, initialValues } = useSelector(wizardSelector);
+  const { seed, functions, params, screenshot_functions, gui_components, initialValues } = useSelector(wizardSelector);
 
   console.log('LogForm render [functions=', functions, ',screenshot_functions=', screenshot_functions, ']')
   
@@ -66,14 +50,9 @@ const LogForm: React.FC = () => {
   const handleChangeFunction = (variant: string, act: string, column: string, log_column_conf: any, event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
     if(selectedValue !== ""){
-      const log_column_conf_updated = {
-        ...log_column_conf,
-        name: selectedValue
-      }
       const functionSelected: any = functions?.filter(f => f.id_code === selectedValue)[0];
-      // initialValues[column].params = functionSelected.params;
       dispatch(wizardSlice.actions.setPossibleParamsInitialValues({column: column, params: functionSelected.params}));
-      dispatch(updateJsonConf(variant, act, column, log_column_conf_updated));
+      dispatch(wizardSlice.actions.setFunctionNameVariabilityFunction({variant, act, column, function_name: selectedValue}));
     } else {
       dispatch(updateVariateValue(variant, act, column, 0));
     }
@@ -121,7 +100,6 @@ const LogForm: React.FC = () => {
   const ParamFormModal = (log_column_name: string, log_column: any) => {
     const defaultValue = log_column.variate===1 && initialValues[log_column_name] ? initialValues[log_column_name].params : "";
     const initial_possible_params = initialValues[log_column_name] && initialValues[log_column_name].params.possible_params;
-    // initialFunctionName -> initialValues[log_column_name].function
     return (
       <div>
         <Button disabled={!log_column.variate} onClick={() => handleOpen(log_column_name)}>{t("features.wizard.columnVariability.configureParams")}</Button>
