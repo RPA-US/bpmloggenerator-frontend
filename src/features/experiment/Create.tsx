@@ -17,7 +17,7 @@ const CreateExperiment: React.FC = () => {
  
   return (
     <>
-      <Typography variant="h4">
+      <Typography variant="h5">
         <BackButton to="/" />
         { t('features.experiment.create.title') }
       </Typography>

@@ -164,29 +164,52 @@ export const wizardSlice = createSlice({
 
   export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
       const { wizard } = getState();
-      let aux_values = {};
-      Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
-        const key: string = entry[0];
-        const val: any = entry[1];
-        let aux: InitialValues = {
-          function: val.name,
-          params: {
-            possible_params: {},
-            args: val.args
-          },
-          variate: val.variate
-        }
-        aux_values = {
-          ...aux_values,
-          [key]: aux
-        };
-      });
-      dispatch(setInitialValues(aux_values));
+      try {
+        dispatch(setLoading(true))
+        let aux_values = {};
+          Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
+            aux_values = {
+              ...aux_values,
+              [entry[0]]: {
+                function: entry[1].name,
+                params: {
+                  possible_params: {},
+                  args: entry[1].args
+                },
+                variate: entry[1].variate
+              }
+            };
+          });
+          setInitialValues(aux_values);
+      } catch (error) {  
+        dispatch(setError(error as string))
+      } finally {
+        dispatch(setLoading(false))
+      }
   }
-  export const loadFunctionsAndCategories = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+  export const loadDataAndInitValues = (variant: string, act: string, initValuesCond: boolean): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
     try {
       dispatch(setLoading(true))
+
+      if(initValuesCond){
+        // Load InitValues
+        let aux_values = {};
+        Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
+        aux_values = {
+            ...aux_values,
+            [entry[0]]: {
+              function: entry[1].name,
+              params: {
+                possible_params: {},
+                args: entry[1].args
+              },
+              variate: entry[1].variate
+            }
+          };
+        });
+        dispatch(setInitialValues(aux_values));
+      }
       // const currentPage = experiment.pagination.page;
       if (wizard.category_functions === null) {
         const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
@@ -200,10 +223,10 @@ export const wizardSlice = createSlice({
         dispatch(setFunctions(functions_no_screenshot));
         dispatch(setScreenshotFunctions(functions_screenshot));
       }
-      // if (wizard.gui_components === null) {
-      //   const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
-      //   dispatch(setGUIComponents(guiComponentsResponse.results));
-      // }
+      if (wizard.gui_components === null) {
+        const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
+        dispatch(setGUIComponents(guiComponentsResponse.results));
+      }
       // if (wizard.category_gui_components === null) {
       //   const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
       //   dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));
