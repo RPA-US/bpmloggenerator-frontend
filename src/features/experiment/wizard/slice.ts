@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { IElements, IScreenshotColumn, wizardState } from './types';
+import { IElements, IScreenshotColumn, wizardState, InitialValues } from './types';
 import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
@@ -18,8 +18,6 @@ export const screenshotRepository = new ScreenshotRepository();
 
 // ================================== REDUCERS ==================================
 
-
-
 const { localStorage } = window;
 
 // ================================== REDUCERS ==================================
@@ -29,11 +27,7 @@ const initialState: wizardState = {
   seed: null,
   scenario_variability: null,
   case_variability: null,
-  initialValues: {
-    initialFunctions: new Map(),
-    initialParams: new Map(),
-    initialVariate: new Map()
-  },
+  initialValues: {},
   functions: null,
   params: null,
   screenshot_functions: null,
@@ -60,23 +54,26 @@ export const wizardSlice = createSlice({
     ) => {
       state.seed = payload;
     },
-    setInitialParams: (
+    setInitialValues: (
       state,
-      { payload }: PayloadAction<Map<any,any>>
+      { payload }: PayloadAction<any>
     ) => {
-      state.initialValues.initialParams = payload;
+      state.initialValues = payload;
     },
-    setInitialFunctions: (
+    setPossibleParamsInitialValues: (
       state,
-      { payload }: PayloadAction<Map<any,any>>
+      { payload }: PayloadAction<{params: any, column: string}>
     ) => {
-      state.initialValues.initialFunctions = payload;
-    },
-    setInitialVariate: (
-      state,
-      { payload }: PayloadAction<Map<any,any>>
-    ) => {
-      state.initialValues.initialVariate = payload;
+      state.initialValues = {
+        ...state.initialValues,
+        [payload.column]:{
+          ...state.initialValues[payload.column],
+          params: {
+            ...state.initialValues[payload.column].params,
+            possible_params: payload.params
+          }
+        } 
+      }
     },
     setParams: (
       state,
@@ -122,7 +119,7 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setElements, setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialParams, setInitialFunctions, setInitialVariate } = wizardSlice.actions
+  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -167,26 +164,52 @@ export const wizardSlice = createSlice({
 
   export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
       const { wizard } = getState();
-      let aux_params = new Map();
-      let aux_functions = new Map();
-      let aux_variate = new Map();
-      Object.entries({...wizard.seed[variant][act]}).forEach(entry => {
-        const val: any = entry[1];
-        aux_functions.set(entry[0], val.name);
-        aux_params.set(entry[0], {
-          possible_params: {},
-          args: val.args
-        });
-        aux_variate.set(entry[0], val.variate);
-      });
-      dispatch(setInitialParams(aux_params));
-      dispatch(setInitialFunctions(aux_functions));
-      dispatch(setInitialVariate(aux_variate));
+      try {
+        dispatch(setLoading(true))
+        let aux_values = {};
+          Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
+            aux_values = {
+              ...aux_values,
+              [entry[0]]: {
+                function: entry[1].name,
+                params: {
+                  possible_params: {},
+                  args: entry[1].args
+                },
+                variate: entry[1].variate
+              }
+            };
+          });
+          setInitialValues(aux_values);
+      } catch (error) {  
+        dispatch(setError(error as string))
+      } finally {
+        dispatch(setLoading(false))
+      }
   }
-  export const loadFunctionsAndCategories = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+  export const loadDataAndInitValues = (variant: string, act: string, initValuesCond: boolean): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
     try {
       dispatch(setLoading(true))
+
+      if(initValuesCond){
+        // Load InitValues
+        let aux_values = {};
+        Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
+        aux_values = {
+            ...aux_values,
+            [entry[0]]: {
+              function: entry[1].name,
+              params: {
+                possible_params: {},
+                args: entry[1].args
+              },
+              variate: entry[1].variate
+            }
+          };
+        });
+        dispatch(setInitialValues(aux_values));
+      }
       // const currentPage = experiment.pagination.page;
       if (wizard.category_functions === null) {
         const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
@@ -200,10 +223,10 @@ export const wizardSlice = createSlice({
         dispatch(setFunctions(functions_no_screenshot));
         dispatch(setScreenshotFunctions(functions_screenshot));
       }
-      // if (wizard.gui_components === null) {
-      //   const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
-      //   dispatch(setGUIComponents(guiComponentsResponse.results));
-      // }
+      if (wizard.gui_components === null) {
+        const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
+        dispatch(setGUIComponents(guiComponentsResponse.results));
+      }
       // if (wizard.category_gui_components === null) {
       //   const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
       //   dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));

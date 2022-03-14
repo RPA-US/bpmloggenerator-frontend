@@ -69,7 +69,9 @@
         "variabilityParams": "Params",
         "screenshotVariability": "Screenshot Variability",
         "variability_function_label": "Variability Function",
-        "function_param_label": "Function param"
+        "function_param_label": "Function param",
+        "configureParams": "Configure params",
+        "paramModalTitle": "Parameters configuration"
       }
     },
     "experiment": {
@@ -512,7 +514,7 @@
           "botright": "Bot-Right",
           "color": "Colour"
         },
-        "next": "Next",
+        "next": "Finish Screenshot Variability",
         "delete": "Delete",
         "add": "Add"
       },

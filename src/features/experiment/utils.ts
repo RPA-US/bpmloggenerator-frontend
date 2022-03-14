@@ -73,7 +73,7 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
           "initValue": col[1],
           "variate": 0,
           "name": "",
-          "args": []
+          "args": {} // old versions of agosuirpa (backend) only support '[]'
         };
         columns_conf[col[0]] = this_column_conf;
         has_values = true;

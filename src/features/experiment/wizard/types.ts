@@ -28,9 +28,9 @@ export interface IParams {
   }
   
   export interface InitialValues {
-    initialFunctions: Map<any, any>,
-    initialParams: Map<any, any>,
-    initialVariate: Map<any, any>
+    function: string,
+    params: any,
+    variate: number
   }
 
   export interface wizardState{
@@ -38,7 +38,7 @@ export interface IParams {
     seed: any,
     scenario_variability: any,
     case_variability: any,
-    initialValues: InitialValues,
+    initialValues: {[column: string]: InitialValues},
     functions: VariabilityFunctionDTO[] | null,
     params: FunctionParamDTO[] | null,
     screenshot_functions: VariabilityFunctionDTO[] | null,

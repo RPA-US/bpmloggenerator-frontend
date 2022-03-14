@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, Theme } from '@mui/material';
+import { Button, Theme, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
@@ -11,11 +11,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import DoneIcon from '@mui/icons-material/Done';
-import CloseIcon from '@mui/icons-material/Close';
-import { experimentsSelector } from 'features/experiment/slice';
 import { wizardSelector, wizardSlice } from 'features/experiment/wizard/slice';
-import Checkbox from '@mui/material/Checkbox';
+import BackButton from 'components/BackButton';
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -25,7 +22,6 @@ export interface ExperimentFormProperties {
 
 const ExperimentAssist: React.FC = () => {
   const { t } = useTranslation();
-  const theme = useContext(ThemeContext) as Theme;
   const { seed } = useSelector(wizardSelector);
   
 
@@ -66,24 +62,30 @@ const ExperimentAssist: React.FC = () => {
       ))};
 
   return (
-    <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>
-    <TableContainer sx={{ maxHeight: '100%' }}>
-      {
-        Object.entries(seed).map(entry => (
-          <Table sx={{ minWidth: 650 }} key={`${entry[0]}`} aria-label="variant activity selection">
-          <TableHead>
-          <TableRow key="headers">
-            <TableCell align="center">{`${t("features.wizard.activitySelection.variant")} ${entry[0]}`}</TableCell>
-            <TableCell>{t("features.wizard.activitySelection.variate")}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {variantActivities(entry)}
-        </TableBody>
-      </Table>
-      ))}
-    </TableContainer>
-  </Paper>
+    <div>
+      <Typography variant="h5">
+          <BackButton to="/add-experiment" />
+          { t('features.experiment.create.title') }
+      </Typography>
+      <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>
+      <TableContainer sx={{ maxHeight: '100%' }}>
+        {
+          Object.entries(seed).map(entry => (
+            <Table sx={{ minWidth: 650 }} key={`${entry[0]}`} aria-label="variant activity selection">
+            <TableHead>
+            <TableRow key="headers">
+              <TableCell align="center">{`${t("features.wizard.activitySelection.variant")} ${entry[0]}`}</TableCell>
+              <TableCell>{t("features.wizard.activitySelection.variate")}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {variantActivities(entry)}
+          </TableBody>
+        </Table>
+        ))}
+      </TableContainer>
+    </Paper>
+  </div>
   );
 }
 
