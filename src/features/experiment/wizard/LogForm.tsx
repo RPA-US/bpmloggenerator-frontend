@@ -55,6 +55,8 @@ const LogForm: React.FC = () => {
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
   const { seed, isLoading, functions, params, screenshot_functions, gui_components, initialValues } = useSelector(wizardSelector);
+
+  console.log('LogForm render [functions=', functions, ',screenshot_functions=', screenshot_functions, ']')
   
   const handleVariateOnClick = (variant: string, act: string, log_column_name: string, event: any) => {
     const selectedValue = event.target.checked ? 1 : 0;
