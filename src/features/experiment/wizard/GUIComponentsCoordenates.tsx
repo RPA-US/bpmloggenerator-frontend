@@ -5,12 +5,13 @@ import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent
 import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
+import { screenshotRepository, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
 import { IDependency, IScreenshotColumn, ICoordinates, IScreenshot, IArguments } from './types';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
+import { getByID } from '../utils';
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
 import { json } from 'stream/consumers';
@@ -314,10 +315,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         selectElement(token ?? "");
         getResolution();
         getResolutionBRW();
-    }
-
-    function getByID(obj: any, idO: number) {
-        return obj.find((o: { id: number; }) => (o.id === idO) ? o : null)
     }
 
     function selectCategoryByName(categories: any, name: string) {

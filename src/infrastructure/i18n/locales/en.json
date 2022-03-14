@@ -490,7 +490,7 @@
       "assist": {
         "empty": "To add a modification you need to select a GUI component to edit, the coordinates, the edit function and fill in its parameters",
         "download": "Download",
-        "download_next": "Download and continue",
+        "download_next": "Finish",
         "download_confirmation": "You will download the configuration Json and will no longer be able to configure this activity. Are you sure?",
         "function": {
           "variability_function": "Function variability",

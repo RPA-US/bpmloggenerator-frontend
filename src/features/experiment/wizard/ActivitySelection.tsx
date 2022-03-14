@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
-import { Button, Theme, Typography } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
+import { Button, Theme, Typography, Grid } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,8 +11,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { wizardSelector, wizardSlice } from 'features/experiment/wizard/slice';
+import { wizardSelector } from 'features/experiment/wizard/slice';
+import { experimentsSelector } from 'features/experiment/slice';
 import BackButton from 'components/BackButton';
+import DownloadIcon from '@mui/icons-material/Download';
+import SendIcon from '@mui/icons-material/Send';
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -23,7 +26,40 @@ export interface ExperimentFormProperties {
 const ExperimentAssist: React.FC = () => {
   const { t } = useTranslation();
   const { seed } = useSelector(wizardSelector);
+  const { detail } = useSelector(experimentsSelector);
+  const history = useHistory();
+  const theme = useContext(ThemeContext) as Theme;
   
+  function downloadFunction(jsonTMP: any, type: string, filename: string) {
+    const blob = new Blob([JSON.stringify(jsonTMP)], { type: type })
+    const a = document.createElement('a')
+    a.download = filename
+    a.href = window.URL.createObjectURL(blob)
+    const clickEvt = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    })
+    a.dispatchEvent(clickEvt)
+    a.remove()
+  }
+
+  function handleDownload(e: any) {
+    let jsonTMP = seed;
+    let typeTMP = "text/json"
+    let filenameTMP = "json_variability_configuration.json"
+    downloadFunction(jsonTMP, typeTMP, filenameTMP);
+  }
+
+  function handleDownloadAndNext(e: any) {
+    if (window.confirm(t('features.experiment.assist.download_confirmation'))) {
+      let jsonTMP = seed;
+      let typeTMP = "text/json"
+      let filenameTMP = "json_variability_configuration.json"
+      downloadFunction(jsonTMP, typeTMP, filenameTMP);
+      history.push('/experiment/'+detail?.id);
+    }
+  }
 
   const variantActivities = (entry: any) => {
     let variant = entry[0];
@@ -84,6 +120,19 @@ const ExperimentAssist: React.FC = () => {
         </Table>
         ))}
       </TableContainer>
+      <Grid
+        container
+        direction="row-reverse"
+        spacing={2}>
+        <Grid xs={12} lg={4} item justifyContent="center" style={{ margin: theme.spacing(2) }}>
+          <Button type="submit" name="download" variant="contained" color="primary" style={{ margin: theme.spacing(2)}} endIcon={<DownloadIcon />} onClick={handleDownload}>
+            {t('features.experiment.assist.download')}
+          </Button>
+          <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />} onClick={handleDownloadAndNext}>
+            {t('features.experiment.assist.download_next')}
+          </Button>
+        </Grid>
+      </Grid>
     </Paper>
   </div>
   );
