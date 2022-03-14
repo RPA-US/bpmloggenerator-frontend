@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,13 +9,13 @@ import { screenshotRepository, updateJsonConf, wizardSelector, wizardSlice, guiC
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
-import Tooltip from '@mui/material/Tooltip';
 import { IDependency, IScreenshotColumn, ICoordinates, IScreenshot, IArguments } from './types';
 import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { WindowSharp } from '@mui/icons-material';
 import Http from "infrastructure/http/http";
 import { json } from 'stream/consumers';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
+import Tooltip from '@mui/material/Tooltip';
 
 //TODO: FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
 //TODO: meter los resultados de los funciones/params/gui en el wizard
@@ -26,7 +26,7 @@ export interface IRandomColor {
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
-    const { seed } = useSelector(wizardSelector);
+    const { seed, params, screenshot_functions,category_functions ,gui_components} = useSelector(wizardSelector);
     const { detail } = useSelector(experimentsSelector);
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
@@ -69,17 +69,19 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState(false);
 
     //Cargas de BD temporales
-    const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
-    const [paramsList, setParamsFunctions] = useState(initialparams);
+    const [variabilityFunctions, setVariabilityFunctions] = useState((screenshot_functions!== null)?screenshot_functions:initialVarFunction);
+    const [paramsList, setParamsFunctions] = useState((params!==null)?params:initialparams);
     const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
-    const [params, setParams] = useState(initialparams);
+    const [paramsL, setParams] = useState(initialparams);
     const [variantDependency, setVariantDependency] = useState(initialVariants);
     const [activityDependency, setActivityDependency] = useState(initialVariants);
-    const [elements, setElements] = useState(initialElements);
+    const [elements, setElements] = useState((gui_components!==null)?gui_components:initialElements);
     const [varAct, setVarAct] = useState(["", ""]);
     const colorRef = useRef<any>('');
     const sizeRef = useRef<any>(0);
+    const listRef = useRef<any>("");
 
+    
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
         if (url === "") {
@@ -104,6 +106,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         let categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
         let categoryId = selectCategoryByName(categories.results, name);
         let varFunc = await variabilityFunctionRepository.list(token);
+        console.log(varFunc)
         let test;
         try {
             let ret: VariabilityFunctionDTO[] = [];
@@ -301,7 +304,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             }));
         }
-        history.push("/experiment-wizard")//'/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
+        history.push('/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
     }
 
     function onLoadImage() {
@@ -357,12 +360,18 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
         setGUIcatID(guiTMP);
+        console.log(variabilityFunctions)
     }
 
-    function handleChangeElement(e: any) {
-        let guiElement: string[] = e.target.value.split(',');
-        setElementID([...guiElement]);
-    }
+    const handleChangeElement = (event: SelectChangeEvent<typeof elementID>) => {
+        const {
+          target: { value },
+        } = event;
+        setElementID(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
 
     function handleChangeFont(e: any) {
         let fontTMP: string = e.target.value;
@@ -377,7 +386,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             let guiCatName: CategoryDTO = getByID(guiComponentsCat, guicatID);
             if (functionID !== 0) {
                 let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
-                let paramsTMP: FunctionParamDTO[] = params;
+                let paramsTMP: FunctionParamDTO[] = paramsL;
                 if (guiCatName !== null && functionName !== null) {
                     argumentTMP.id = countTMP;
                     if (paramsTMP.length > 0 && functionName.params.length > 0) {
@@ -388,8 +397,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                             if (paramsTMP[j].data_type === "font") {
                                 argumentTMP.args[paramsTMP[j].label] = [fontID, sizeRef.current.value, colorRef.current.value]
                             }
+                            if (paramsTMP[j].data_type === "list") {
+                                argumentTMP.args[paramsTMP[j].label] = listRef.current.value.split(',')
+                            }
                             if (paramsTMP[j].data_type !== "font" && paramsTMP[j].data_type !== "element") {
-
                                 if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
                                     argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
                                 }
@@ -627,25 +638,26 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     <Typography component="div" >
                                         {t('features.experiment.assist.function.params_function')}
                                     </Typography>
-                                    {Object.keys(params).map((key2, index2) => (
+                                    {Object.keys(paramsL).map((key2, index2) => (
                                         <Box component={"div"}>
-                                            <Typography component="div">{t(params[index2].description)}:</Typography>
-                                            {(params[index2].data_type === "element") && (params[index2].data_type !== "font") &&
+                                            <Typography component="div">{t(paramsL[index2].description)}:</Typography>
+                                            {(paramsL[index2].data_type === "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
                                                 <Select
                                                     id="select_element"
+                                                    multiple
                                                     value={elementID}
-                                                    label={t('features.experiment.assist.function.variability_function')}
+                                                    input={<OutlinedInput label={t(elements[index].name)} />}
                                                     onChange={handleChangeElement}
                                                 >
                                                     {Object.keys(elements).map((key, index) => (
-                                                        <MenuItem value={elements[index].id_code}>{t(elements[index].name)}</MenuItem>
+                                                        <MenuItem key={elements[index].id_code} value={elements[index].id_code}>{t(elements[index].name)}</MenuItem>
                                                     ))}
                                                 </Select>
                                             }
-                                            {(params[index2].data_type !== "element") && (params[index2].data_type !== "font") &&
-                                                <TextField id={params[index2].id + ""} placeholder={t(params[index2].placeholder)} label={t(params[index2].label)} type={params[index2].data_type} />
+                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
+                                                <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
                                             }
-                                            {(params[index2].data_type !== "element") && (params[index2].data_type === "font") &&
+                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type === "font") && (paramsL[index2].data_type !== "list") &&
                                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                                                     <Select
                                                         id="select_font"
@@ -663,6 +675,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                         <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" />
                                                     </Box>
                                                 </Box>
+                                            }
+                                             {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type === "list") &&
+                                                <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
                                             }
                                         </Box>
                                     ))}

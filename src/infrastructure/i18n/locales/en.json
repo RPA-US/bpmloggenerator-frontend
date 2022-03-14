@@ -209,7 +209,12 @@
           "label": "Select font type, size and color",
           "placeholder": "GUI component",
           "description": "Select GUI components for the function"
-        }
+        },
+        "list_input": {
+          "label": "Inserte el listado de parámetros necesatios para la función",
+          "placeholder": "Texto, texto...",
+          "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
+       }
       },
       "GUI_components": {
         "name": {
@@ -478,6 +483,9 @@
       },
       "assist": {
         "empty": "To add a modification you need to select a GUI component to edit, the coordinates, the edit function and fill in its parameters",
+        "download": "Download",
+        "download_next": "Download and continue",
+        "download_confirmation": "You will download the configuration Json and will no longer be able to configure this activity. Are you sure?",
         "function": {
           "variability_function": "Function variability",
           "params_function": "Param for selected function",

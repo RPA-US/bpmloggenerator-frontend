@@ -28,6 +28,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import DownloadIcon from '@mui/icons-material/Download';
+import SendIcon from '@mui/icons-material/Send';
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -48,6 +50,8 @@ const ColumnVariability: React.FC = () => {
   const { act } = useParams<{ act: string }>();
   const dispatch = useDispatch();
   const { seed, functions, params, category_functions, screenshot_functions, initialValues } = useSelector(wizardSelector);
+  const history = useHistory();
+
   if (functions === null || params === null || category_functions === null) {
     dispatch(loadFunctionsAndCategories());
   }
@@ -55,15 +59,15 @@ const ColumnVariability: React.FC = () => {
     if (functions === null || params === null || category_functions === null) {
       dispatch(loadFunctionsAndCategories());
     }
-  }, [ dispatch ])
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(loadInitValues(variant, act));
-  }, [ seed ])
+  }, [seed])
 
   const handleChangeFunction = (variant: string, act: string, column: string, log_column_conf: any, event: SelectChangeEvent) => {
     const selectedValue = event.target.value;
-    if(selectedValue !== ""){
+    if (selectedValue !== "") {
       const log_column_conf_updated = {
         ...log_column_conf,
         name: selectedValue
@@ -73,7 +77,7 @@ const ColumnVariability: React.FC = () => {
       aux_params = {
         ...aux_params,
         possible_params: functionSelected.params
-      } 
+      }
       dispatch(updateJsonConf(variant, act, column, log_column_conf_updated));
     } else {
       dispatch(updateVariateValue(variant, act, column, 0));
@@ -89,123 +93,172 @@ const ColumnVariability: React.FC = () => {
     dispatch(updateVariateValue(variant, act, log_column_name, selectedValue))
   };
 
+  function downloadFunction(jsonTMP: any, type: string, filename: string) {
+    const blob = new Blob([JSON.stringify(jsonTMP)], { type: type })
+    const a = document.createElement('a')
+    a.download = filename
+    a.href = window.URL.createObjectURL(blob)
+    const clickEvt = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    })
+    a.dispatchEvent(clickEvt)
+    a.remove()
+  }
+
+  function handleDownload(e: any) {
+    let jsonTMP = seed;
+    let typeTMP = "text/json"
+    let filenameTMP = "json_variability_configuration.json"
+    downloadFunction(jsonTMP, typeTMP, filenameTMP);
+  }
+
+  function handleDownloadAndNext(e: any) {
+    if (window.confirm(t('features.experiment.assist.download_confirmation'))) {
+      let jsonTMP = seed;
+      let typeTMP = "text/json"
+      let filenameTMP = "json_variability_configuration.json"
+      downloadFunction(jsonTMP, typeTMP, filenameTMP);
+      history.push('/experiment-wizard')
+    }
+  }
+
   return (
-    <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-          <TableRow>
-            <TableCell align="center">{t("features.wizard.columnVariability.columnName")}</TableCell>
-            <TableCell>{t("features.wizard.columnVariability.variate")}</TableCell>
-            <TableCell>{t("features.wizard.columnVariability.variabilityFunction")}</TableCell>
-            <TableCell>{t("features.wizard.columnVariability.variabilityParams")}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {
-          Object.entries(seed[variant][act]).map( entry => {
-            const log_column_name = entry[0];
-            const log_column: any = entry[1];
-            // const value: ColumnConf = entry[1];
-            return (
-            <TableRow
-              key={`${variant}-${act}-${log_column_name}`}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                  <TableCell align="center">
-                    {log_column_name}
-                  </TableCell>
-                  <TableCell>
-                    <Checkbox
-                      aria-label={`variate-${variant}-${act}-${log_column_name}`}
-                      defaultChecked={ initialValues.initialVariate.get(log_column_name) === 1 }
-                      onClick={(e) => handleVariateOnClick(variant, act, log_column_name, e)}
+            <TableRow>
+              <TableCell align="center">{t("features.wizard.columnVariability.columnName")}</TableCell>
+              <TableCell>{t("features.wizard.columnVariability.variate")}</TableCell>
+              <TableCell>{t("features.wizard.columnVariability.variabilityFunction")}</TableCell>
+              <TableCell>{t("features.wizard.columnVariability.variabilityParams")}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              Object.entries(seed[variant][act]).map(entry => {
+                const log_column_name = entry[0];
+                const log_column: any = entry[1];
+                // const value: ColumnConf = entry[1];
+                return (
+                  <TableRow
+                    key={`${variant}-${act}-${log_column_name}`}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="center">
+                      {log_column_name}
+                    </TableCell>
+                    <TableCell>
+                      <Checkbox
+                        aria-label={`variate-${variant}-${act}-${log_column_name}`}
+                        defaultChecked={initialValues.initialVariate.get(log_column_name) === 1}
+                        onClick={(e) => handleVariateOnClick(variant, act, log_column_name, e)}
                       />
-                  </TableCell>
-                  <TableCell>
-                      { entry[0] === "Screenshot"?
-                          <FormControl sx={{ m: 1, minWidth: 120 }}>
+                    </TableCell>
+                    <TableCell>
+                      {entry[0] === "Screenshot" ?
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
                           <InputLabel id={`function-${variant}-${act}-${log_column}`}>
-                          <Typography component="div" >
-                          {t('features.wizard.columnVariability.screenshot_name_function')}
-                          </Typography>
+                            <Typography component="div" >
+                              {t('features.wizard.columnVariability.screenshot_name_function')}
+                            </Typography>
                           </InputLabel>
                           <Select
                             id={`function-${variant}-${act}-${log_column}`}
                             label={t('features.wizard.columnVariability.screenshot_name_function')}
-                            onChange={(e:any) => handleChangeFunction(variant, act, log_column_name, log_column, e)}
+                            onChange={(e: any) => handleChangeFunction(variant, act, log_column_name, log_column, e)}
                             disabled={log_column.variate}
-                            >
+                          >
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            {screenshot_functions!= null && Object.values({...screenshot_functions}).map((f:any) => (
+                            {screenshot_functions != null && Object.values({ ...screenshot_functions }).map((f: any) => (
                               <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
-                              ))}
+                            ))}
                           </Select>
                         </FormControl>
-                        : 
+                        :
                         <FormControl sx={{ m: 1, minWidth: 120 }}>
                           <InputLabel id={`function-${variant}-${act}-${log_column}`}>
-                          <Typography component="div" >
-                          {t('features.wizard.columnVariability.variability_function_label')}
-                          </Typography>
+                            <Typography component="div" >
+                              {t('features.wizard.columnVariability.variability_function_label')}
+                            </Typography>
                           </InputLabel>
                           <Select
                             id={`function-${variant}-${act}-${log_column}`}
                             label={t('features.wizard.columnVariability.variability_function_label')}
                             onChange={e => handleChangeFunction(variant, act, log_column_name, log_column, e)}
-                            defaultValue={initialValues.initialVariate.get(log_column_name)===1 ? initialValues.initialFunctions.get(log_column_name) : "" }
+                            defaultValue={initialValues.initialVariate.get(log_column_name) === 1 ? initialValues.initialFunctions.get(log_column_name) : ""}
                             disabled={!log_column.variate}
-                            >
+                          >
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            {functions!= null && Object.values({...functions}).map((f:any) => (
+                            {functions != null && Object.values({ ...functions }).map((f: any) => (
                               <MenuItem value={f.id_code}>{f.function_name}</MenuItem>
-                              ))}
+                            ))}
                           </Select>
                         </FormControl>
                       }
-                  </TableCell>
-                  <TableCell>
-                      { entry[0] === "Screenshot"?
-                      <Button
-                        disabled={!log_column.variate}
-                        variant="contained"
-                        component={RouterLink}
-                        to={`/get-gui-component-coordinates/${variant}/${act}/${log_column.initValue}`}
-                        >
-                        {t("features.wizard.columnVariability.screenshotVariability")}
-                      </Button> : 
-                      <FormControl sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id={`params-${variant}-${act}-${log_column}`}>
-                        <Typography component="div" >
-                          {t('features.wizard.columnVariability.function_param_label')}:
-                        </Typography>
-                        </InputLabel>
-                        <Select
-                          id={`params-${variant}-${act}-${log_column}`}
-                          label={t('features.wizard.columnVariability.function_param_label')}
-                          onChange={handleChangeParam}
-                          defaultValue={log_column.variate===1 ? initialValues.initialParams.get(log_column_name) : "" }
+                    </TableCell>
+                    <TableCell>
+                      {entry[0] === "Screenshot" ?
+                        <Button
                           disabled={!log_column.variate}
+                          variant="contained"
+                          component={RouterLink}
+                          to={`/get-gui-component-coordinates/${variant}/${act}/${log_column.initValue}`}
                         >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {params!= null && Object.keys({...params}).map((key, index) => (
-                            <MenuItem value={params[index].id}>{params[index].label}</MenuItem>
+                          {t("features.wizard.columnVariability.screenshotVariability")}
+                        </Button> :
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                          <InputLabel id={`params-${variant}-${act}-${log_column}`}>
+                            <Typography component="div" >
+                              {t('features.wizard.columnVariability.function_param_label')}:
+                            </Typography>
+                          </InputLabel>
+                          <Select
+                            id={`params-${variant}-${act}-${log_column}`}
+                            label={t('features.wizard.columnVariability.function_param_label')}
+                            onChange={handleChangeParam}
+                            defaultValue={log_column.variate === 1 ? initialValues.initialParams.get(log_column_name) : ""}
+                            disabled={!log_column.variate}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            {params != null && Object.keys({ ...params }).map((key, index) => (
+                              <MenuItem value={params[index].id}>{params[index].label}</MenuItem>
                             ))}
-                        </Select>
-                        {/* <FormHelperText>With label + helper text</FormHelperText> */}
-                      </FormControl>
+                          </Select>
+                          {/* <FormHelperText>With label + helper text</FormHelperText> */}
+                        </FormControl>
                       }
-                  </TableCell>
-              </TableRow>
-        )})}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Grid
+        container
+        direction="row-reverse"
+        spacing={2}>
+        <Grid xs={12} lg={2} item justifyContent="center" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2)  }}>
+        <Button type="submit" name="download" variant="contained" color="primary" endIcon={<DownloadIcon />} onClick={handleDownload}>
+            {t('features.experiment.assist.download')}
+          </Button>
+        </Grid>
+        <Grid xs={12} lg={2} item justifyContent="center" style={{ marginTop: theme.spacing(2),marginBottom: theme.spacing(2) }}>
+        <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />} onClick={handleDownloadAndNext}>
+            {t('features.experiment.assist.download_next')}
+          </Button>
+        </Grid>
+      </Grid>
+    </>
   );
 }
 

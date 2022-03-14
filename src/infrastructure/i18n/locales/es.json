@@ -190,7 +190,12 @@
           "label": "Selecciona tipo, tamaño y color de la fuente",
           "placeholder": "Componente GUI",
           "description": "Selecciona los componentes GUI a usar en por la función"
-       }
+       },
+       "list_input": {
+         "label": "Inserte el listado de parámetros necesatios para la función",
+         "placeholder": "Texto, texto...",
+         "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
+      }
       },
       "GUI_components":{
         "name": {
@@ -458,6 +463,10 @@
       },
       "assist":{
         "empty" : "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
+        "download": "Descargar",
+        "download_next": "Descargar y continuar",
+        "download_confirmation": "Descargaras el Json de configuración y no podrás seguir configurando esta actividad ¿Está seguro?",
+
         "function": {
           "variability_function": "Función de variabilidad",
           "params_function": "Parámetros de la función seleccionada",
