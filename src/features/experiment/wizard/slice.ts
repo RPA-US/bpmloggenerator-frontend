@@ -54,6 +54,28 @@ export const wizardSlice = createSlice({
     ) => {
       state.seed = payload;
     },
+    /*setColumnVariabilityConfiguration: (
+      state,
+      { payload }: PayloadAction<{ variant: string, act: string, column: string, columnValue: any }>
+    ) => {
+      const { seed } = state;
+      const { variant, act, column, columnValue } = payload;
+      const actObject = [variant, act].reduce((ob, key) => ob[key] || {}, seed);
+      if (actObject[column] != null) {
+        actObject[column] = columnValue;
+      }
+    },*/
+    setVariateVariabilityConfiguration: (
+      state,
+      { payload }: PayloadAction<{ variant: string, act: string, column: string, variate: number }>
+    ) => {
+      const { seed } = state;
+      const { variant, act, column, variate } = payload;
+      const value = [variant, act, column].reduce((ob, key) => ob[key] || {}, seed);
+      if (typeof value.variate === 'number') {
+        value.variate = variate;
+      }
+    },
     setInitialValues: (
       state,
       { payload }: PayloadAction<any>
@@ -119,7 +141,8 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
+  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setVariateVariabilityConfiguration,
+    setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -144,22 +167,9 @@ export const wizardSlice = createSlice({
   }
 
   export const updateVariateValue = (variant: string, act: string, column: string, variate_value: number): AppThunk => async (dispatch: AppDispatch, getState) => {
-    const { wizard } = getState();
-    let json_conf = wizard.seed;
     dispatch(
-      setVariabilityConfiguration({
-          ...json_conf,
-          [variant]: {
-            ...json_conf[variant],
-            [act]:{
-              ...json_conf[variant][act],
-              [column]: {
-                ...json_conf[variant][act][column],
-                variate: variate_value
-              }
-            }
-          }
-    }));
+      setVariateVariabilityConfiguration({ variant, act, column, variate: variate_value })
+    );
   }
 
   export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
@@ -217,11 +227,15 @@ export const wizardSlice = createSlice({
       }
       if (wizard.functions === null) {
         const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
-        const screenshot_functions: any = wizard.category_functions?.filter(c => c.name==="Screenshot");
-        const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
-        const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
-        dispatch(setFunctions(functions_no_screenshot));
-        dispatch(setScreenshotFunctions(functions_screenshot));
+        try {
+          const screenshot_functions: any = wizard.category_functions?.filter(c => c.name==="Screenshot");
+          const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
+          const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
+          dispatch(setFunctions(functions_no_screenshot));
+          dispatch(setScreenshotFunctions(functions_screenshot));
+        } catch (ex) {
+          console.error('error setting up wizard functions', ex);
+        }
       }
       if (wizard.gui_components === null) {
         const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
