@@ -69,13 +69,15 @@
           "app": "Aplicación",
           "list": "Listas",
           "text": "Textos",
-          "screenshot": "Capturas de pantalla"
+          "screenshot": "Capturas de pantalla",
+          "screenshot_rename": "Renombrar captura"
         },
         "description": {
           "app": "Funciones de variabilidad de aplicaciones en el log",
           "list": "Funciones de variabilidad de datos de listas (coordenadas, posiciones, etc.)",
           "text": "Funciones de variabilidad de generación de texto",
-          "screenshot": "Funciones de variabilidad de la interfaz gráfica de las capturas"
+          "screenshot": "Funciones de variabilidad de la interfaz gráfica de las capturas",
+          "screenshot_rename": "Funciones de variabilidad de renombrado de capturas"
         }
       },
       "GUI_category":{
@@ -129,7 +131,8 @@
           "random_appname": "generate_app_name",
           "lorem_word_as_appname": "generate_lorem_app_name",
           "generate_timestamp": "generate_timestamp",
-          "mouse_position_range": "generate_mouse_position_range",
+          "mouse_position_range_x": "generate_mouse_position_range_x",
+          "mouse_position_range_y": "generate_mouse_position_range_y",
           "mouse_or_keyboard": "generate_mousekeyboard",
           "replace_gui_component_by_other": "replace_gui_element_by_other",
           "given_text_in_image": "insert_text_image",
@@ -144,7 +147,7 @@
           "image_copy_renamed_and_return_path": "generate_copied_capture"
         },
         "description": {
-          "random_mouse_position": "Genera una posición aleatoria del raton dentro de las coordenadas seleccionadas del componente GUI",
+          "random_mouse_position": "Genera una posición aleatoria del raton. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen (2 coordenadas), y la altura y anchura del area de la UI",
           "random_id_card": "Genera un número de DNI español aleatorio",
           "random_word_with_first_letter_capital": "Genera una entidad aleatoria en base a lorem ipsum. Entidad se considera si tiene la primera letra en mayúscula",
           "random_path": "Genera una ruta con texto basado en lorem ipsum. Los parámetros son los niveles de directorios y la extensión del archivo",
@@ -155,17 +158,18 @@
           "random_appname": "Genera el nombre de una aplicación",
           "lorem_word_as_appname": "Genera el nombre de una aplicación en base a lorem ipsum",
           "generate_timestamp": "Genera un momento en milisegundos artificial",
-          "mouse_position_range": "Genera una posición aleatoria del raton dentro de las coordenadas del componente GUI",
+          "mouse_position_range_x": "Genera una posición aleatoria del raton dentro para el eje X. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen en la coordenada X (1 coordenada), y la anchura del area de la UI",
+          "mouse_position_range_y": "Genera una posición aleatoria del raton dentro para el eje Y. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen en la coordenada Y (1 coordenada), y la altura del area de la UI",
           "mouse_or_keyboard": "Genera un 0 o un 1 en el log indicando si la entrada es de ratón o de teclado",
           "replace_gui_component_by_other": "Reemplaza un componente GUI por otro seleccionado",
-          "given_text_in_image": "Inserta un texto en la imagen",
+          "given_text_in_image": "Inserta un texto en la imagen. Los parámetros son: texto a insertar, y la configuración de la fuente",
           "hidden_gui_element": "Oculta un elemento visual con un color plano. Necesita el color en hexadecimal empezado con #",
           "replace_gui_element_various_places": "Reemplaza un GUI component por otro en múltiples lugares. Actualmente sin uso",
           "screenshot_name_without_root_path": "Genera una copia de la imagen renombrada para el log y devuelve sin ruta relativa",
-          "random_text_in_image": "Inserta un texto aleatorio en la imagen e las coordenadas del componente GUI",
-          "random_paragraph_in_image": "Inserta un parrafo aleatorio en la imagen e las coordenadas del componente GUI",
-          "random_words_in_image": "Inserta una palabra aleatoria en la imagen e las coordenadas del componente GUI",
-          "random_sentence_in_image": "Inserta una sentencia aleatoria en la imagen e las coordenadas del componente GUI",
+          "random_text_in_image": "Inserta un texto en la imagen e las coordenadas del componente GUI. El parámetro es un texto",
+          "random_paragraph_in_image": "Inserta un parrafo aleatorio en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por línea y un número máximo de aleatoriedad de parrafos a generar",
+          "random_words_in_image": "Inserta una palabra aleatoria en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por líena y un número máximo de aleatoriedad de sentencias a generar",
+          "random_sentence_in_image": "Inserta una sentencia aleatoria en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo",
           "image_copy_renamed": "Genera una copia de la imagen renombrada para el log",
           "image_copy_renamed_and_return_path": "Genera una copia de la imagen renombrada para el log y devuelve toda la ruta relativa"
         }

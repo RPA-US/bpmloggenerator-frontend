@@ -26,7 +26,7 @@ export interface IRandomColor {
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
-    const { seed, params, screenshot_functions,category_functions ,gui_components} = useSelector(wizardSelector);
+    const { seed, params, screenshot_functions, category_functions, gui_components } = useSelector(wizardSelector);
     const { detail } = useSelector(experimentsSelector);
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
@@ -69,19 +69,19 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState(false);
 
     //Cargas de BD temporales
-    const [variabilityFunctions, setVariabilityFunctions] = useState((screenshot_functions!== null)?screenshot_functions:initialVarFunction);
-    const [paramsList, setParamsFunctions] = useState((params!==null)?params:initialparams);
+    const [variabilityFunctions, setVariabilityFunctions] = useState((screenshot_functions !== null) ? screenshot_functions : initialVarFunction);
+    const [paramsList, setParamsFunctions] = useState((params !== null) ? params : initialparams);
     const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
     const [paramsL, setParams] = useState(initialparams);
     const [variantDependency, setVariantDependency] = useState(initialVariants);
     const [activityDependency, setActivityDependency] = useState(initialVariants);
-    const [elements, setElements] = useState((gui_components!==null)?gui_components:initialElements);
+    const [elements, setElements] = useState((gui_components !== null) ? gui_components : initialElements);
     const [varAct, setVarAct] = useState(["", ""]);
     const colorRef = useRef<any>('');
     const sizeRef = useRef<any>(0);
     const listRef = useRef<any>("");
 
-    
+
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
         if (url === "") {
@@ -365,13 +365,13 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     const handleChangeElement = (event: SelectChangeEvent<typeof elementID>) => {
         const {
-          target: { value },
+            target: { value },
         } = event;
         setElementID(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
         );
-      };
+    };
 
     function handleChangeFont(e: any) {
         let fontTMP: string = e.target.value;
@@ -388,7 +388,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 let functionName: VariabilityFunctionDTO = getByID(variabilityFunctions, functionID);
                 let paramsTMP: FunctionParamDTO[] = paramsL;
                 if (guiCatName !== null && functionName !== null) {
-                    argumentTMP.id = countTMP;
+                    argumentTMP.id = countTMP
                     if (paramsTMP.length > 0 && functionName.params.length > 0) {
                         for (let j in paramsTMP) {
                             if (paramsTMP[j].data_type === "element") {
@@ -426,6 +426,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         })
                         setRandomColor({ ...colorTMP })
                     }
+                    countTMP = countTMP + 1
+                    setCount(countTMP);
                     setErrorMessage(false)
                 } else {
                     setErrorMessage(true)
@@ -655,7 +657,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                 </Select>
                                             }
                                             {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
-                                                <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                                <Tooltip title={t(paramsL[index2].description) + ""} placement="right">
+                                                    <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                                </Tooltip>
                                             }
                                             {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type === "font") && (paramsL[index2].data_type !== "list") &&
                                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
@@ -676,8 +680,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     </Box>
                                                 </Box>
                                             }
-                                             {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type === "list") &&
-                                                <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type === "list") &&
+                                                <Tooltip title={t(paramsL[index2].description) + ""} placement="right">
+                                                    <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                                </Tooltip>
                                             }
                                         </Box>
                                     ))}
