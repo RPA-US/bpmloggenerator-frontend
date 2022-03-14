@@ -114,15 +114,16 @@ export const addExperiment = (experimentOb: Experiment): AppThunk => async (disp
 
 export const saveExperiment = (experimentData: any, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth, experiment } = getState();
-  const hasPreviousId = experimentData.get("id");
-  const data = experimentData;
-  delete experimentData.seedLog;
+  const hasPreviousId = experimentData.get("id") != null;
+  const seedLog = experimentData.get('seedLog') ?? '';
+  experimentData.delete('seedLog');
+  debugger;
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     if (!hasPreviousId && experimentResponse.id != null) {
       const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
-        const aux_seed = csvLogToJSON(data.get("seedLog"), data.get("special_colnames"))
+        const aux_seed = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
         dispatch(
           setExperiment({
             detail: experimentDTOToExperimentType(savedExperimentData),
