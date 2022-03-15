@@ -114,7 +114,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         let categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
         let categoryId = selectCategoryByName(categories.results, name);
         let varFunc = await variabilityFunctionRepository.list(token);
-        console.log(varFunc)
         let test;
         try {
             let ret: VariabilityFunctionDTO[] = [];
@@ -164,6 +163,35 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             return paramTMP.results;
         } catch (ex) {
             console.error('error getting params function result', ex);
+        }
+    }
+
+    function sccreenshotConfigured() {
+        let jsonTMP = json_conf;
+        let screenshotWizard = {...jsonTMP[variant][act]["Screenshot"].args}
+        let listKeys = Object.keys(screenshotWizard)
+        if (listKeys.length > 0) {
+            let colorTMP = initialColors
+            let screenshotTMP = screenshots
+            for (let key of listKeys) {
+                let listColor: string[] = []
+                let argsTMP:IArguments = initialArgs
+                Object.keys(screenshotWizard[key]).map((key2) => (listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))))
+                /*Object.keys(screenshotWizard).map((key2) => argsTMP={ id: screenshotWizard[key][key2].id, coordinates: screenshotWizard[key][key2].coordinates, name: screenshotWizard[key][key2].name, args: screenshotWizard[key][key2].args })
+                if(screenshotTMP.hasOwnProperty(key)){
+                    let listArTMP = screenshotTMP[key]
+                    listArTMP.push(argsTMP)
+                    screenshotTMP[key] = listArTMP
+                }else{
+                    screenshotTMP[key] = [argsTMP]
+
+                }*/
+                colorTMP[key] = listColor
+            }
+            screenshotTMP = JSON.parse(JSON.stringify(screenshotWizard))
+            setRandomColor({ ...colorTMP });
+            setScreenshot({...screenshotTMP});
+            setArgumentsCoor({...initialArgs});
         }
     }
 
@@ -322,6 +350,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         selectElement(token ?? "");
         getResolution();
         getResolutionBRW();
+        sccreenshotConfigured();
     }
 
     function selectCategoryByName(categories: any, name: string) {
@@ -364,7 +393,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
         setGUIcatID(guiTMP);
-        console.log(variabilityFunctions)
     }
 
     const handleChangeElement = (event: SelectChangeEvent<typeof elementID>) => {
@@ -567,7 +595,13 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     onChange={handleChangeGUI}
                                 >
                                     {Object.keys(guiComponentsCat).map((key, index) => (
-                                        <MenuItem value={guiComponentsCat[index].id}>{t(guiComponentsCat[index].name)}</MenuItem>
+                                        <MenuItem value={guiComponentsCat[index].id}>
+                                            <Tooltip title={t(guiComponentsCat[index].description) + ""} placement="right">
+                                                <div>
+                                                    {t(guiComponentsCat[index].name)}
+                                                </div>
+                                            </Tooltip>
+                                        </MenuItem>
                                     ))}
                                 </Select>
                             </Box>
@@ -584,7 +618,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     onClick={addElementToTable}
                                     variant="contained"
                                     color="secondary"
-                                    style={{ fontSize: "small"}}
+                                    style={{ fontSize: "small" }}
                                 >
                                     {t('features.experiment.assist.add')}</Button>
                             </Grid>
@@ -603,7 +637,14 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                             >
                                 <MenuItem value={0}>{t('features.experiment.assist.function.dependency')}</MenuItem>
                                 {Object.keys(variabilityFunctions).map((key, index) => (
-                                    <MenuItem value={variabilityFunctions[index].id}>{t(variabilityFunctions[index].function_name)}</MenuItem>
+
+                                    <MenuItem value={variabilityFunctions[index].id}>
+                                        <Tooltip title={t(variabilityFunctions[index].description) + ""} placement="right">
+                                            <div>
+                                                {t(variabilityFunctions[index].function_name)}
+                                            </div>
+                                        </Tooltip>
+                                    </MenuItem>
                                 ))}
                             </Select>
                             {functionID === 0 &&
@@ -654,7 +695,15 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     onChange={handleChangeElement}
                                                 >
                                                     {Object.keys(elements).map((key, index) => (
-                                                        <MenuItem key={elements[index].id_code} value={elements[index].id_code}>{t(elements[index].name)}</MenuItem>
+
+                                                        <MenuItem key={elements[index].id_code} value={elements[index].id_code}>
+                                                            <Tooltip title={t(elements[index].description) + ""} placement="right">
+                                                                <div>
+                                                                    {t(elements[index].name)}
+                                                                </div>
+                                                            </Tooltip>
+                                                        </MenuItem>
+
                                                     ))}
                                                 </Select>
                                             }
@@ -695,7 +744,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     </Card>
                 </Grid>
                 {Object.keys(screenshots).length > 0 &&
-                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2)}}>
+                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2) }}>
                         <Card>
                             <TableContainer component={Paper} >
                                 <Table aria-label="simple table">
@@ -705,6 +754,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                             <TableCell align="center">{t('features.experiment.assist.element.color')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.topleft')}&nbsp;(x,y)</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.botright')}&nbsp;(x,y)</TableCell>
+                                            <TableCell align="center">{t('features.experiment.assist.function.variability_function')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.delete')}</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -724,6 +774,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     }}></TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[2]}, {screenshots[key][index2].coordinates[3]}</TableCell>
+                                                    <TableCell align="center" >{screenshots[key][index2].name}</TableCell>
                                                     <TableCell align="center" >
                                                         <Button variant="contained" color="secondary" onClick={() => removeElement(key, index2)}>
                                                             {t('features.experiment.assist.delete')}
