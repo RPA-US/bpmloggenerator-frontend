@@ -3,23 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { screenshotRepository, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
 import { useHistory, useParams } from 'react-router-dom';
 import { experimentsSelector } from '../slice';
 import { authSelector } from 'features/auth/slice';
-import { IDependency, IScreenshotColumn, ICoordinates, IScreenshot, IArguments } from './types';
-import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, VariabilityFunctionResponse, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
+import { IDependency, IScreenshotColumn, IScreenshot, IArguments } from './types';
+import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, FunctionParamDTO, VariabilityFunctionDTO, GUIComponentResponse } from 'infrastructure/http/dto/wizard'
 import { getByID } from '../utils';
-import { WindowSharp } from '@mui/icons-material';
-import Http from "infrastructure/http/http";
-import { json } from 'stream/consumers';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import Tooltip from '@mui/material/Tooltip';
-
-//TODO: FunctionParam del tipo ListElements, será un select de múltiples files que se enviarán a BD
-//TODO: meter los resultados de los funciones/params/gui en el wizard
 
 export interface IRandomColor {
     [name: string]: string[]
@@ -151,7 +144,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function componentsByCatID(gid: number) {
         let guiCat: GUIComponentDTO[] = elements;
-        let l = guiCat//.filter(g => (g.gui_component_category === gid) ? g : "")
+        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g : "")
         return l
     }
 
@@ -351,7 +344,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             }));
         }
-        history.push('/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
+        history.push('/column-variability/' + variant + '/' + act)
     }
 
     function onLoadImage() {

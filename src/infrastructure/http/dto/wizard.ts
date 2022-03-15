@@ -16,7 +16,7 @@ export interface GUIComponentDTO {
     filename: string
     path: string
     description: string
-    gui_component_category: CategoryDTO[]
+    gui_component_category: number
 }
 
 export interface FunctionParamDTO {
