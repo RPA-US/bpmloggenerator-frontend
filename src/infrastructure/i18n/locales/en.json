@@ -40,7 +40,7 @@
   "input": {
     "attach": "Select file",
     "addRow": "Add",
-    "next": "next"
+    "next": "Save and go back"
   },
   "features": {
     "auth": {
