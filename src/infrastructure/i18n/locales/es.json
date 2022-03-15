@@ -499,7 +499,7 @@
         },
         "delete": "Borrar",
         "add": "Añadir",
-        "next": "Siguiente"
+        "next": "Guardar y volver"
       },
       "create": {
         "title": "Generación automática de GUI logs"

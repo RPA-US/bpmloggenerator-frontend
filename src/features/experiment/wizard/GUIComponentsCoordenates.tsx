@@ -514,7 +514,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 container
                 direction="row"
                 spacing={4}>
-                <Grid xs={12} lg={12} item style={{ marginTop: theme.spacing(2) }}>
+                <Grid xs={12} lg={8} item style={{ marginTop: theme.spacing(2) }}>
                     <Card>
                         <Box component={"div"}
                             sx={
@@ -584,15 +584,13 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     onClick={addElementToTable}
                                     variant="contained"
                                     color="secondary"
-                                    style={{ fontSize: "small", marginLeft: 4 }}
+                                    style={{ fontSize: "small"}}
                                 >
                                     {t('features.experiment.assist.add')}</Button>
                             </Grid>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid xs={12} lg={4} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} >
-                    <Card>
+                    <Card style={{ marginTop: theme.spacing(2) }}>
                         <CardContent>
                             <Typography component="div" >
                                 {t('features.experiment.assist.function.variability_function')}:
@@ -697,7 +695,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     </Card>
                 </Grid>
                 {Object.keys(screenshots).length > 0 &&
-                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+                    <Grid xs={12} sm={12} item style={{ marginTop: theme.spacing(2)}}>
                         <Card>
                             <TableContainer component={Paper} >
                                 <Table aria-label="simple table">
