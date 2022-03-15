@@ -110,6 +110,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       checkedData.execute_mode = true;
     } else if (buttonName === "scenarioVariability" || buttonName === "caseVariability") {
       checkedData.status = "PRE_SAVED";
+      checkedData.variability_mode = buttonName;
     }
 
     // delete checkedData.seedLog;

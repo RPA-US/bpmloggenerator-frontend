@@ -23,6 +23,7 @@ import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
 import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
 import ExperimentAssist from 'features/experiment/wizard/ActivitySelection';
+import ScenarioSelection from 'features/experiment/wizard/ScenarioSelection';
 import ColumnVariability from 'features/experiment/wizard/ColumnVariability'
 import 'infrastructure/i18n/config';
 import { useTranslation } from "react-i18next";
@@ -83,9 +84,10 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/experiment-wizard" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordinates/:variant/:act/:screenshot_filename" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/case-variability" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordinates/:variability_mode/:variant/:act/:screenshot_filename" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ColumnVariability } path="/column-variability/:variant/:act" />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ScenarioSelection } path="/scenario-variability" />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
               </Switch>
             </StyledContainer>) }

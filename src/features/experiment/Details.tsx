@@ -101,13 +101,12 @@ const ExperimentDetails: React.FC = () => {
             console.log('Edit component data received:', data);
             data.set('id', id);
             dispatch(saveExperiment(data,(status: string, error: any) => {
-              debugger;
               setLoading(false);
               if(error != null){
                 history.push('/');
               } else {
                 if(status === "PRE_SAVED"){
-                  history.push('/experiment-wizard');
+                  history.push('/case-variability');
                 } else {
                   history.push('/');
                 }

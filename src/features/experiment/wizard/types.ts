@@ -37,7 +37,6 @@ export interface IParams {
     elements: {[name: string]: ICoordinates},
     seed: any,
     scenario_variability: any,
-    case_variability: any,
     initialValues: {[column: string]: InitialValues},
     functions: VariabilityFunctionDTO[],
     params: FunctionParamDTO[],
