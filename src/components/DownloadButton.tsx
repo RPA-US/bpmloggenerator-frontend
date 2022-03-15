@@ -21,7 +21,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ filename }) => {
   const { scenario_variability } = useSelector(wizardSelector);
 
     function downloadFunction(jsonTMP: any, type: string, filename: string) {
-        const blob = new Blob([JSON.stringify(jsonTMP)], { type: type })
+        const blob = new Blob([JSON.stringify(jsonTMP, null, 5)], { type: type })
         const a = document.createElement('a')
         a.download = filename + '.json'
         a.href = window.URL.createObjectURL(blob)

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
 import { wizardSelector, loadDataAndInitValues } from 'features/experiment/wizard/slice';
-import NextButton from 'components/NextButton';
+import BackButton from 'components/BackButton';
 import LogForm from './LogForm';
 
 const ColumnVariability: React.FC = () => {
@@ -23,8 +23,8 @@ const ColumnVariability: React.FC = () => {
   return (
       <div>
         <Typography variant="h5">
-          {t('features.experiment.create.title')}
-          <NextButton to="/case-variability" />
+          <BackButton to="/case-variability" />
+          {t('features.wizard.activitySelection.variant')} {variant} / {t('features.wizard.activitySelection.activity')} {act}
         </Typography>
         {isLoading ?
           (<Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>
