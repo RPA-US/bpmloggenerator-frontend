@@ -27,7 +27,7 @@ export interface IRandomColor {
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
-    const { seed, params, screenshot_functions, category_functions, gui_components } = useSelector(wizardSelector);
+    const { seed, params, functions, category_functions, gui_components } = useSelector(wizardSelector);
     const { detail } = useSelector(experimentsSelector);
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
@@ -70,13 +70,14 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState(false);
 
     //Cargas de BD temporales
-    const [variabilityFunctions, setVariabilityFunctions] = useState((screenshot_functions !== null) ? screenshot_functions : initialVarFunction);
-    const [paramsList, setParamsFunctions] = useState((params !== null) ? params : initialparams);
+    const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
+    const [paramsList, setParamsFunctions] = useState(initialparams);
     const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
     const [paramsL, setParams] = useState(initialparams);
     const [variantDependency, setVariantDependency] = useState(initialVariants);
     const [activityDependency, setActivityDependency] = useState(initialVariants);
-    const [elements, setElements] = useState((gui_components !== null) ? gui_components : initialElements);
+    const [elements, setElements] = useState(initialElements);
+    const [components, setComponents] = useState(initialElements);
     const [varAct, setVarAct] = useState(["", ""]);
     const colorRef = useRef<any>('');
     const sizeRef = useRef<any>(0);
@@ -104,19 +105,31 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     //Peticiones a BD
     const selectVarFuncByCat = async (token: string, name: string) => {
-        let categories: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
-        let categoryId = selectCategoryByName(categories.results, name);
-        let varFunc = await variabilityFunctionRepository.list(token);
+        let categories: CategoryDTO[] = []
+        if(category_functions !== null){
+            categories=category_functions
+        }else{
+            let categoriesRes: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
+            categories = categoriesRes.results
+        }
+        let categoryId = selectCategoryByName(categories, name);
+        let varFunc:VariabilityFunctionDTO[] = []
+        if(functions !== null){
+            varFunc = functions
+        }else{
+            let varFuncRes = await variabilityFunctionRepository.list(token);
+            varFunc= varFuncRes.results
+        }
         let test;
         try {
             let ret: VariabilityFunctionDTO[] = [];
-            test = varFunc.results.filter(function (itm: any) {
+            test = varFunc.filter(function (itm: any) {
                 if (itm.variability_function_category === categoryId[0].id) {
                     ret.push(itm);
                 }
                 setVariabilityFunctions([...ret]);
-                return ret;
             })
+            return ret;
         } catch (ex) {
             console.error('error listing functions by category result', ex);
         }
@@ -136,11 +149,21 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         return test;
     }
 
+    function componentsByCatID(gid: number) {
+        let guiCat: GUIComponentDTO[] = elements;
+        let l = guiCat//.filter(g => (g.gui_component_category === gid) ? g : "")
+        return l
+    }
+
     const selectElement = async (token: string) => {
-        let categories: GUIComponentResponse = await guiComponentRepository.list(token);
         let test: GUIComponentDTO[] = [];
         try {
-            test = categories.results
+            if (gui_components !== null) {
+                test = gui_components
+            } else {
+                let categories: GUIComponentResponse = await guiComponentRepository.list(token);
+                test = categories.results
+            }
             setElements([...test])
         } catch (ex) {
             console.error('error listing functions by category result', ex);
@@ -150,10 +173,15 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     //Params
     const paramsListResults = async (token: string) => {
+        let paramTMP:FunctionParamDTO[] =  []
         try {
-            let paramTMP: FunctionParamResponse = await paramFunctionCategoryRepository.list(token);
-            setParamsFunctions([...paramTMP.results]);
-            return paramTMP.results;
+            if (params !== null) {
+                paramTMP= params
+            } else {
+                let paramRes: FunctionParamResponse = await paramFunctionCategoryRepository.list(token);
+                paramTMP = paramRes.results;
+            }
+            setParamsFunctions([...paramTMP]);
         } catch (ex) {
             console.error('error getting params function result', ex);
         }
@@ -161,30 +189,20 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function sccreenshotConfigured() {
         let jsonTMP = json_conf;
-        let screenshotWizard = {...jsonTMP[variant][act]["Screenshot"].args}
+        let screenshotWizard = { ...jsonTMP[variant][act]["Screenshot"].args }
         let listKeys = Object.keys(screenshotWizard)
         if (listKeys.length > 0) {
             let colorTMP = initialColors
             let screenshotTMP = screenshots
             for (let key of listKeys) {
                 let listColor: string[] = []
-                let argsTMP:IArguments = initialArgs
                 Object.keys(screenshotWizard[key]).map((key2) => (listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))))
-                /*Object.keys(screenshotWizard).map((key2) => argsTMP={ id: screenshotWizard[key][key2].id, coordinates: screenshotWizard[key][key2].coordinates, name: screenshotWizard[key][key2].name, args: screenshotWizard[key][key2].args })
-                if(screenshotTMP.hasOwnProperty(key)){
-                    let listArTMP = screenshotTMP[key]
-                    listArTMP.push(argsTMP)
-                    screenshotTMP[key] = listArTMP
-                }else{
-                    screenshotTMP[key] = [argsTMP]
-
-                }*/
                 colorTMP[key] = listColor
             }
             screenshotTMP = JSON.parse(JSON.stringify(screenshotWizard))
             setRandomColor({ ...colorTMP });
-            setScreenshot({...screenshotTMP});
-            setArgumentsCoor({...initialArgs});
+            setScreenshot({ ...screenshotTMP });
+            setArgumentsCoor({ ...initialArgs });
         }
     }
 
@@ -386,6 +404,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function handleChangeGUI(e: any) {
         let guiTMP: number = e.target.value;
         setGUIcatID(guiTMP);
+        let componentsTMP = componentsByCatID(guiTMP);
+        setComponents([...componentsTMP]);
     }
 
     const handleChangeElement = (event: SelectChangeEvent<typeof elementID>) => {
@@ -684,15 +704,15 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     id="select_element"
                                                     multiple
                                                     value={elementID}
-                                                    input={<OutlinedInput label={t(elements[index].name)} />}
+                                                    input={<OutlinedInput label={t(components[index].name)} />}
                                                     onChange={handleChangeElement}
                                                 >
-                                                    {Object.keys(elements).map((key, index) => (
+                                                    {Object.keys(components).map((key, index) => (
 
-                                                        <MenuItem key={elements[index].id_code} value={elements[index].id_code}>
-                                                            <Tooltip title={t(elements[index].description) + ""} placement="right">
+                                                        <MenuItem key={components[index].id_code} value={components[index].id_code}>
+                                                            <Tooltip title={t(components[index].description) + ""} placement="right">
                                                                 <div>
-                                                                    {t(elements[index].name)}
+                                                                    {t(components[index].name)}
                                                                 </div>
                                                             </Tooltip>
                                                         </MenuItem>
