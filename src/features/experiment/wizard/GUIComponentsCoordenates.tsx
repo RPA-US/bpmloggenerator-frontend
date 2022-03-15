@@ -27,11 +27,12 @@ export interface IRandomColor {
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Carga de variables externas
-    const { seed, params, screenshot_functions, category_functions, gui_components } = useSelector(wizardSelector);
+    const { seed, params, screenshot_functions, gui_components, scenario_variability } = useSelector(wizardSelector);
     const { detail } = useSelector(experimentsSelector);
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
     const { screenshot_filename } = useParams<{ screenshot_filename: string }>();
+    const { scenario_variability_mode } = useParams<{ scenario_variability_mode: string }>();
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -53,7 +54,13 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
 
     //Argumentos de screenshots a almacenar
-    const [json_conf, setjJon_conf] = useState({ ...seed });
+    let init_seed = {...seed};
+    let redirect_at_end = '/column-variability/';
+    if(scenario_variability_mode==='scenario'){
+        init_seed = {...scenario_variability};
+        redirect_at_end = '/scenario-variability/';
+    }
+    const [json_conf, setjJon_conf] = useState(init_seed);
 
     //Variables temporales
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
@@ -305,7 +312,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             }));
         }
-        history.push('/column-variability/' + variant + '/' + act)//TODO: mirar el redireccionamiento
+        history.push(redirect_at_end + variant + '/' + act)//TODO: mirar el redireccionamiento
     }
 
     function onLoadImage() {

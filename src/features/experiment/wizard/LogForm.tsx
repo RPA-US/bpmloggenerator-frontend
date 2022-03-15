@@ -225,7 +225,7 @@ const LogForm: React.FC = () => {
               disabled={log_column[1].variate !== 1}
               variant="contained"
               component={RouterLink}
-              to={`/get-gui-component-coordinates/${variant}/${act}/${log_column[1].initValue}`}
+              to={`/get-gui-component-coordinates/case/${variant}/${act}/${log_column[1].initValue}`}
             >
               {t("features.wizard.columnVariability.screenshotVariability")}
             </Button> :

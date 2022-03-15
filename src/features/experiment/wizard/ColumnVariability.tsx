@@ -24,7 +24,7 @@ const ColumnVariability: React.FC = () => {
       <div>
         <Typography variant="h5">
           {t('features.experiment.create.title')}
-          <NextButton to="/experiment-wizard" />
+          <NextButton to="/case-variability" />
         </Typography>
         {isLoading ?
           (<Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>

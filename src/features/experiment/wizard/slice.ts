@@ -26,7 +26,6 @@ const initialState: wizardState = {
   elements: {},
   seed: null,
   scenario_variability: null,
-  case_variability: null,
   initialValues: {},
   functions: [],
   params: [],
@@ -53,6 +52,12 @@ export const wizardSlice = createSlice({
       { payload }: PayloadAction<{ seed: any }>
     ) => {
       state.seed = payload;
+    },
+    setScenarioConfiguration: (
+      state,
+      { payload }: PayloadAction<{ scenario_conf: any }>
+    ) => {
+      state.scenario_variability = payload;
     },
     setColumnVariabilityConfiguration: (
       state,
@@ -189,7 +194,7 @@ export const wizardSlice = createSlice({
   // ================================== ACTIONS ==================================
   
   const { setError, setLoading, setVariabilityConfiguration, setVariateVariabilityConfiguration,
-    setLogFormData, setInitialValues } = wizardSlice.actions
+    setScenarioConfiguration, setLogFormData, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   

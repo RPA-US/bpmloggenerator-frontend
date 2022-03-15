@@ -1,7 +1,8 @@
-import React from 'react';
-import { Button, Typography } from '@mui/material';
+import React, { useContext } from 'react';
+import { Button, Theme, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '@emotion/react';
 import { Link as RouterLink } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,16 +15,12 @@ import { wizardSelector } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
 
-export interface ExperimentFormProperties {
-  onSubmit: any
-  disabled?: boolean,
-  initialValues?: any
-}
 
-const ExperimentAssist: React.FC = () => {
+const ScenarioSelection: React.FC = () => {
   const { t } = useTranslation();
-  const { seed } = useSelector(wizardSelector);
-
+  const { scenario_variability } = useSelector(wizardSelector);
+  const screenshot_column_name = "Screenshot"; // TODO: generalize
+  
   const variantActivities = (entry: any) => {
     let variant = entry[0];
     let acts = entry[1];
@@ -34,28 +31,17 @@ const ExperimentAssist: React.FC = () => {
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
             <TableCell align="center">
-              <Button
-                variant="contained"
-                component={RouterLink}
-                to={`/column-variability/${variant}/${act}`}
-                >
-                {t("features.wizard.activitySelection.activity")} {act}
-              </Button>
+              {t("features.wizard.activitySelection.activity")} {act}
             </TableCell>
-            <TableCell>
-              {Object.keys(seed[variant][act]).some(column => seed[variant][act][column]['variate'] === 1) && (
-                <div>
-                    Configured
-                    {/* <DoneIcon />Variability configured */}
-                  </div>
-              )}
-
-              {!Object.keys(seed[variant][act]).some(column => seed[variant][act][column]['variate'] === 1) && (
-                  <div>
-                    Not configured
-                    {/* <CloseIcon /> Variability not configured */}
-                  </div>
-              )}
+            <TableCell align="center">
+              <Button
+                  disabled={scenario_variability[variant][act][screenshot_column_name].variate === 1}
+                  variant="contained"
+                  component={RouterLink}
+                  to={`/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
+                >
+                {t("features.wizard.columnVariability.screenshotVariability")}
+              </Button>
             </TableCell>
           </TableRow>
       ))};
@@ -66,15 +52,15 @@ const ExperimentAssist: React.FC = () => {
           <BackButton to="/add-experiment" />
           { t('features.experiment.create.title') }
       </Typography>
-      <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>
+      <Paper sx={{ width: 'auto', overflow: 'hidden', margin: 'auto' }}>
       <TableContainer sx={{ maxHeight: '100%' }}>
         {
-          Object.entries(seed).map(entry => (
+          Object.entries(scenario_variability).map(entry => (
             <Table sx={{ minWidth: 650 }} key={`${entry[0]}`} aria-label="variant activity selection">
             <TableHead>
             <TableRow key="headers">
               <TableCell align="center">{`${t("features.wizard.activitySelection.variant")} ${entry[0]}`}</TableCell>
-              <TableCell>{t("features.wizard.activitySelection.variate")}</TableCell>
+              <TableCell align="center">{t("features.wizard.activitySelection.variate")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -83,10 +69,10 @@ const ExperimentAssist: React.FC = () => {
         </Table>
         ))}
       </TableContainer>
-      <DownloadButton filename='case_variability_configuration' />
+      <DownloadButton filename='scenario_variability_configuration' />
     </Paper>
   </div>
   );
 }
 
-export default ExperimentAssist;
+export default ScenarioSelection;
