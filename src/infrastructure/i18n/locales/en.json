@@ -40,7 +40,7 @@
   "input": {
     "attach": "Select file",
     "addRow": "Add",
-    "next": "next"
+    "next": "Save and go back"
   },
   "features": {
     "auth": {
@@ -89,13 +89,15 @@
           "app": "App",
           "list": "List",
           "text": "Text",
-          "screenshot": "Screenshot"
+          "screenshot": "Screenshot",
+          "screenshot_rename": "Screenshot rename"
         },
         "description": {
           "app": "Variability function for the APP in the log",
           "list": "Variability function in data lists (coordinates, positions, etc.)",
           "text": "Variability function for auto-generation text",
-          "screenshot": "Variability function for the UI from the screenshots"
+          "screenshot": "Variability function for the UI from the screenshots",
+          "screenshot_rename": "Variability function for the screenshot file rename method"
         }
       },
       "GUI_category": {
@@ -150,7 +152,8 @@
           "random_appname": "generate_app_name",
           "lorem_word_as_appname": "generate_lorem_app_name",
           "generate_timestamp": "generate_timestamp",
-          "mouse_position_range": "generate_mouse_position_range",
+          "mouse_position_range_x": "generate_mouse_position_range_x",
+          "mouse_position_range_y": "generate_mouse_position_range_y",
           "mouse_or_keyboard": "generate_mousekeyboard",
           "replace_gui_component_by_other": "replace_gui_element_by_other",
           "given_text_in_image": "insert_text_image",
@@ -165,7 +168,7 @@
           "image_copy_renamed_and_return_path": "generate_copied_capture"
         },
         "description": {
-          "random_mouse_position": "Generate a random mouse position inside the coordenates selected in the GUI component",
+          "random_mouse_position": "Generate a random mouse position. The params in order are: the down-left position of the screenshot position (2 coordinates), the resolution image (2 coordinates), and the height and widht of the UI area",
           "random_id_card": "Generate a random identification number for the spanish ID card",
           "random_word_with_first_letter_capital": "Generate a random entity. Words first letter capital",
           "random_path": "Generate a path with random text dir. The params are the dir level and the extension file",
@@ -176,17 +179,18 @@
           "random_appname": "Generate a random app name",
           "lorem_word_as_appname": "Generate a random lorem ipsum text as app name",
           "generate_timestamp": "Generate a random timestamp",
-          "mouse_position_range": "generate a random position in GUI component coordinate range",
+          "mouse_position_range_x": "Generate a random mouse position for x coordinate. The params are: the down-left position of the screenshot position, the resolution image for X exe, and the widht of the element",
+          "mouse_position_range_y": "Generate a random mouse position for y coordinate. The params are: the down-left position of the screenshot position, the resolution image for y exe, and the height of the element",
           "mouse_or_keyboard": "Generate a 0 or 1 in the mouse or keyboard entry of the log",
           "replace_gui_component_by_other": "Replace a gui component by another selected",
-          "given_text_in_image": "Insert a text in an image",
+          "given_text_in_image": "Insert a text in an image. The params are: the text and the font configuration",
           "hidden_gui_element": "Hides a gui element with a colour. Needs the hexadecimal colour starting with # as input.",
           "replace_gui_element_various_places": "Replace a gui component by another selected in múltiple places. Actually without using",
           "screenshot_name_without_root_path": "Generate a copy of the image renamed for the log and return without relative path",
-          "random_text_in_image": "Insert a random text in a image",
-          "random_paragraph_in_image": "Insert a random paragraph in the GUI component coordinates",
-          "random_words_in_image": "Insert a random word in the GUI component coordinates",
-          "random_sentence_in_image": "Insert a random sentence in the GUI component coordinates",
+          "random_text_in_image": "Insert a random text in a image. The param is a text",
+          "random_paragraph_in_image": "Insert a random paragraph in the GUI component coordinates. The params are: font family, Font size, Font color, Background color, Character delimitation, Random max number of paragraph",
+          "random_words_in_image": "Insert a random word in the GUI component coordinates. The params are: Font family, Font size, Font color, Background color and delimitation Random max number of words",
+          "random_sentence_in_image": "Insert a random sentence in the GUI component coordinates. The params are: Font family, Font size, Font color, Background color and Character delimitation for paragraph",
           "image_copy_renamed": "Generate a copy of the image renamed for the log",
           "image_copy_renamed_and_return_path": "Generate a copy of the image renamed for the log and return all relative path"
         }
@@ -486,13 +490,13 @@
       "assist": {
         "empty": "To add a modification you need to select a GUI component to edit, the coordinates, the edit function and fill in its parameters",
         "download": "Download",
-        "download_next": "Download and continue",
+        "download_next": "Finish",
         "download_confirmation": "You will download the configuration Json and will no longer be able to configure this activity. Are you sure?",
         "function": {
           "variability_function": "Function variability",
           "params_function": "Param for selected function",
           "gui_components": "GUI component to edit",
-          "dependency": "Add dependency",
+          "dependency": "add_dependency",
           "activity_dependency": "Activity dependency",
           "variant_dependency": "Variant dependency",
           "font_color": "Color de la letra",
@@ -514,7 +518,7 @@
           "botright": "Bot-Right",
           "color": "Colour"
         },
-        "next": "Finish Screenshot Variability",
+        "next": "Save and go back",
         "delete": "Delete",
         "add": "Add"
       },

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { IElements, IScreenshotColumn, wizardState, InitialValues } from './types';
+import { IElements, wizardState, InitialValues } from './types';
 import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import VariabilityFunctionCategoryRepository from 'infrastructure/repositories/variability-function-category';
@@ -26,14 +26,13 @@ const initialState: wizardState = {
   elements: {},
   seed: null,
   scenario_variability: null,
-  case_variability: null,
   initialValues: {},
-  functions: null,
-  params: null,
-  screenshot_functions: null,
-  category_functions: null,
-  gui_components: null,
-  category_gui_components: null,
+  functions: [],
+  params: [],
+  screenshot_functions: [],
+  category_functions: [],
+  gui_components: [],
+  category_gui_components: [],
   isLoading: false,
   error: null
 }
@@ -54,7 +53,13 @@ export const wizardSlice = createSlice({
     ) => {
       state.seed = payload;
     },
-    /*setColumnVariabilityConfiguration: (
+    setScenarioConfiguration: (
+      state,
+      { payload }: PayloadAction<{ scenario_conf: any }>
+    ) => {
+      state.scenario_variability = payload;
+    },
+    setColumnVariabilityConfiguration: (
       state,
       { payload }: PayloadAction<{ variant: string, act: string, column: string, columnValue: any }>
     ) => {
@@ -64,7 +69,46 @@ export const wizardSlice = createSlice({
       if (actObject[column] != null) {
         actObject[column] = columnValue;
       }
-    },*/
+    },
+    setFunctionNameVariabilityFunction: (
+      state,
+      { payload }: PayloadAction<{ variant: string, act: string, column: string, function_name: string }>
+    ) => {
+      const { seed } = state;
+      const { variant, act, column, function_name } = payload;
+      const value = [variant, act, column].reduce((ob, key) => ob[key] || {}, seed);
+      if (typeof value.name === 'string') {
+        value.name = function_name;
+      }
+    },
+    setPossibleParamsInitialValues: (
+      state,
+      { payload }: PayloadAction<{column: string, function_selected: any}>
+    ) => {
+      const { initialValues } = state;
+      const { function_selected, column } = payload;
+      if ( initialValues[column] != null){
+        initialValues[column].params.possible_params = function_selected.params
+      }
+    },
+    setParamsColumnVariabilityColumn: (
+      state,
+      { payload }: PayloadAction<{variant: string, act: string, column: string, param_column: string, param_args: any}>
+    ) => {
+      const { seed, initialValues } = state;
+      const { variant, act, column, param_column, param_args } = payload;
+      const actObject = [variant, act, column].reduce((ob, key) => ob[key] || {}, seed);
+      if (actObject.args != null){
+        const aux = {...actObject.args};
+        actObject.args = {
+          aux,
+          [param_column]: param_args
+        };
+      }
+      if (initialValues[column] != null){
+        initialValues[column].params.possible_params = param_args
+      }
+    },
     setVariateVariabilityConfiguration: (
       state,
       { payload }: PayloadAction<{ variant: string, act: string, column: string, variate: number }>
@@ -81,21 +125,6 @@ export const wizardSlice = createSlice({
       { payload }: PayloadAction<any>
     ) => {
       state.initialValues = payload;
-    },
-    setPossibleParamsInitialValues: (
-      state,
-      { payload }: PayloadAction<{params: any, column: string}>
-    ) => {
-      state.initialValues = {
-        ...state.initialValues,
-        [payload.column]:{
-          ...state.initialValues[payload.column],
-          params: {
-            ...state.initialValues[payload.column].params,
-            possible_params: payload.params
-          }
-        } 
-      }
     },
     setParams: (
       state,
@@ -133,6 +162,29 @@ export const wizardSlice = createSlice({
     ) => {
       state.category_gui_components = payload;
     },
+    setLogFormData: (
+      state,
+      { payload }: PayloadAction<{
+        category_functions: CategoryDTO[],
+        functions: VariabilityFunctionDTO[],
+        functions_screenshot: VariabilityFunctionDTO[],
+        gui_components: GUIComponentDTO[],
+        params: FunctionParamDTO[]
+      }>
+    ) => {
+      const {
+        category_functions,
+        functions,
+        functions_screenshot,
+        gui_components,
+        params,
+      } = payload;
+      state.category_functions = category_functions;
+      state.functions = functions;
+      state.screenshot_functions = functions_screenshot;
+      state.gui_components = gui_components;
+      state.params = params;
+    },
     setError: (state, { payload }: PayloadAction<string>) => {
       state.error = payload;
     },
@@ -141,8 +193,8 @@ export const wizardSlice = createSlice({
 
   // ================================== ACTIONS ==================================
   
-  const { setError, setLoading, setVariabilityConfiguration, setFunctions, setFunctionCategories, setVariateVariabilityConfiguration,
-    setScreenshotFunctions, setGUIComponents, setGUIComponentCategories, setParams, setInitialValues } = wizardSlice.actions
+  const { setError, setLoading, setVariabilityConfiguration, setVariateVariabilityConfiguration,
+    setScenarioConfiguration, setLogFormData, setInitialValues } = wizardSlice.actions
 
   // ================================== ROOT STATE ==================================
   
@@ -150,21 +202,21 @@ export const wizardSlice = createSlice({
   
   // ================================== THUNK middleware ==================================
   
-  export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any): AppThunk => async (dispatch: AppDispatch, getState) => {
-    const { wizard } = getState();
-    let json_conf = wizard.seed;
-    dispatch(
-      setVariabilityConfiguration({
-          ...json_conf,
-          [variant]: {
-            ...json_conf[variant],
-            [act]:{
-              ...json_conf[variant][act],
-              [column]: log_column_conf
-            }
-          }
-    }));
-  }
+  // export const updateJsonConf = (variant: string, act: string, column: string, log_column_conf: any): AppThunk => async (dispatch: AppDispatch, getState) => {
+  //   const { wizard } = getState();
+  //   let json_conf = wizard.seed;
+  //   dispatch(
+  //     setVariabilityConfiguration({
+  //         ...json_conf,
+  //         [variant]: {
+  //           ...json_conf[variant],
+  //           [act]:{
+  //             ...json_conf[variant][act],
+  //             [column]: log_column_conf
+  //           }
+  //         }
+  //   }));
+  // }
 
   export const updateVariateValue = (variant: string, act: string, column: string, variate_value: number): AppThunk => async (dispatch: AppDispatch, getState) => {
     dispatch(
@@ -172,31 +224,31 @@ export const wizardSlice = createSlice({
     );
   }
 
-  export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
-      const { wizard } = getState();
-      try {
-        dispatch(setLoading(true))
-        let aux_values = {};
-          Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
-            aux_values = {
-              ...aux_values,
-              [entry[0]]: {
-                function: entry[1].name,
-                params: {
-                  possible_params: {},
-                  args: entry[1].args
-                },
-                variate: entry[1].variate
-              }
-            };
-          });
-          setInitialValues(aux_values);
-      } catch (error) {  
-        dispatch(setError(error as string))
-      } finally {
-        dispatch(setLoading(false))
-      }
-  }
+  // export const loadInitValues = (variant: string, act: string): AppThunk => async (dispatch: AppDispatch, getState) => {
+  //     const { wizard } = getState();
+  //     try {
+  //       dispatch(setLoading(true))
+  //       let aux_values = {};
+  //         Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
+  //           aux_values = {
+  //             ...aux_values,
+  //             [entry[0]]: {
+  //               function: entry[1].name,
+  //               params: {
+  //                 possible_params: wizard.initialValues[entry[0]] ? wizard.initialValues[entry[0]].params.possible_params : {},
+  //                 args: entry[1].args
+  //               },
+  //               variate: entry[1].variate
+  //             }
+  //           };
+  //         });
+  //         setInitialValues(aux_values);
+  //     } catch (error) {  
+  //       dispatch(setError(error as string))
+  //     } finally {
+  //       dispatch(setLoading(false))
+  //     }
+  // }
   export const loadDataAndInitValues = (variant: string, act: string, initValuesCond: boolean): AppThunk => async (dispatch: AppDispatch, getState) => {
     const { auth, wizard } = getState();
     try {
@@ -204,6 +256,7 @@ export const wizardSlice = createSlice({
 
       if(initValuesCond){
         // Load InitValues
+        console.log("Initial Values Updated!")
         let aux_values = {};
         Object.entries({...wizard.seed[variant][act]}).forEach((entry: [string, any]) => {
         aux_values = {
@@ -211,7 +264,7 @@ export const wizardSlice = createSlice({
             [entry[0]]: {
               function: entry[1].name,
               params: {
-                possible_params: {},
+                possible_params: wizard.initialValues[entry[0]] ? wizard.initialValues[entry[0]].params.possible_params : {},
                 args: entry[1].args
               },
               variate: entry[1].variate
@@ -220,35 +273,28 @@ export const wizardSlice = createSlice({
         });
         dispatch(setInitialValues(aux_values));
       }
-      // const currentPage = experiment.pagination.page;
-      if (wizard.category_functions === null) {
-        const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
-        dispatch(setFunctionCategories(functionCategoriesResponse.results));
+
+      const functionCategoriesResponse = await variabilityFunctionCategoryRepository.list(auth.token ?? '');
+      const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
+      const screenshot_function_categories: any = functionCategoriesResponse.results.filter(c => c.name==="features.experiment.function_category.name.screenshot_rename");
+      let functions_screenshot: VariabilityFunctionDTO[] = []
+      let functions_no_screenshot: VariabilityFunctionDTO[] = []
+      if(screenshot_function_categories.length===0){
+        const general_screenshot_function_categories: any = functionCategoriesResponse.results.filter(c => c.name==="features.experiment.function_category.name.screenshot");
+        functions_no_screenshot = general_screenshot_function_categories.length > 0 ? functionsResponse.results.filter(f => f.variability_function_category!==general_screenshot_function_categories[0].id) : functionsResponse.results;
+      } else {
+        functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_function_categories[0].id);
+        functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_function_categories.id);
       }
-      if (wizard.functions === null) {
-        const functionsResponse = await variabilityFunctionRepository.list(auth.token ?? '');
-        try {
-          const screenshot_functions: any = wizard.category_functions?.filter(c => c.name==="Screenshot");
-          const functions_screenshot = functionsResponse.results.filter(f => f.variability_function_category===screenshot_functions.id);
-          const functions_no_screenshot = functionsResponse.results.filter(f => f.variability_function_category!==screenshot_functions.id);
-          dispatch(setFunctions(functions_no_screenshot));
-          dispatch(setScreenshotFunctions(functions_screenshot));
-        } catch (ex) {
-          console.error('error setting up wizard functions', ex);
-        }
-      }
-      if (wizard.gui_components === null) {
-        const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
-        dispatch(setGUIComponents(guiComponentsResponse.results));
-      }
-      // if (wizard.category_gui_components === null) {
-      //   const guiComponentCategoriesResponse = await guiComponentCategoryRepository.list(auth.token ?? '');
-      //   dispatch(setGUIComponentCategories(guiComponentCategoriesResponse.results));
-      // }
-      if (wizard.params === null) {
-        const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
-        dispatch(setParams(paramsResponse.results));
-      }
+      const guiComponentsResponse = await guiComponentRepository.list(auth.token ?? '');
+      const paramsResponse = await paramFunctionCategoryRepository.list(auth.token ?? '');
+      dispatch(setLogFormData({
+        category_functions: functionCategoriesResponse.results,
+        functions: functions_no_screenshot,
+        functions_screenshot: functions_screenshot,
+        gui_components: guiComponentsResponse.results,
+        params: paramsResponse.results
+      }))
     } catch (error) {  
       dispatch(setError(error as string))
     } finally {

@@ -18,6 +18,10 @@ export const downloadFile = function downloadFile(filename: string, blob: Blob) 
 }
 
 
+export function getByID(obj: any, idO: number) {
+  return obj.find((o: { id: number; }) => (o.id === idO) ? o : null)
+}
+
 export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experiment {
   let state: ExperimentState;
   if (experiment.is_being_processed === 0) {
@@ -53,8 +57,10 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
 
 export function csvLogToJSON(seed: any, specialColnames: any): any {
   const colnames = JSON.parse(specialColnames);
-  delete colnames["Screenshot"]
-  let res: {[key:string]: any} = {};
+  const screenshot_col_name = colnames["Screenshot"];
+  delete colnames["Screenshot"];
+  let case_conf: {[key:string]: any} = {};
+  let scenario_conf: {[key:string]: any} = {};
   const results = Papa.parse(seed, { header: true, skipEmptyLines: true }) // object with { data, errors, meta }
   const rows = results.data // array of objects
   let variant: string = "";
@@ -66,6 +72,7 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
       id++;
     }
     let columns_conf: {[key:string]: any} = {};
+    let scenario_columns_conf: {[key:string]: any} = {};
     let has_values: boolean = false;
     Object.entries(row).forEach((col: any) => {
       if (col[0] != "" && !Object.values(colnames).includes(col[0])) {
@@ -73,26 +80,39 @@ export function csvLogToJSON(seed: any, specialColnames: any): any {
           "initValue": col[1],
           "variate": 0,
           "name": "",
-          "args": {} // old versions of agosuirpa (backend) only support '[]'
+          "args": {} // TODO: old versions of agosuirpa (backend) only support '[]'
         };
         columns_conf[col[0]] = this_column_conf;
         has_values = true;
+        if(col[0]===screenshot_col_name){
+          scenario_columns_conf[col[0]] = this_column_conf;
+        }
       }
     });
     variant = row[colnames.Variant];
     const activity: string = id+"_"+row[colnames.Activity];
     if(has_values){
-      if (!res.hasOwnProperty(variant)) {
+      if (!case_conf.hasOwnProperty(variant)) {
         let aux: { [key: string]: any } = {};
         aux[activity] = columns_conf;
-        res[variant] = aux;
+        case_conf[variant] = aux;
       } else {
-        res[variant][activity] = columns_conf;
+        case_conf[variant][activity] = columns_conf;
+      }
+      if (!scenario_conf.hasOwnProperty(variant)) {
+        let sc_aux: { [key: string]: any } = {};
+        sc_aux[activity] = scenario_columns_conf;
+        scenario_conf[variant] = sc_aux;
+      } else {
+        scenario_conf[variant][activity] = scenario_columns_conf;
       }
     }
   });
-  if(res.hasOwnProperty("")){
-    delete res[""]
+  if(case_conf.hasOwnProperty("")){
+    delete case_conf[""]
   }
-  return res;
+  if(scenario_conf.hasOwnProperty("")){
+    delete scenario_conf[""]
+  }
+  return { case_conf, scenario_conf };
 }

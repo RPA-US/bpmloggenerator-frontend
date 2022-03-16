@@ -104,7 +104,7 @@ const ExperimentDetails: React.FC = () => {
               setLoading(false);
               if(error == null){
                 if(status === "PRE_SAVED"){
-                  history.push('/experiment-wizard');
+                  history.push('/case-variability');
                 } else {
                   history.push('/');
                 }

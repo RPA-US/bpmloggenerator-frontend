@@ -122,13 +122,14 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     if (!hasPreviousId && experimentResponse.id != null) {
       const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
-        const aux_seed = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
+        const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
         dispatch(
           setExperiment({
             detail: experimentDTOToExperimentType(savedExperimentData),
-            seed_log: aux_seed
+            seed_log: case_conf
         }))
-        dispatch(wizardSlice.actions.setVariabilityConfiguration(aux_seed))
+        dispatch(wizardSlice.actions.setVariabilityConfiguration(case_conf))
+        dispatch(wizardSlice.actions.setScenarioConfiguration(scenario_conf))
       } else {
         const { experiments, pagination } = experiment;
         dispatch(setExperiments({

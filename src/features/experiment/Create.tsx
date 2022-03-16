@@ -26,14 +26,18 @@ const CreateExperiment: React.FC = () => {
         onSubmit={(data: any) => {
           setLoading(true)
           console.log('Create component data received:', data);
+          const variability_mode = data.get('variability_mode');
+          data.delete('variability_mode');
           dispatch(saveExperiment(data, (status: string, error: any) => {
             setLoading(false);
             if(error != null){
               alert('unexpected error occurred');
               console.error(error);
             } else {
-              if(status === "PRE_SAVED"){
-                history.push('/experiment-wizard');
+              if(variability_mode === "scenarioVariability"){
+                history.push('/scenario-variability');
+              } else if (variability_mode === "caseVariability") {
+                history.push('/case-variability');
               } else {
                 history.push('/');
               }
