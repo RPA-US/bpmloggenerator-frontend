@@ -4,4 +4,12 @@ export default class Validations {
     return str == null || str.trim() === '';
   }
 
+  static isPositiveInteger(str: string) {
+    const num = Number(str);
+    if (Number.isInteger(num) && num >= 0) {
+      return true;
+    }
+    return false;
+  }
+
 }

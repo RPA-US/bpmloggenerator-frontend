@@ -29,7 +29,7 @@ const FileInput: React.FC<FileInputProps> = ({ accept, inputProps, fileName, err
         id={ inputId }
         type="file"
       />
-      <label htmlFor={ inputId }>
+      <label htmlFor={ disabled ? '' : inputId }>
         <Button
           variant="contained"
           color={ errorMessage ? "error" : "secondary" }

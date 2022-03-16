@@ -29,25 +29,25 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
   }
 
   return {
-    id: experiment.id,
-    name: experiment.name,
-    description: experiment.description,
+    id: experiment.id ?? null,
+    name: experiment.name ?? '',
+    description: experiment.description ?? '',
     creationDate: new Date(experiment.created_at),
     executionStart: new Date(experiment.execution_start),
     executionEnd: new Date(experiment.execution_finish),
     lastEditionDate: new Date(experiment.last_edition),
     state,
-    numberScenarios: experiment.number_scenarios,
-    variabilityConf: experiment.variability_conf,
-    scenariosConf: experiment.scenarios_conf,
-    foldername: experiment.foldername,
-    isActive: experiment.is_active,
-    isBeingProcessed: experiment.is_being_processed,
-    screenshotNameGenerationFunction: experiment.screenshot_name_generation_function,
-    screenshotsPath: experiment.screenshots_path,
-    sizeBalance: experiment.size_balance,
-    specialColnames: experiment.special_colnames,
-    status: null
+    numberScenarios: experiment.number_scenarios ?? 0,
+    variabilityConf: experiment.variability_conf ?? undefined,
+    scenariosConf: experiment.scenarios_conf ?? undefined,
+    foldername: experiment.foldername ?? '',
+    isActive: experiment.is_active ?? false,
+    isBeingProcessed: experiment.is_being_processed ?? -1,
+    screenshotNameGenerationFunction: experiment.screenshot_name_generation_function ?? '',
+    screenshotsPath: experiment.screenshots_path ?? '',
+    sizeBalance: experiment.size_balance ?? undefined,
+    specialColnames: experiment.special_colnames ?? '',
+    status: ''
   }
 }
 

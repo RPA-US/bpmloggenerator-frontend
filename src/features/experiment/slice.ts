@@ -117,7 +117,6 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   const hasPreviousId = experimentData.get("id") != null;
   const seedLog = experimentData.get('seedLog') ?? '';
   experimentData.delete('seedLog');
-  debugger;
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     if (!hasPreviousId && experimentResponse.id != null) {
@@ -143,7 +142,11 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {
       dispatch(setError(error as ExperimentError))
-      actionFinishedCallback != null && actionFinishedCallback(null, error);
+      let exception = error;
+      if (error instanceof Response) {
+        exception = new Error(`error saving experiment (status was ${error.status})`) as ExperimentError;
+      }
+      actionFinishedCallback != null && actionFinishedCallback(null, exception);
     }
 }
 

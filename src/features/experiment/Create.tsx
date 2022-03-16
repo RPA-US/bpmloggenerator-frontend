@@ -29,8 +29,8 @@ const CreateExperiment: React.FC = () => {
           dispatch(saveExperiment(data, (status: string, error: any) => {
             setLoading(false);
             if(error != null){
-              // TODO
-              history.push('/');
+              alert('unexpected error occurred');
+              console.error(error);
             } else {
               if(status === "PRE_SAVED"){
                 history.push('/experiment-wizard');

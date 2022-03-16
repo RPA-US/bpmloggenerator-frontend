@@ -55,7 +55,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   const variabilityField = register('variability_conf');
   const scenarioField = register('scenarios_conf');
 
-  const watchNumberScenarios = watch('number_scenarios', 0);
+  const watchNumberScenarios = watch('number_scenarios');
+  // setValue('number_scenarios', 0);
 
   useEffect(() => {
     if (watchNumberScenarios == 0) {
@@ -73,14 +74,21 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       valid = false;
       setError(field, error);
     }
-    if (submitter === 'generator') {
+    if (submitter === 'generate') {
       // if (fileContents.seedLog == null) setError({ type: 'required', message: t('features.experiment.form.errors.seedLogRequired') as string });
-      if (fileContents.screenshots == null && initialValues.screenshotsPath == null) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
+      if ((data.screenshots == null || data.screenshots.length < 1) && initialValues.screenshotsPath == null) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
       if (fileContents.variability_conf == null && initialValues.variabilityConf == null) setFormError('variability_conf', { type: 'required', message: t('features.experiment.form.errors.variabilityRequired') as string });
-      if (data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
-      if (data.number_scenarios == null) setFormError('number_scenarios', { type: 'required', message: t('features.experiment.form.errors.scenariosNumberRequired') as string });
-      if (data.logSize == null) setFormError('logSize', { type: 'required', message: t('features.experiment.form.errors.logSizeRequired') as string });
-      if (data.imbalancedCase == null) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseRequired') as string });
+      if (Validations.isPositiveInteger(data.number_scenarios) && data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
+      if (!Validations.isPositiveInteger(data.number_scenarios)) setFormError('number_scenarios', { type: 'required', message: t('features.experiment.form.errors.scenariosNumberRequired') as string });
+      if (Validations.isBlank(data.logSize)) setFormError('logSize', { type: 'required', message: t('features.experiment.form.errors.logSizeRequired') as string });
+      if (Validations.isBlank(data.imbalancedCase)) {
+        setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseRequired') as string });
+      } else {
+        const tokenizedImbalanced = data.imbalancedCase.split(',');
+        if (tokenizedImbalanced.length === 1) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseInvalidLength') as string });
+        const sum = tokenizedImbalanced.reduce((tot: number, curr: string) => tot + parseFloat(curr), 0);
+        if (sum != 1.0) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseSumDistinctOfOne') as string });
+      }
     }
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
     console.log('is form valid', valid, ', evalued data', data);
@@ -133,9 +141,15 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       .forEach(key => {
         const value = (fileContents as any)[key] ?? checkedData[key];
         if (value instanceof FileList) {
-          formData.append(key, value[0])
-        } else {
-          formData.append(key, value)
+          if (value[0] != null) {
+            formData.append(key, value[0])
+          }
+        } else if (value != null) {
+          if (typeof value === 'string') {
+            if (value.trim() !== '') formData.append(key, value.trim())
+          } else {
+            formData.append(key, value)
+          }
         }
       });
     onSubmit(formData)
@@ -263,7 +277,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                 inputProps={
                   register('number_scenarios', {
                     // required: t('features.experiment.form.errors.scenariosNumberRequired') as string,
-                    value: initialValues.numberScenarios
+                    value: initialValues.numberScenarios || 0
                   })
                 }
                 error={formState.errors.number_scenarios != null}
@@ -327,6 +341,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                     value: initialValues?.sizeBalance?.size_secuence.join(',')
                   })
                 }
+                disabled={ disabled }
                 error={formState.errors.logSize != null}
                 helperText={formState.errors.logSize?.message}
               />
