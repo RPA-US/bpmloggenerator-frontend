@@ -153,7 +153,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function componentsByCatID(gid: number) {
         let guiCat: GUIComponentDTO[] = elements;
-        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g : "")
+        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g :"")
         return l
     }
 
@@ -291,8 +291,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
     }
 
-    function leaveRect(e:any) {
-        if(drawing){
+    function leaveRect(e: any) {
+        if (drawing) {
             handleMouseLeave(e)
         }
         setDrawing(false)
@@ -584,7 +584,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                     </Typography>
                 </Grid>
                 <Grid xs={2} lg={2} item style={{ marginTop: theme.spacing(2) }}>
-                    <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
+                    <Button name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
                         {t('features.experiment.assist.next')}
                     </Button>
                 </Grid>
@@ -692,15 +692,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     {t('features.experiment.assist.coordinates.rightbot')}:{argumentsCoor.coordinates[2]}, {argumentsCoor.coordinates[3]}
                                 </Typography>
                             </Box>
-                            <Grid item justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
-                                <Button
-                                    onClick={addElementToTable}
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{ fontSize: "small" }}
-                                >
-                                    {t('features.experiment.assist.add')}</Button>
-                            </Grid>
                         </CardContent>
                     </Card>
                     <Card style={{ marginTop: theme.spacing(2) }}>
@@ -770,10 +761,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     id="select_element"
                                                     multiple
                                                     value={elementID}
-                                                    input={<OutlinedInput label={t(components[index].name)} />}
+                                                    input={<OutlinedInput label={t('features.experiment.assist.function.params_function')} />}
                                                     onChange={handleChangeElement}
                                                 >
-                                                    {Object.keys(components).map((key, index) => (
+                                                    {Object.keys(components).length > 0 && Object.keys(components).map((key, index) => (
 
                                                         <MenuItem key={components[index].id_code} value={components[index].id_code}>
                                                             <Tooltip title={t(components[index].description) + ""} placement="right">
@@ -819,6 +810,15 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     ))}
                                 </Box>
                             ))}
+                            <Grid item justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
+                                <Button
+                                    onClick={addElementToTable}
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{ fontSize: "small" }}
+                                >
+                                    {t('features.experiment.assist.add')}</Button>
+                            </Grid>
                         </CardContent>
                     </Card>
                 </Grid>
