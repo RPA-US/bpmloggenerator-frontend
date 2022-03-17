@@ -92,7 +92,7 @@ const ExperimentsList: React.FC = () => {
         <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>
           { isLoading 
             ? (<CircularProgress color="secondary" />) 
-            : (experiments.length && pagination.hasNext && (
+            : (experiments.length > 0 && pagination.hasNext && (
                 <Button variant="contained" color="secondary" onClick={ () => dispatch(loadExperiments()) }>
                   { t('features.experiment.list.viewMore') }
                 </Button>

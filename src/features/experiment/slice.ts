@@ -143,7 +143,11 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {
       dispatch(setError(error as ExperimentError))
-      actionFinishedCallback != null && actionFinishedCallback(null, error);
+      let exception = error;
+      if (error instanceof Response) {
+        exception = new Error(`error saving experiment (status was ${error.status})`) as ExperimentError;
+      }
+      actionFinishedCallback != null && actionFinishedCallback(null, exception);
     }
 }
 

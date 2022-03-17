@@ -102,14 +102,15 @@ const ExperimentDetails: React.FC = () => {
             data.set('id', id);
             dispatch(saveExperiment(data,(status: string, error: any) => {
               setLoading(false);
-              if(error != null){
-                history.push('/');
-              } else {
+              if(error == null){
                 if(status === "PRE_SAVED"){
                   history.push('/case-variability');
                 } else {
                   history.push('/');
                 }
+              } else {
+                alert('unexpected error occurred');
+                console.error(error);
               }
             }));
           }}
