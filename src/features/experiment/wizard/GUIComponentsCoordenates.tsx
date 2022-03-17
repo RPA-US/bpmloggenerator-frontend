@@ -382,16 +382,29 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 variate: 1,
                 args: screenTMP
             };
-            dispatch(wizardSlice.actions.setVariabilityConfiguration({
-                ...json_conf,
-                [variant]: {
-                    ...json_conf[variant],
-                    [act]: {
-                        ...json_conf[variant][act],
-                        ["Screenshot"]: screenColumn
+            if (scenario_variability_mode === 'scenario') {
+                dispatch(wizardSlice.actions.setScenarioConfiguration({
+                    ...json_conf,
+                    [variant]: {
+                        ...json_conf[variant],
+                        [act]: {
+                            ...json_conf[variant][act],
+                            ["Screenshot"]: screenColumn
+                        }
                     }
-                }
-            }));
+                }));
+            }else{
+                dispatch(wizardSlice.actions.setVariabilityConfiguration({
+                    ...json_conf,
+                    [variant]: {
+                        ...json_conf[variant],
+                        [act]: {
+                            ...json_conf[variant][act],
+                            ["Screenshot"]: screenColumn
+                        }
+                    }
+                }));
+            }
         }
         history.push(redirect_at_end + variant + '/' + act)//TODO: mirar el redireccionamiento
     }
