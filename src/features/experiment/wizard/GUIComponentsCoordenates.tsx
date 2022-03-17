@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent } from '@mui/material';
+import { IconButton, Select, MenuItem, Box, TextField, Button, Card, CardContent, Theme, Typography, Grid, CardMedia, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, OutlinedInput, SelectChangeEvent } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useSelector, useDispatch } from 'react-redux';
 import { screenshotRepository, wizardSelector, wizardSlice, guiComponentCategoryRepository, guiComponentRepository, variabilityFunctionCategoryRepository, variabilityFunctionRepository, paramFunctionCategoryRepository } from './slice';
@@ -19,8 +19,8 @@ export interface IRandomColor {
 }
 
 const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
-    //Carga de variables externas
-    const { seed, params, functions, category_functions,gui_components, scenario_variability } = useSelector(wizardSelector);
+    //Load externar data
+    const { seed, params, functions, category_functions, gui_components, scenario_variability } = useSelector(wizardSelector);
     const { detail } = useSelector(experimentsSelector);
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
@@ -32,7 +32,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const { token } = useSelector(authSelector);
     const theme = useContext(ThemeContext) as Theme;
 
-    //Inicialización de variables temporales
+    //Init tmp var
     const initialArgs: IArguments = { id: 0, coordinates: [], name: "", args: {} }
     const initialScreen: IScreenshot = {}
     const countID = 1;
@@ -46,16 +46,16 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialElementID: string[] = []
 
 
-    //Argumentos de screenshots a almacenar
-    let init_seed = {...seed};
+    //Status var to use
+    let init_seed = { ...seed };
     let redirect_at_end = '/column-variability/';
-    if(scenario_variability_mode==='scenario'){
-        init_seed = {...scenario_variability};
+    if (scenario_variability_mode === 'scenario') {
+        init_seed = { ...scenario_variability };
         redirect_at_end = '/scenario-variability/';
     }
     const [json_conf, setjJon_conf] = useState(init_seed);
 
-    //Variables temporales
+    //Temporary var
     const [resolutionBRW, setResolutionBRW] = useState([0, 0]);
     const [resolutionIMG, setResolutionIMG] = useState([0, 0]);
     const [functionID, setFunction] = useState(0);
@@ -69,7 +69,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [randomColor, setRandomColor] = useState(initialColors);
     const [errorMessage, setErrorMessage] = useState(false);
 
-    //Cargas de BD temporales
+    //DB load
     const [variabilityFunctions, setVariabilityFunctions] = useState(initialVarFunction);
     const [paramsList, setParamsFunctions] = useState(initialparams);
     const [guiComponentsCat, setGuiComponentsCat] = useState(initialguiComponents);
@@ -83,6 +83,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const sizeRef = useRef<any>(0);
     const listRef = useRef<any>("");
 
+    //Select box colorized inside screenshot
+    const [coorR, setCoorR] = useState([0, 0, 0, 0]);
+    const [drawing, setDrawing] = useState(false);
 
     const getScreenshot = async (token: string, path: string) => {
         let src = '';
@@ -103,22 +106,22 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         return src;
     }
 
-    //Peticiones a BD
+    //Get DB info
     const selectVarFuncByCat = async (token: string, name: string) => {
         let categories: CategoryDTO[] = []
-        if(category_functions !== null){
-            categories=category_functions
-        }else{
+        if (category_functions !== null) {
+            categories = category_functions
+        } else {
             let categoriesRes: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
             categories = categoriesRes.results
         }
         let categoryId = selectCategoryByName(categories, name);
-        let varFunc:VariabilityFunctionDTO[] = []
-        if(functions !== null){
+        let varFunc: VariabilityFunctionDTO[] = []
+        if (functions !== null) {
             varFunc = functions
-        }else{
+        } else {
             let varFuncRes = await variabilityFunctionRepository.list(token);
-            varFunc= varFuncRes.results
+            varFunc = varFuncRes.results
         }
         let test;
         try {
@@ -136,7 +139,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         return test;
     }
 
-    //GUI components by category name
     const selectGUICat = async (token: string) => {
         let categories: CategoryResponse = await guiComponentCategoryRepository.list(token);
         let test: CategoryDTO[] = [];
@@ -151,7 +153,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function componentsByCatID(gid: number) {
         let guiCat: GUIComponentDTO[] = elements;
-        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g : "")
+        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g :"")
         return l
     }
 
@@ -171,12 +173,11 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         return test;
     }
 
-    //Params
     const paramsListResults = async (token: string) => {
-        let paramTMP:FunctionParamDTO[] =  []
+        let paramTMP: FunctionParamDTO[] = []
         try {
             if (params !== null) {
-                paramTMP= params
+                paramTMP = params
             } else {
                 let paramRes: FunctionParamResponse = await paramFunctionCategoryRepository.list(token);
                 paramTMP = paramRes.results;
@@ -187,7 +188,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
     }
 
-    function sccreenshotConfigured() {
+    //Load screenshot previous configuration
+    function screenshotConfigured() {
         let jsonTMP = json_conf;
         let screenshotWizard = { ...jsonTMP[variant][act]["Screenshot"].args }
         let listKeys = Object.keys(screenshotWizard)
@@ -221,6 +223,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         setParams([...paramsTMP]);
     }
+
     //Seed variants
     function seedVariants() {
         let variantListTMP: string[] = []
@@ -239,8 +242,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         var width: number = imgRect.clientWidth;
         var height: number = imgRect.clientHeight;
         let newRes = resolutionBRW;
-        newRes[0] = width;
-        newRes[1] = height;
+        newRes[0] = width - 1;
+        newRes[1] = height - 1;
         setResolutionBRW([...newRes]);
     }
 
@@ -265,13 +268,51 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         getResolution();
     }, []);
 
+    function startDrag(event: any) {
+        setDrawing(true)
+        var x: number = (event.nativeEvent.offsetX >= 0 ? event.nativeEvent.offsetX : 0)
+        var y: number = (event.nativeEvent.offsetY >= 0 ? event.nativeEvent.offsetY : 0)
+        let coorTMP = [x, y, x, y]
+        setCoorR([...coorTMP])
+    }
+
+    function stopDrag(event: any) {
+        setDrawing(false)
+    }
+
+    function updateDraw(event: any) {
+        var tx: number = event.nativeEvent.offsetX
+        var ty: number = event.nativeEvent.offsetY
+        if (drawing) {
+            let coorTMP = coorR
+            coorTMP[2] = tx
+            coorTMP[3] = ty
+            setCoorR([...coorTMP])
+        }
+    }
+
+    function leaveRect(e: any) {
+        if (drawing) {
+            handleMouseLeave(e)
+        }
+        setDrawing(false)
+    }
+
+    function confirmRect() {
+        let coorTMP = [0, 0, 0, 0]
+        setCoorR([...coorTMP])
+        setDrawing(false)
+    }
+
     window.onresize = function () {
         getResolutionBRW();
+        confirmRect();
     }
 
     function handleMouseEnter(e: any) {
-        let x: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 1)
-        let y: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 1)
+        startDrag(e);
+        let x: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 0)
+        let y: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 0)
         let argsTMP = argumentsCoor;
         argsTMP.coordinates = [x, y, 0, 0]
         setArgumentsCoor({
@@ -280,8 +321,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     function handleMouseLeave(e: any) {
-        var tx: number = (e.nativeEvent.offsetX > 0 ? e.nativeEvent.offsetX : 1)
-        var ty: number = (e.nativeEvent.offsetY > 0 ? e.nativeEvent.offsetY : 1)
+        stopDrag(e);
+        var tx: number = (e.nativeEvent.offsetX >= 0 ? e.nativeEvent.offsetX : 0)
+        var ty: number = (e.nativeEvent.offsetY >= 0 ? e.nativeEvent.offsetY : 0)
         var x1, y1, x2, y2: number
         if (argumentsCoor.coordinates[0] <= tx) {
             x1 = argumentsCoor.coordinates[0]
@@ -361,7 +403,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         selectElement(token ?? "");
         getResolution();
         getResolutionBRW();
-        sccreenshotConfigured();
+        screenshotConfigured();
     }
 
     function selectCategoryByName(categories: any, name: string) {
@@ -517,6 +559,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         argumentTMP = initialArgs
         setArgumentsCoor({ ...argumentTMP });
+        confirmRect();
     }
 
     function confirmBack() {
@@ -526,31 +569,33 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     }
 
     return (
-        <> <Grid
-            container
-            direction="row"
-            spacing={4}>
-            <Grid xs={10} lg={10} item style={{ marginTop: theme.spacing(2) }}>
-                <Typography variant="h4">
-                    <IconButton color="primary" aria-label="go back" component="span" onClick={confirmBack}>
-                        <ChevronLeft />
-                    </IconButton>
-                    {t('features.experiment.assist.title.elementselector')}
-                </Typography>
-            </Grid>
-            <Grid xs={2} lg={2} item style={{ marginTop: theme.spacing(2) }}>
-                <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
-                    {t('features.experiment.assist.next')}
-                </Button>
-            </Grid>
-            {errorMessage &&
-                <Grid xs={12} lg={12} item style={{ marginTop: theme.spacing(2) }}>
-                    <Typography variant="h5" color="red" >
-                        {t('features.experiment.assist.empty')}
+
+        <>
+            <Grid
+                container
+                direction="row"
+                spacing={4}>
+                <Grid xs={10} lg={10} item style={{ marginTop: theme.spacing(2) }}>
+                    <Typography variant="h4">
+                        <IconButton color="primary" aria-label="go back" component="span" onClick={confirmBack}>
+                            <ChevronLeft />
+                        </IconButton>
+                        {t('features.experiment.assist.title.elementselector')}
                     </Typography>
                 </Grid>
-            }
-        </Grid>
+                <Grid xs={2} lg={2} item style={{ marginTop: theme.spacing(2) }}>
+                    <Button name="save" variant="contained" color="primary" endIcon={<SaveIcon />} onClick={saveAndEnd} style={{ fontSize: "small", marginLeft: 4 }}>
+                        {t('features.experiment.assist.next')}
+                    </Button>
+                </Grid>
+                {errorMessage &&
+                    <Grid xs={12} lg={12} item style={{ marginTop: theme.spacing(2) }}>
+                        <Typography variant="h5" color="red" >
+                            {t('features.experiment.assist.empty')}
+                        </Typography>
+                    </Grid>
+                }
+            </Grid>
             <Grid
                 container
                 direction="row"
@@ -566,6 +611,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 Object.keys(screenshots[key]).map((key2, index2) => (
                                     < Box component={"div"}
                                         sx={{
+                                            userSelect: "none",
+                                            pointerEvents: "none",
                                             position: "absolute",
                                             left: resizeRect(screenshots[key][index2].coordinates[0], resolutionBRW[0], resolutionIMG[0]),
                                             top: resizeRect(screenshots[key][index2].coordinates[1], resolutionBRW[1], resolutionIMG[1]),
@@ -577,20 +624,39 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                         }}
                                     ></Box>))))
                             }
+                            < Box component={"div"} id="overlay"
+                                sx={{
+                                    userSelect: "none",
+                                    pointerEvents: "none",
+                                    position: "absolute",
+                                    left: (coorR[0] <= coorR[2]) ? coorR[0] : coorR[2],
+                                    top: (coorR[1] <= coorR[3]) ? coorR[1] : coorR[3],
+                                    width: ((Math.abs(coorR[0] - coorR[2]) <= resolutionBRW[0]) ? Math.abs(coorR[0] - coorR[2]) : 1),
+                                    height: ((Math.abs(coorR[1] - coorR[3]) <= resolutionBRW[1]) ? Math.abs(coorR[1] - coorR[3]) : 1),
+                                    outline: "2px solid blue",
+                                    backgroundColor: "blue",
+                                    opacity: 0.3
+                                }}
+                            ></Box>
                             < CardMedia
                                 component="img"
                                 id="imgRect"
                                 image={url}
                                 alt="mock"
                                 style={{
+                                    pointerEvents: "auto",
                                     height: "auto",
                                     maxWidth: "100%"
                                 }}
                                 onLoad={onLoadImage}
                                 onMouseDown={handleMouseEnter}
+                                onMouseMove={updateDraw}
                                 onMouseUp={handleMouseLeave}
+                                onMouseLeave={leaveRect}
+
                                 draggable={false}
                             />
+
                         </Box>
                     </Card>
                 </Grid>
@@ -626,15 +692,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     {t('features.experiment.assist.coordinates.rightbot')}:{argumentsCoor.coordinates[2]}, {argumentsCoor.coordinates[3]}
                                 </Typography>
                             </Box>
-                            <Grid item justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
-                                <Button
-                                    onClick={addElementToTable}
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{ fontSize: "small" }}
-                                >
-                                    {t('features.experiment.assist.add')}</Button>
-                            </Grid>
                         </CardContent>
                     </Card>
                     <Card style={{ marginTop: theme.spacing(2) }}>
@@ -704,10 +761,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     id="select_element"
                                                     multiple
                                                     value={elementID}
-                                                    input={<OutlinedInput label={t(components[index].name)} />}
+                                                    input={<OutlinedInput label={t('features.experiment.assist.function.params_function')} />}
                                                     onChange={handleChangeElement}
                                                 >
-                                                    {Object.keys(components).map((key, index) => (
+                                                    {Object.keys(components).length > 0 && Object.keys(components).map((key, index) => (
 
                                                         <MenuItem key={components[index].id_code} value={components[index].id_code}>
                                                             <Tooltip title={t(components[index].description) + ""} placement="right">
@@ -753,6 +810,15 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     ))}
                                 </Box>
                             ))}
+                            <Grid item justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
+                                <Button
+                                    onClick={addElementToTable}
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{ fontSize: "small" }}
+                                >
+                                    {t('features.experiment.assist.add')}</Button>
+                            </Grid>
                         </CardContent>
                     </Card>
                 </Grid>
