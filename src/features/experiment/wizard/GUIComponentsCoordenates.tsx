@@ -294,11 +294,6 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     function confirmRect() {
         let coorTMP = [0, 0, 0, 0]
         setCoorR([...coorTMP])
-        let argsTMP = argumentsCoor;
-        argsTMP.coordinates = coorTMP
-        setArgumentsCoor({
-            ...argsTMP
-        })
         setDrawing(false)
     }
     window.onresize = function () {
