@@ -291,11 +291,19 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
     }
 
+    function leaveRect(e:any) {
+        if(drawing){
+            handleMouseLeave(e)
+        }
+        setDrawing(false)
+    }
+
     function confirmRect() {
         let coorTMP = [0, 0, 0, 0]
         setCoorR([...coorTMP])
         setDrawing(false)
     }
+
     window.onresize = function () {
         getResolutionBRW();
         confirmRect();
@@ -644,7 +652,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 onMouseDown={handleMouseEnter}
                                 onMouseMove={updateDraw}
                                 onMouseUp={handleMouseLeave}
-                                onMouseLeave={confirmRect}
+                                onMouseLeave={leaveRect}
 
                                 draggable={false}
                             />
