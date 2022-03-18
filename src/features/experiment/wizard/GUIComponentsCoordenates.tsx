@@ -154,7 +154,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function componentsByCatID(gid: number) {
         let guiCat: GUIComponentDTO[] = elements;
-        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g :"")
+        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g : "")
         return l
     }
 
@@ -394,7 +394,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         }
                     }
                 }));
-            }else{
+            } else {
                 dispatch(wizardSlice.actions.setVariabilityConfiguration({
                     ...json_conf,
                     [variant]: {
