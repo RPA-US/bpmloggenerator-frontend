@@ -261,8 +261,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     useEffect(() => {
         let aux: string[] = [];
         if (detail !== null && url === "") {
-            aux = detail.screenshotsPath.split("/");
-            getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
+            aux = detail.screenshotsPath.split("/front/");
+            getScreenshot(token ?? "", aux[aux.length - 1] + "/front/" + screenshot_filename);
         }
         seedVariants();
         getResolution();
@@ -577,7 +577,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function confirmBack() {
         if (window.confirm(t('features.experiment.assist.back'))) {
-            history.push('/column-variability/' + variant + '/' + act)
+            history.push(redirect_at_end + variant + '/' + act)
         }
     }
 
