@@ -14,13 +14,15 @@ import Paper from '@mui/material/Paper';
 import { wizardSelector } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
+import { experimentsSelector } from 'features/experiment/slice';
 
 
 const ScenarioSelection: React.FC = () => {
   const { t } = useTranslation();
   const { scenario_variability } = useSelector(wizardSelector);
   const screenshot_column_name = "Screenshot"; // TODO: generalize
-  
+  const { detail } = useSelector(experimentsSelector);
+
   const variantActivities = (entry: any) => {
     let variant = entry[0];
     let acts = entry[1];
@@ -49,7 +51,7 @@ const ScenarioSelection: React.FC = () => {
   return (
     <div>
       <Typography variant="h5">
-          <BackButton to="/add-experiment" />
+          <BackButton to={(detail!==null)?`/experiment/${detail.id}`:"/"} />
           { t('features.experiment.create.title') }
       </Typography>
       <Paper sx={{ width: 'auto', overflow: 'hidden', margin: 'auto' }}>

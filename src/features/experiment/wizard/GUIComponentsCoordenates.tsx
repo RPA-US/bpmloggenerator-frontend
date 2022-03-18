@@ -153,7 +153,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function componentsByCatID(gid: number) {
         let guiCat: GUIComponentDTO[] = elements;
-        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g :"")
+        let l = guiCat.filter(g => (g.gui_component_category === gid) ? g : "")
         return l
     }
 
@@ -261,8 +261,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     useEffect(() => {
         let aux: string[] = [];
         if (detail !== null && url === "") {
-            aux = detail.screenshotsPath.split("/front/");
-            getScreenshot(token ?? "", aux[aux.length - 1] + "/front/" + screenshot_filename);
+            aux = detail.screenshotsPath.split("/");
+            getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
         }
         seedVariants();
         getResolution();
@@ -393,7 +393,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         }
                     }
                 }));
-            }else{
+            } else {
                 dispatch(wizardSlice.actions.setVariabilityConfiguration({
                     ...json_conf,
                     [variant]: {

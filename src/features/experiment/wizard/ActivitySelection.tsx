@@ -11,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { wizardSelector } from 'features/experiment/wizard/slice';
+import { experimentsSelector } from 'features/experiment/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
 
@@ -23,6 +24,7 @@ export interface ExperimentFormProperties {
 const ExperimentAssist: React.FC = () => {
   const { t } = useTranslation();
   const { seed } = useSelector(wizardSelector);
+  const { detail } = useSelector(experimentsSelector);
 
   const variantActivities = (entry: any) => {
     let variant = entry[0];
@@ -63,7 +65,7 @@ const ExperimentAssist: React.FC = () => {
   return (
     <div>
       <Typography variant="h5">
-          <BackButton to="/add-experiment" />
+          <BackButton to={(detail!==null)?`/experiment/${detail.id}`:"/"} />
           { t('features.experiment.create.title') }
       </Typography>
       <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>
