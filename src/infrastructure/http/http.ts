@@ -2,6 +2,7 @@ import configuration from "infrastructure/util/configuration";
 
 const commonHeaders = {
     'Content-Type': 'application/json',
+    // 'Credentials': 'include',
     // 'Accept': 'application/json',
 }
 

@@ -10,44 +10,46 @@ import DownloadIcon from '@mui/icons-material/Download';
 import SendIcon from '@mui/icons-material/Send';
 
 export interface DownloadButtonProps {
-  filename: string
+  filename: string,
+  scenario_variability_mode: boolean,
 }
 
-const DownloadButton: React.FC<DownloadButtonProps> = ({ filename }) => {
+const DownloadButton: React.FC<DownloadButtonProps> = ({ filename, scenario_variability_mode}) => {
   const history = useHistory();
   const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
   const { detail } = useSelector(experimentsSelector);
-  const { scenario_variability } = useSelector(wizardSelector);
+  const { scenario_variability, seed } = useSelector(wizardSelector);
+  let typeTMP = "text/json"
+  let jsonTMP = seed;
+  if (scenario_variability_mode){
+    jsonTMP = scenario_variability;
+  }
 
-    function downloadFunction(jsonTMP: any, type: string, filename: string) {
-        const blob = new Blob([JSON.stringify(jsonTMP, null, 5)], { type: type })
-        const a = document.createElement('a')
-        a.download = filename + '.json'
-        a.href = window.URL.createObjectURL(blob)
-        const clickEvt = new MouseEvent('click', {
-          view: window,
-          bubbles: true,
-          cancelable: true,
-        })
-        a.dispatchEvent(clickEvt)
-        a.remove()
-      }
-    
-      function handleDownload(e: any) {
-        let jsonTMP = scenario_variability;
-        let typeTMP = "text/json"
-        downloadFunction(jsonTMP, typeTMP, filename);
-      }
-    
-      function handleDownloadAndNext(e: any) {
-        if (window.confirm(t('features.experiment.assist.download_confirmation'))) {
-          let jsonTMP = scenario_variability;
-          let typeTMP = "text/json"
-          downloadFunction(jsonTMP, typeTMP, filename);
-          history.push('/experiment/'+detail?.id);
-        }
-      }
+  function downloadFunction(jsonTMP: any, type: string, filename: string) {
+    const blob = new Blob([JSON.stringify(jsonTMP, null, 5)], { type: type })
+    const a = document.createElement('a')
+    a.download = filename + '.json'
+    a.href = window.URL.createObjectURL(blob)
+    const clickEvt = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    })
+    a.dispatchEvent(clickEvt)
+    a.remove()
+  }
+  
+  function handleDownload(e: any) {
+    downloadFunction(jsonTMP, typeTMP, filename);
+  }
+
+  function handleDownloadAndNext(e: any) {
+    if (window.confirm(t('features.experiment.assist.download_confirmation'))) {
+      downloadFunction(jsonTMP, typeTMP, filename);
+      history.push('/experiment/'+detail?.id);
+    }
+  }
     
   
   return  (

@@ -69,7 +69,7 @@ const ScenarioSelection: React.FC = () => {
         </Table>
         ))}
       </TableContainer>
-      <DownloadButton filename='scenario_variability_configuration' />
+      <DownloadButton filename='scenario_variability_configuration' scenario_variability_mode={true} />
     </Paper>
   </div>
   );

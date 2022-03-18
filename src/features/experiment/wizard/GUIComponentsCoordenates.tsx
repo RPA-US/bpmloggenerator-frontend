@@ -25,7 +25,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const { variant } = useParams<{ variant: string }>();
     const { act } = useParams<{ act: string }>();
     const { screenshot_filename } = useParams<{ screenshot_filename: string }>();
-    const { scenario_variability_mode } = useParams<{ scenario_variability_mode: string }>();
+    const { variability_mode } = useParams<{ variability_mode: string }>();
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -49,7 +49,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Status var to use
     let init_seed = { ...seed };
     let redirect_at_end = '/column-variability/';
-    if (scenario_variability_mode === 'scenario') {
+    if (variability_mode === 'scenario') {
         init_seed = { ...scenario_variability };
         redirect_at_end = '/scenario-variability/';
     }
@@ -261,8 +261,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     useEffect(() => {
         let aux: string[] = [];
         if (detail !== null && url === "") {
-            aux = detail.screenshotsPath.split("/front/");
-            getScreenshot(token ?? "", aux[aux.length - 1] + "/front/" + screenshot_filename);
+            aux = detail.screenshotsPath.split("/");
+            getScreenshot(token ?? "", aux[aux.length - 1] + "/" + screenshot_filename);
         }
         seedVariants();
         getResolution();
@@ -382,7 +382,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 variate: 1,
                 args: screenTMP
             };
-            if (scenario_variability_mode === 'scenario') {
+            if (variability_mode === 'scenario') {
                 dispatch(wizardSlice.actions.setScenarioConfiguration({
                     ...json_conf,
                     [variant]: {
