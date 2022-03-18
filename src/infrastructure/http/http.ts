@@ -64,7 +64,6 @@ export default class Http {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
-                ...(bodyObj instanceof FormData ? {} : commonHeaders),
                 ...headers,
             },
             body: body(bodyObj)
