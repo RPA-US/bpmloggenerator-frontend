@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from "react-router-dom";
 import DownloadIcon from '@mui/icons-material/Download';
 import SendIcon from '@mui/icons-material/Send';
+import configuration from "infrastructure/util/configuration";
 
 export interface DownloadButtonProps {
   filename: string,
@@ -47,7 +48,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ filename, scenario_vari
   function handleDownloadAndNext(e: any) {
     if (window.confirm(t('features.experiment.assist.download_confirmation'))) {
       downloadFunction(jsonTMP, typeTMP, filename);
-      history.push('/experiment/'+detail?.id);
+      history.push(configuration.PREFIX+'/experiment/'+detail?.id);
     }
   }
     

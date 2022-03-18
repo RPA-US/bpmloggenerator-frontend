@@ -14,6 +14,7 @@ import Paper from '@mui/material/Paper';
 import { wizardSelector } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
+import configuration from "infrastructure/util/configuration";
 
 
 const ScenarioSelection: React.FC = () => {
@@ -38,7 +39,7 @@ const ScenarioSelection: React.FC = () => {
                   disabled={scenario_variability[variant][act][screenshot_column_name].variate === 1}
                   variant="contained"
                   component={RouterLink}
-                  to={`/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
+                  to={`${configuration.PREFIX}/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
                 >
                 {t("features.wizard.columnVariability.screenshotVariability")}
               </Button>
@@ -49,7 +50,7 @@ const ScenarioSelection: React.FC = () => {
   return (
     <div>
       <Typography variant="h5">
-          <BackButton to="/add-experiment" />
+          <BackButton to={`${configuration.PREFIX}/add-experiment`} />
           { t('features.experiment.create.title') }
       </Typography>
       <Paper sx={{ width: 'auto', overflow: 'hidden', margin: 'auto' }}>

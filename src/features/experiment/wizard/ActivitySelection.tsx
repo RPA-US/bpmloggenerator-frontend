@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import { wizardSelector } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
+import configuration from "infrastructure/util/configuration";
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -37,7 +38,7 @@ const ExperimentAssist: React.FC = () => {
               <Button
                 variant="contained"
                 component={RouterLink}
-                to={`/column-variability/${variant}/${act}`}
+                to={`${configuration.PREFIX}/column-variability/${variant}/${act}`}
                 >
                 {t("features.wizard.activitySelection.activity")} {act}
               </Button>
@@ -63,7 +64,7 @@ const ExperimentAssist: React.FC = () => {
   return (
     <div>
       <Typography variant="h5">
-          <BackButton to="/add-experiment" />
+          <BackButton to={`${configuration.PREFIX}/add-experiment`} />
           { t('features.experiment.create.title') }
       </Typography>
       <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>

@@ -13,6 +13,7 @@ import { FunctionParamResponse, CategoryResponse, CategoryDTO, GUIComponentDTO, 
 import { getByID } from '../utils';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import Tooltip from '@mui/material/Tooltip';
+import configuration from "infrastructure/util/configuration";
 
 export interface IRandomColor {
     [name: string]: string[]
@@ -48,10 +49,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     //Status var to use
     let init_seed = { ...seed };
-    let redirect_at_end = '/column-variability/';
+    let redirect_at_end = configuration.PREFIX+'/column-variability/';
     if (variability_mode === 'scenario') {
         init_seed = { ...scenario_variability };
-        redirect_at_end = '/scenario-variability/';
+        redirect_at_end = configuration.PREFIX+'/scenario-variability/';
     }
     const [json_conf, setjJon_conf] = useState(init_seed);
 
@@ -406,7 +407,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }));
             }
         }
-        history.push(redirect_at_end + variant + '/' + act)
+        history.push(redirect_at_end + variant + configuration.PREFIX+'/' + act)
     }
 
     function onLoadImage() {
@@ -577,7 +578,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function confirmBack() {
         if (window.confirm(t('features.experiment.assist.back'))) {
-            history.push(redirect_at_end + variant + '/' + act)
+            history.push(redirect_at_end + variant + configuration.PREFIX+'/' + act)
         }
     }
 

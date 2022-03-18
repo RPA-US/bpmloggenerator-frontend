@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import DownloadIcon from '@mui/icons-material/Download';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-
+import configuration from "infrastructure/util/configuration";
 import { useHistory, useParams } from 'react-router-dom';
 import { ThemeContext } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
@@ -80,7 +80,7 @@ const ExperimentDetails: React.FC = () => {
   return (
     <>
       <Typography variant="h4">
-        <BackButton to="/" />
+        <BackButton to={`${configuration.PREFIX}/`} />
         { t('features.experiment.details.title') }
       </Typography>
 
@@ -104,9 +104,9 @@ const ExperimentDetails: React.FC = () => {
               setLoading(false);
               if(error == null){
                 if(status === "PRE_SAVED"){
-                  history.push('/case-variability');
+                  history.push(configuration.PREFIX+'/case-variability');
                 } else {
-                  history.push('/');
+                  history.push(configuration.PREFIX+'/');
                 }
               } else {
                 alert('unexpected error occurred');
