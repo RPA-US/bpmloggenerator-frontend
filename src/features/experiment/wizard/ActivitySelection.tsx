@@ -85,7 +85,7 @@ const ExperimentAssist: React.FC = () => {
         </Table>
         ))}
       </TableContainer>
-      <DownloadButton filename='case_variability_configuration' />
+      <DownloadButton filename='case_variability_configuration' scenario_variability_mode={false} />
     </Paper>
   </div>
   );
