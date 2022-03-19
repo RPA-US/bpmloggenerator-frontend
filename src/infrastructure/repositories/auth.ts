@@ -34,12 +34,12 @@ export default class AuthRepository {
     }
   }
 
-  async signup(email: string, password: string) {
+  async signup(email: string, password1: string, password2: string) {
     try {
       return await Http.post<AuthDTO>(Http.buildURL('/users/auth/register/'), {
         email,
-        password1: password,
-        password2: password
+        password1,
+        password2
       });
     } catch (error) {
       if (error instanceof Response) {

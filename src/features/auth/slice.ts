@@ -108,10 +108,10 @@ export const login = (loginData: any):AppThunk => async (dispatch: AppDispatch) 
 }
 
 export const signup = (loginData: any):AppThunk => async (dispatch: AppDispatch) => {
-  const { email, password } = loginData;
+  const { email, password1, password2 } = loginData;
   try {
     dispatch(setLoading(true))
-    const authResponse = await repository.signup(email, password);
+    const authResponse = await repository.signup(email, password1, password2);
     const userData = await repository.userData(authResponse.key);
     dispatch(setAuthSuccess({
       token: authResponse.key,

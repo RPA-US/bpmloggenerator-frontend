@@ -78,11 +78,11 @@ function App() {
                 ) :
                 (
                   <>
-                    <Typography variant="button" color="white" component="div">
-                      { currentUser?.email }
-                    </Typography>
+                    <Button component={ Link } to={`${configuration.PREFIX}/login`}>
+                      <Typography color="white">Login</Typography>
+                    </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/signup`}>
-                      <Typography color="white">Sign up<LoginIcon /></Typography>
+                      <Typography color="white">Sign up</Typography>
                     </Button>
                   </>
                 )

@@ -58,8 +58,10 @@
         "title": "Sign up",
         "email": "email",
         "password": "password",
+        "confirmpassword": "password confirmation",
         "errors": {
           "emailRequired": "Please enter a valid email",
+          "passwordConfirmation": "Passwords do not match",
           "passwordRequired": "Please enter a valid password."
         },
         "signup": "Sign up"
