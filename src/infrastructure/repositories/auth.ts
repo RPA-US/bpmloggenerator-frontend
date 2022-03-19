@@ -34,6 +34,25 @@ export default class AuthRepository {
     }
   }
 
+  async signup(email: string, password: string) {
+    try {
+      return await Http.post<AuthDTO>(Http.buildURL('/users/auth/register/'), {
+        email,
+        password1: password,
+        password2: password
+      });
+    } catch (error) {
+      if (error instanceof Response) {
+        if (error.status === 400) {
+          throw new AuthError('invalid.credentials', 'invalid user credentials')
+        }
+        throw new AuthError('unhandled', error.statusText);
+      }
+      console.error('error in AuthRepository.login', error);
+      throw error;
+    }
+  }
+
   async logout(token: string) {
     try {
       return await Http.post(Http.buildURL('/users/auth/logout/'), Http.authHeader(token));

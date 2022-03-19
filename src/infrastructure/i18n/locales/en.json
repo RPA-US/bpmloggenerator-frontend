@@ -1,5 +1,5 @@
 {
-  "genaral": {
+  "general": {
     "agosuirpa": {
       "label": "AGOSUIRPA",
       "tooltip": "AGOSUIRPA's platform is motivated by the difficulty of finding real logs to test on them. Due to the intrusive nature of keyloggers in terms of operator privacy and customer data involved in the business processes to be automated, companies cannot share this data with third parties without the express consent of those involved. Therefore, we developed a platform, which from a seed and some configuration parameters, allows us to generate logs of the dimension we want with their associated captures."
@@ -45,7 +45,7 @@
   "features": {
     "auth": {
       "login": {
-        "title": "login",
+        "title": "Login",
         "email": "email",
         "password": "password",
         "errors": {
@@ -53,6 +53,16 @@
           "passwordRequired": "Please enter a valid password."
         },
         "login": "Login"
+      },
+      "signup": {
+        "title": "Sign up",
+        "email": "email",
+        "password": "password",
+        "errors": {
+          "emailRequired": "Please enter a valid email",
+          "passwordRequired": "Please enter a valid password."
+        },
+        "signup": "Sign up"
       }
     },
     "wizard": {

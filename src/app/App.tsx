@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container'; 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/system';
 import configuration from "infrastructure/util/configuration";
@@ -16,7 +17,7 @@ import Toolbar from 'components/Toolbar';
 import Spacer from 'components/Spacer';
 
 import { history } from 'store/store';
-import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
+import { authSelector, updateRedirectPath, checkSession, logout, signup } from 'features/auth/slice';
 import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/List';
@@ -65,7 +66,7 @@ function App() {
               <Spacer />
               
               {
-                isAuth && (
+                isAuth ? (
                   <>
                     <Typography variant="button" color="white" component="div">
                       { currentUser?.email }
@@ -73,6 +74,16 @@ function App() {
                     <IconButton onClick={ () => dispatch(logout()) } aria-label="logout">
                       <Typography color="white"><LogoutIcon /></Typography>
                     </IconButton>
+                  </>
+                ) :
+                (
+                  <>
+                    <Typography variant="button" color="white" component="div">
+                      { currentUser?.email }
+                    </Typography>
+                    <Button component={ Link } to={`${configuration.PREFIX}/signup`}>
+                      <Typography color="white">Sign up<LoginIcon /></Typography>
+                    </Button>
                   </>
                 )
               }

@@ -107,6 +107,24 @@ export const login = (loginData: any):AppThunk => async (dispatch: AppDispatch) 
   }
 }
 
+export const signup = (loginData: any):AppThunk => async (dispatch: AppDispatch) => {
+  const { email, password } = loginData;
+  try {
+    dispatch(setLoading(true))
+    const authResponse = await repository.signup(email, password);
+    const userData = await repository.userData(authResponse.key);
+    dispatch(setAuthSuccess({
+      token: authResponse.key,
+      user: userDTOToUserType(userData),
+    }))
+  } catch (error) {
+    console.log('error', error);
+    dispatch(setAuthFailed(error as AuthError));
+  } finally {
+    dispatch(setLoading(false));
+  }
+}
+
 export const logout = (redirectPath?: string): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth } = getState();
   try {
