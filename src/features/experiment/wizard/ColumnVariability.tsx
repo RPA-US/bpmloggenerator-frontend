@@ -4,6 +4,7 @@ import { Button, Theme, Typography, Grid, CircularProgress } from '@mui/material
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
+import configuration from "infrastructure/util/configuration";
 import { wizardSelector, loadDataAndInitValues } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import LogForm from './LogForm';
@@ -23,7 +24,7 @@ const ColumnVariability: React.FC = () => {
   return (
       <div>
         <Typography variant="h5">
-          <BackButton to="/case-variability" />
+          <BackButton to={`${configuration.PREFIX}/case-variability`} />
           {t('features.wizard.activitySelection.variant')} {variant} / {t('features.wizard.activitySelection.activity')} {act}
         </Typography>
         {isLoading ?

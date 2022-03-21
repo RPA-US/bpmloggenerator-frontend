@@ -12,6 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import configuration from "infrastructure/util/configuration";
 import { wizardSelector, updateVariateValue, wizardSlice } from 'features/experiment/wizard/slice';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
@@ -225,7 +226,7 @@ const LogForm: React.FC = () => {
               disabled={log_column[1].variate !== 1}
               variant="contained"
               component={RouterLink}
-              to={`/get-gui-component-coordinates/case/${variant}/${act}/${log_column[1].initValue}`}
+              to={`${configuration.PREFIX}/get-gui-component-coordinates/case/${variant}/${act}/${log_column[1].initValue}`}
             >
               {t("features.wizard.columnVariability.screenshotVariability")}
             </Button> :

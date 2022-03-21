@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { experimentsSelector, loadExperiments } from 'features/experiment/slice';
 import { Link as RouterLink } from 'react-router-dom';
-
+import configuration from "infrastructure/util/configuration";
 import { Button, Card, CardActions, CardContent, CircularProgress, Grid, LinearProgress, Theme, Typography } from '@mui/material';
 import { ThemeContext } from '@emotion/react';import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +55,7 @@ const ExperimentsList: React.FC = () => {
         <Button 
           variant="contained"
           component={ RouterLink }
-          to="/add-experiment"
+          to={`${configuration.PREFIX}/add-experiment`}
         >{ t('features.experiment.list.add') }</Button>
       </FlexDiv>
       <Grid container spacing={ 4 }>
@@ -64,12 +64,12 @@ const ExperimentsList: React.FC = () => {
               <Grid key={i} item xs={ 12 } sm={ 6 } lg={ 4 }>
                 <Card style={{ minHeight: 155 }}>
                   <CardContent>
-                    <Button color='primary' variant="text" to={`/experiment/${experiment.id}`} component={RouterLink}>
+                    <Button color='primary' variant="text" to={`${configuration.PREFIX}/experiment/${experiment.id}`} component={RouterLink}>
                       <Typography variant='h6'>{ experiment.name }</Typography>
                     </Button>
                     <br />
                     <Typography variant="caption" color="gray" style={{ paddingLeft: theme.spacing(1) }}>
-                    { t('commons:datetime', { val: experiment.state === ExperimentState.CREATED ? experiment.executionEnd : experiment.lastEditionDate }) }
+                    { t('commons:datetime', { val: experiment.state === ExperimentState.CREATED ? experiment.executionEnd : (experiment.lastEditionDate===new Date())?experiment.lastEditionDate:experiment.creationDate }) }
                     </Typography>
                   </CardContent>
                   <CardActions>

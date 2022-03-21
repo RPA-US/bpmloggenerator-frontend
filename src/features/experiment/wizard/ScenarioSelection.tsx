@@ -14,13 +14,16 @@ import Paper from '@mui/material/Paper';
 import { wizardSelector } from 'features/experiment/wizard/slice';
 import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
+import configuration from "infrastructure/util/configuration";
+import { experimentsSelector } from 'features/experiment/slice';
 
 
 const ScenarioSelection: React.FC = () => {
   const { t } = useTranslation();
   const { scenario_variability } = useSelector(wizardSelector);
   const screenshot_column_name = "Screenshot"; // TODO: generalize
-  
+  const { detail } = useSelector(experimentsSelector);
+
   const variantActivities = (entry: any) => {
     let variant = entry[0];
     let acts = entry[1];
@@ -38,7 +41,7 @@ const ScenarioSelection: React.FC = () => {
                   disabled={scenario_variability[variant][act][screenshot_column_name].variate === 1}
                   variant="contained"
                   component={RouterLink}
-                  to={`/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
+                  to={`${configuration.PREFIX}/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
                 >
                 {t("features.wizard.columnVariability.screenshotVariability")}
               </Button>
@@ -49,7 +52,7 @@ const ScenarioSelection: React.FC = () => {
   return (
     <div>
       <Typography variant="h5">
-          <BackButton to="/add-experiment" />
+          <BackButton to={(detail!==null)?`${configuration.PREFIX}/experiment/${detail.id}`:`${configuration.PREFIX}/`} />
           { t('features.experiment.create.title') }
       </Typography>
       <Paper sx={{ width: 'auto', overflow: 'hidden', margin: 'auto' }}>

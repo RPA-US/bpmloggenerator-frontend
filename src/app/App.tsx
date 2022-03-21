@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/system';
+import configuration from "infrastructure/util/configuration";
 
 import Toolbar from 'components/Toolbar';
 import Spacer from 'components/Spacer';
@@ -43,7 +44,7 @@ function App() {
 
   const defaultProtectedRouteProps = {
     auth: isAuth,
-    authPath: '/login',
+    authPath: configuration.PREFIX+'/login',
     redirectPath,
     setRedirectPath: (path: string) => dispatch(updateRedirectPath(path)),
   }
@@ -56,7 +57,7 @@ function App() {
         <ThemeProvider theme={ Theme }>
             <CssBaseline />
             <Toolbar>
-              <Button variant="text" component={ Link } to="/">
+              <Button variant="text" component={ Link } to={`${configuration.PREFIX}/`}>
                 <Typography variant="h6" color="white" component="div" sx={{ flexGrow: 1 }} >
                   { t('commons:projectName') }
                 </Typography>
@@ -79,16 +80,16 @@ function App() {
 
             { checked && (<StyledContainer maxWidth="xl">
               <Switch>
-                <Route exact component={ Login } path="/login" />
-                <Route exact component={ Signup } path="/signup" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path="/add-experiment" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path="/experiment/:id" />
-                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path="/experiment/download/:id" /> */}
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path="/case-variability" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path="/get-gui-component-coordinates/:variability_mode/:variant/:act/:screenshot_filename" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ColumnVariability } path="/column-variability/:variant/:act" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ScenarioSelection } path="/scenario-variability" />
-                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path="/" />
+                <Route exact component={ Login } path={`${configuration.PREFIX}/login`} />
+                <Route exact component={ Signup } path={`${configuration.PREFIX}/signup`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path={`${configuration.PREFIX}/add-experiment`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path={`${configuration.PREFIX}/experiment/:id`} />
+                {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path=`${configuration.PREFIX}/experiment/download/:id" /> */}
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentAssist } path={`${configuration.PREFIX}/case-variability`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path={`${configuration.PREFIX}/get-gui-component-coordinates/:variability_mode/:variant/:act/:screenshot_filename`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ColumnVariability } path={`${configuration.PREFIX}/column-variability/:variant/:act`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ScenarioSelection } path={`${configuration.PREFIX}/scenario-variability`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path={`${configuration.PREFIX}/`} />
               </Switch>
             </StyledContainer>) }
         </ThemeProvider>

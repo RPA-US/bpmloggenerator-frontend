@@ -4,6 +4,7 @@ import { User } from 'features/user/types';
 import { AuthError, AuthState } from './types';
 import AuthRepository from 'infrastructure/repositories/auth';
 import { UserDTO } from 'infrastructure/http/dto/auth';
+import configuration from "infrastructure/util/configuration";
 
 export const SESSION_TOKEN_ITEM = "agosuirpa.auth";
 
@@ -15,7 +16,7 @@ const initialState: AuthState = {
   isAuth: false,
   isLoading: false,
   checked: false,
-  redirectPath: '/',
+  redirectPath: configuration.PREFIX+'/',
   token: localStorage.getItem(SESSION_TOKEN_ITEM),
   error: null
 }
@@ -111,7 +112,7 @@ export const logout = (redirectPath?: string): AppThunk => async (dispatch: AppD
   try {
     dispatch(setLoading(true))
     await repository.logout(auth.token ?? '');
-    dispatch(setRedirectPath(redirectPath || '/'))
+    dispatch(setRedirectPath(redirectPath || configuration.PREFIX+'/'))
     dispatch(setLogOut())
   } catch (error) {
     dispatch(setAuthFailed(error as AuthError));
