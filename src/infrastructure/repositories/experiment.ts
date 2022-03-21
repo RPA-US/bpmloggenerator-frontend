@@ -44,10 +44,9 @@ export default class ExperimentRepository {
       const response = await Http.request('GET', Http.buildURL(`/experiments/download/${id}/`), {
         ...Http.authHeader(token)
       });
-
       const { headers } = response;
-      const contentDisposition = headers.get('Content-Disposition');
-      let filename = 'file.zip';
+      const contentDisposition = headers.get('content-disposition');
+      let filename = `experiment_${id}.zip`;
       if (contentDisposition != null) {
         filename = contentDisposition.replace(/.*filename=\"(.*)\"$/i, '$1')
       }

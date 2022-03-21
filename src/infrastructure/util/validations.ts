@@ -5,6 +5,9 @@ export default class Validations {
   }
 
   static isPositiveInteger(str: string) {
+    if (str === '') {
+      return false;
+    }
     const num = Number(str);
     if (Number.isInteger(num) && num >= 0) {
       return true;

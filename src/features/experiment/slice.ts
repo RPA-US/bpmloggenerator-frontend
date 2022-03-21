@@ -119,8 +119,8 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   experimentData.delete('seedLog');
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
+    const savedExperimentData = await experimentRepository.get(experimentResponse.id || experimentData.get("id"), auth.token ?? '');
     if (!hasPreviousId && experimentResponse.id != null) {
-      const savedExperimentData = await experimentRepository.get(experimentResponse.id, auth.token ?? '');
       if(experimentResponse.status === "PRE_SAVED") {
         const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
         dispatch(
@@ -138,7 +138,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
         }));
       } 
     } else {
-      dispatch(setExperimentInList(experimentDTOToExperimentType(experimentData)));
+      dispatch(setExperimentInList(experimentDTOToExperimentType(savedExperimentData)));
     }
     actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {

@@ -160,18 +160,36 @@ const ExperimentDetails: React.FC = () => {
             </Grid>
             
             <Typography variant="subtitle2" style={{ marginTop: theme.spacing(2) }}>{ t('features.experiment.details.description') }</Typography>
-            { experiment.description != null && (<Typography variant="body1" style={{ marginTop: theme.spacing(2) }}>{ experiment.description }</Typography>) }
-            
-            <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(3) }}>
-              <Grid item style={{ marginTop: theme.spacing(3) }}>
-                <FileBox component="span" sx={{ p: 2 }}>
-                  <Button
-                    startIcon={ <AttachFileIcon /> }
-                    onClick={ () => downloadJson('scenarios_conf.json', experiment.scenariosConf)}
-                  >{ t('features.experiment.details.scenarios') }</Button>
-                </FileBox>
+            { experiment.description != null && 
+              (<Typography variant="body1" 
+                style={{
+                  marginTop: theme.spacing(1),
+                  padding: theme.spacing(2),
+                  backgroundColor: theme.palette.grey['200'] 
+                }}>
+                  { experiment.description ?? t('features.experiment.details.noDescription') }
+                </Typography>) 
+            }
+
+            { /*<Grid container spacing={ 3 }>
+              <Grid item> 
+              { t('features.experiment.details.sizeBalance') }
               </Grid>
-              <Grid item style={{ marginTop: theme.spacing(3) }}>
+            </Grid>*/
+            }
+            
+            <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(1) }}>
+              { (experiment.numberScenarios ?? 0) > 0  && 
+                (<Grid item style={{ marginTop: theme.spacing(1) }}>
+                  <FileBox component="span" sx={{ p: 2 }}>
+                    <Button
+                      startIcon={ <AttachFileIcon /> }
+                      onClick={ () => downloadJson('scenarios_conf.json', experiment.scenariosConf)}
+                    >{ t('features.experiment.details.scenarios') }</Button>
+                  </FileBox>
+                </Grid>)
+              }
+              <Grid item style={{ marginTop: theme.spacing(1) }}>
                 <FileBox component="span" sx={{ p: 2 }}>
                   <Button
                     startIcon={ <AttachFileIcon /> }
@@ -179,13 +197,13 @@ const ExperimentDetails: React.FC = () => {
                   >{ t('features.experiment.details.variabilityConf') }</Button>
                 </FileBox>
               </Grid>
-              <Grid item style={{ marginTop: theme.spacing(3) }}>
+              { /*<Grid item style={{ marginTop: theme.spacing(1) }}>
                 <FileBox component="span" sx={{ p: 2 }}>
                   <Button
                     startIcon={ <AttachFileIcon /> }
                   >{ t('features.experiment.details.screenshots') }</Button>
                 </FileBox>              
-              </Grid>
+            </Grid>*/ }
             </Grid>
 
           </CardContent>

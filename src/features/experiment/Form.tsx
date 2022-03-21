@@ -66,7 +66,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   }, [watchNumberScenarios])
 
   const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || getValues('screenshots').length == 0;
-  const scenariosConfDisabled = getValues('number_scenarios') == 0;
+  const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
 
   const validateForm = (data: any, submitter: string) => {
     let valid = true;
@@ -76,7 +76,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
     if (submitter === 'generate') {
       // if (fileContents.seedLog == null) setError({ type: 'required', message: t('features.experiment.form.errors.seedLogRequired') as string });
-      if ((data.screenshots == null || data.screenshots.length < 1) && initialValues.screenshotsPath == null) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
+      if ((data.screenshots == null || data.screenshots.length < 1) && (initialValues.screenshotsPath == null || initialValues.screenshotsPath === '')) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
       if (fileContents.variability_conf == null && initialValues.variabilityConf == null) setFormError('variability_conf', { type: 'required', message: t('features.experiment.form.errors.variabilityRequired') as string });
       if (Validations.isPositiveInteger(data.number_scenarios) && data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
       if (!Validations.isPositiveInteger(data.number_scenarios)) setFormError('number_scenarios', { type: 'required', message: t('features.experiment.form.errors.scenariosNumberRequired') as string });
@@ -97,7 +97,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
   const formSubmit = (data: any, event: any) => {
     const buttonName = event.nativeEvent.submitter.name;
-    console.log('validating form for submitter', buttonName);
     
     if (!validateForm(data, buttonName)) {
       return false;

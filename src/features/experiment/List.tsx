@@ -89,7 +89,7 @@ const ExperimentsList: React.FC = () => {
             : ( !isLoading && (<Grid item xs={ 12 }>{ t('features.experiment.list.empty') }</Grid>))
         }
 
-        <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3) }}>
+        <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3), marginBottom: theme.spacing(3) }}>
           { isLoading 
             ? (<CircularProgress color="secondary" />) 
             : (experiments.length > 0 && pagination.hasNext && (
