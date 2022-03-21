@@ -172,7 +172,7 @@
           "mouse_position_range_y": "Genera una posición aleatoria del raton dentro para el eje Y. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen en la coordenada Y (1 coordenada), y la altura del area de la UI",
           "mouse_or_keyboard": "Genera un 0 o un 1 en el log indicando si la entrada es de ratón o de teclado",
           "replace_gui_component_by_other": "Reemplaza un componente GUI por otro seleccionado",
-          "given_text_in_image": "Inserta un texto en la imagen. Los parámetros son: texto a insertar, y la configuración de la fuente",
+          "given_text_in_image": "Inserta en la imagen el texto que haya en la columna del log con el mismo nombre que el componente GUI. Ejemplo: el texto de la columna Texto se inserta el la localización del componente visual texto. El parámetro es: la configuración de la fuente",
           "hidden_gui_element": "Oculta un elemento visual con un color plano. Necesita el color en hexadecimal empezado con #",
           "replace_gui_element_various_places": "Reemplaza un GUI component por otro en múltiples lugares. Actualmente sin uso",
           "screenshot_name_without_root_path": "Genera una copia de la imagen renombrada para el log y devuelve sin ruta relativa",

@@ -195,7 +195,7 @@
           "mouse_position_range_y": "Generate a random mouse position for y coordinate. The params are: the down-left position of the screenshot position, the resolution image for y exe, and the height of the element",
           "mouse_or_keyboard": "Generate a 0 or 1 in the mouse or keyboard entry of the log",
           "replace_gui_component_by_other": "Replace a gui component by another selected",
-          "given_text_in_image": "Insert a text in an image. The params are: the text and the font configuration",
+          "given_text_in_image": "Inserts in the image the text in the log column with the same name as the GUI component. Example: the text in the 'Tex't' column is inserted at the location of the visual component 'Text'. The param is: the font configuration",
           "hidden_gui_element": "Hides a gui element with a colour. Needs the hexadecimal colour starting with # as input.",
           "replace_gui_element_various_places": "Replace a gui component by another selected in múltiple places. Actually without using",
           "screenshot_name_without_root_path": "Generate a copy of the image renamed for the log and return without relative path",
