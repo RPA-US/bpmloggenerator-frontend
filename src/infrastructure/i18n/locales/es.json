@@ -1,5 +1,5 @@
 {
-  "genaral": {
+  "general": {
       "agosuirpa": {
           "label": "AGOSUIRPA",
           "tooltip": "La plataforma de AGOSUIRPA viene motivada por la dificultad de encontrar logs reales para realizar pruebas sobre ellos. Debido a lo intrusivo que llegan a ser los keyloggers a nivel de privacidad de los operadores y de los datos de los clientes que se ven involucrados dentro de los procesos de negocio a automatizar, las empresas no pueden compartir estos datos con terceros sin el consentimiento expreso de los involucrados. Por tanto, desarrollamos una plataforma, que a partir de una semilla y unos parámetros de configuración, nos permita generar logs de la dimensión que queramos con sus capturas asociadas."
@@ -48,10 +48,20 @@
         "email": "email",
         "password": "contraseña",
         "errors": {
-          "emailRequired": "Por favor introduzca un eCorreo válido",
+          "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida"
         },
         "login": "Iniciar sesión"
+      },
+      "signup": {
+        "title": "Registro",
+        "email": "email",
+        "password": "contraseña",
+        "errors": {
+          "emailRequired": "Por favor introduzca un correo válido",
+          "passwordRequired": "Por favor introduzca una contraseña válida"
+        },
+        "signup": "Registro"
       }
     },
     "experiment": {
