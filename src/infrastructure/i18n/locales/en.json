@@ -50,7 +50,8 @@
         "password": "password",
         "errors": {
           "emailRequired": "Please enter a valid email",
-          "passwordRequired": "Please enter a valid password."
+          "passwordRequired": "Please enter a valid password",
+          "invalidCredentials": "Email o contraseña incorrectas"
         },
         "login": "Login"
       },
@@ -88,6 +89,7 @@
     },
     "experiment": {
       "list": {
+        "empty": "Without experiments",
         "title": "Experiment list",
         "add": "Add new experiment",
         "name": "name",
@@ -232,7 +234,7 @@
           "label": "Inserte el listado de parámetros necesatios para la función",
           "placeholder": "Texto, texto...",
           "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
-       }
+        }
       },
       "GUI_components": {
         "name": {
@@ -496,7 +498,6 @@
           "photo": "A photo of a person from a public database to show in the interfaz. This is one of differents photos",
           "alert": "Alert icon to use in the interfaz. This is one of differents alert icons",
           "crm": "CRM icon to use in the interfaz. This is one of differents CRM icons"
-
         }
       },
       "assist": {
@@ -538,7 +539,17 @@
         "title": "Automatic GUI log generation"
       },
       "details": {
-        "title": "Experiment Details"
+        "description": "Description:",
+        "createdAt": "Created at {{ val, datetime }}",
+        "modifiedAt": "Last edit {{ val, datetime }}",
+        "executionStart": "Execution finished:",
+        "executionEnd": "Execution started:",
+        "scenariosNumber": "Number scenarios: {{ val }}",
+        "state": "Estado: {{ val }}",
+        "screenshotNameGenerationFunction": "Function generation: {{ val }}",
+        "title": "Experiment Details",
+        "scenarios": "Download scenario conf",
+        "variabilityConf": "Download variability conf"
       },
       "form": {
         "save": "Save",

@@ -1,45 +1,46 @@
 {
   "general": {
-      "agosuirpa": {
-          "label": "AGOSUIRPA",
-          "tooltip": "La plataforma de AGOSUIRPA viene motivada por la dificultad de encontrar logs reales para realizar pruebas sobre ellos. Debido a lo intrusivo que llegan a ser los keyloggers a nivel de privacidad de los operadores y de los datos de los clientes que se ven involucrados dentro de los procesos de negocio a automatizar, las empresas no pueden compartir estos datos con terceros sin el consentimiento expreso de los involucrados. Por tanto, desarrollamos una plataforma, que a partir de una semilla y unos parámetros de configuración, nos permita generar logs de la dimensión que queramos con sus capturas asociadas."
-      },
-      "log": {
-          "label": "UI log",
-          "tooltip": "Un UI log es un archivo XML cuya gramática permite expresar logs de eventos en Process Mining. Esta extensión incorpora: los atributos estándar del concepto, nombre de la aplicación, tipo de evento (es decir, clic de ratón o pulsación de tecla), tipo de click (es decir, izquierda, derecha o centro), coordenadas del click (es decir, posición del ratón en la pantalla) y keystroke (es decir, las teclas que se escriben)."
-      },
-      "seed": {
-          "label": "Semilla",
-          "tooltip": "Una semilla se corresponde con un log pequeño, que tiene un caso por cada variante del log que queremos generar. Y obviamente las capturas asociadas a las actividades de dichos casos."
-      },
-      "activity": {
-          "label": "Actividad",
-          "tooltip": "Se corresponden con un conjunto de tareas o acciones cuya secuencia da lugar a un proceso. Por ejemplo: abrir un email, registrar a un usuario en un CRM, etc."
-      },
-      "variant": {
-          "label": "Variante",
-          "tooltip": "Una variante de proceso es una secuencia de actividades de proceso con un evento de inicio y un evento final. Cada variante difiere de las demás por al menos una actividad."
-      },
-      "case": {
-          "label": "Caso",
-          "tooltip": "Describe un caso de negocio que se ejecuta a través de una variante de proceso particular. Por lo tanto, es la imagen de exactamente un ciclo del proceso."
-      },
-      "scenario": {
-          "label": "Escenario",
-          "tooltip": "Un escenario se corresponde con el ecosistema de las distintas aplicaciones que va a utilizar un usuario durante el proceso. Cuando nos referimos a la variabilidad a nivel de escenario, hacemos referencia a que variaremos los componentes GUI relativos al look and feel de las distintas aplicaciones que aparezcan en las capturas del proceso. Usando las capturas de la semilla y variándolas para los X escenarios distintos que se quieran obtener. Esas variaciones se llevarán a cabo una vez y se generarán como resultado X semillas con look and feels distintos."
-      },
-      "experiment": {
-         "label": "Experimento",
-         "tooltip": "Un experimento estará formado por una semilla (seed), una configuración donde indicaremos el tamaño de los logs y cómo queremos que se generen los logs imbalanceados, una configuración de variabilidad a nivel de caso y opcionalmente, la variabilidad a nivel de escenario. Los experimentos serán el núcleo de nuestro sistema. Lanzaremos un experimento cada vez que queramos generar una serie de logs asociados a un proceso. Es decir, teniendo claro el proceso sobre el que queremos obtener logs sintéticos, definiendo el experimento, podremos obtener los UI logs y las capturas asociadas a ese proceso, con el número de filas indicados en el tamaño y el desbalancedo indicado en los porcentajes para logs imbalanceados."
-      },
-      "balance":{
-          "label": "Balanceo",
-          "tooltip": "El balanceo que tendrá cada variante, por ejemplo, unos valores como  [0.4,0.6], indica que el 40% de casos son de la V1 y 60% de casos de la V2."
-      }
+    "agosuirpa": {
+      "label": "AGOSUIRPA",
+      "tooltip": "La plataforma de AGOSUIRPA viene motivada por la dificultad de encontrar logs reales para realizar pruebas sobre ellos. Debido a lo intrusivo que llegan a ser los keyloggers a nivel de privacidad de los operadores y de los datos de los clientes que se ven involucrados dentro de los procesos de negocio a automatizar, las empresas no pueden compartir estos datos con terceros sin el consentimiento expreso de los involucrados. Por tanto, desarrollamos una plataforma, que a partir de una semilla y unos parámetros de configuración, nos permita generar logs de la dimensión que queramos con sus capturas asociadas."
+    },
+    "log": {
+      "label": "UI log",
+      "tooltip": "Un UI log es un archivo XML cuya gramática permite expresar logs de eventos en Process Mining. Esta extensión incorpora: los atributos estándar del concepto, nombre de la aplicación, tipo de evento (es decir, clic de ratón o pulsación de tecla), tipo de click (es decir, izquierda, derecha o centro), coordenadas del click (es decir, posición del ratón en la pantalla) y keystroke (es decir, las teclas que se escriben)."
+    },
+    "seed": {
+      "label": "Semilla",
+      "tooltip": "Una semilla se corresponde con un log pequeño, que tiene un caso por cada variante del log que queremos generar. Y obviamente las capturas asociadas a las actividades de dichos casos."
+    },
+    "activity": {
+      "label": "Actividad",
+      "tooltip": "Se corresponden con un conjunto de tareas o acciones cuya secuencia da lugar a un proceso. Por ejemplo: abrir un email, registrar a un usuario en un CRM, etc."
+    },
+    "variant": {
+      "label": "Variante",
+      "tooltip": "Una variante de proceso es una secuencia de actividades de proceso con un evento de inicio y un evento final. Cada variante difiere de las demás por al menos una actividad."
+    },
+    "case": {
+      "label": "Caso",
+      "tooltip": "Describe un caso de negocio que se ejecuta a través de una variante de proceso particular. Por lo tanto, es la imagen de exactamente un ciclo del proceso."
+    },
+    "scenario": {
+      "label": "Escenario",
+      "tooltip": "Un escenario se corresponde con el ecosistema de las distintas aplicaciones que va a utilizar un usuario durante el proceso. Cuando nos referimos a la variabilidad a nivel de escenario, hacemos referencia a que variaremos los componentes GUI relativos al look and feel de las distintas aplicaciones que aparezcan en las capturas del proceso. Usando las capturas de la semilla y variándolas para los X escenarios distintos que se quieran obtener. Esas variaciones se llevarán a cabo una vez y se generarán como resultado X semillas con look and feels distintos."
+    },
+    "experiment": {
+      "label": "Experimento",
+      "tooltip": "Un experimento estará formado por una semilla (seed), una configuración donde indicaremos el tamaño de los logs y cómo queremos que se generen los logs imbalanceados, una configuración de variabilidad a nivel de caso y opcionalmente, la variabilidad a nivel de escenario. Los experimentos serán el núcleo de nuestro sistema. Lanzaremos un experimento cada vez que queramos generar una serie de logs asociados a un proceso. Es decir, teniendo claro el proceso sobre el que queremos obtener logs sintéticos, definiendo el experimento, podremos obtener los UI logs y las capturas asociadas a ese proceso, con el número de filas indicados en el tamaño y el desbalancedo indicado en los porcentajes para logs imbalanceados."
+    },
+    "balance": {
+      "label": "Balanceo",
+      "tooltip": "El balanceo que tendrá cada variante, por ejemplo, unos valores como  [0.4,0.6], indica que el 40% de casos son de la V1 y 60% de casos de la V2."
+    }
   },
   "input": {
     "attach": "Seleccione el fichero",
-    "addRow": "Añadir"
+    "addRow": "Añadir",
+    "next": "Save and go back"
   },
   "features": {
     "auth": {
@@ -49,7 +50,8 @@
         "password": "contraseña",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
-          "passwordRequired": "Por favor introduzca una contraseña válida"
+          "passwordRequired": "Por favor introduzca una contraseña válida",
+          "invalidCredentials": "Email o contraseña incorrectas"
         },
         "login": "Iniciar sesión"
       },
@@ -57,15 +59,37 @@
         "title": "Registro",
         "email": "email",
         "password": "contraseña",
+        "confirmpassword": "Confirme contraseña",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
-          "passwordRequired": "Por favor introduzca una contraseña válida"
+          "passwordRequired": "Por favor introduzca una contraseña válida",
+          "passwordConfirmation": "Las contraseñas no coinciden"
         },
         "signup": "Registro"
       }
     },
+    "wizard": {
+      "activitySelection": {
+        "variant": "Variante",
+        "variate": "Configuración de variabilidad",
+        "activity": "Actividad"
+      },
+      "columnVariability": {
+        "variate": "Variate",
+        "screenshot_name_function": "Función de renombrar captura",
+        "columnName": "Nombre de la columna",
+        "variabilityFunction": "Función de variabilidad",
+        "variabilityParams": "Parámetros",
+        "screenshotVariability": "Variabilidad de captura",
+        "variability_function_label": "Variability Function",
+        "function_param_label": "Parámetros de función",
+        "configureParams": "Configurar parámentros",
+        "paramModalTitle": "Configurar parámetros"
+      }
+    },
     "experiment": {
       "list": {
+        "empty": "Sin experimentos",
         "title": "Lista de experimentos",
         "add": "Añadir nuevo experimento",
         "name": "Nombre",
@@ -74,7 +98,7 @@
         "downloadResults": "Descargar resultados",
         "viewMore": "Ver más"
       },
-      "function_category":{
+      "function_category": {
         "name": {
           "app": "Aplicación",
           "list": "Listas",
@@ -90,7 +114,7 @@
           "screenshot_rename": "Funciones de variabilidad de renombrado de capturas"
         }
       },
-      "GUI_category":{
+      "GUI_category": {
         "name": {
           "Button": "Botón",
           "ImageView": "Elemento visual",
@@ -184,7 +208,7 @@
           "image_copy_renamed_and_return_path": "Genera una copia de la imagen renombrada para el log y devuelve toda la ruta relativa"
         }
       },
-      "function_params":{
+      "function_params": {
         "text_input": {
           "label": "Inserta texto",
           "placeholder": "Texto",
@@ -204,14 +228,14 @@
           "label": "Selecciona tipo, tamaño y color de la fuente",
           "placeholder": "Componente GUI",
           "description": "Selecciona los componentes GUI a usar en por la función"
-       },
-       "list_input": {
-         "label": "Inserte el listado de parámetros necesatios para la función",
-         "placeholder": "Texto, texto...",
-         "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
-      }
+        },
+        "list_input": {
+          "label": "Inserte el listado de parámetros necesatios para la función",
+          "placeholder": "Texto, texto...",
+          "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
+        }
       },
-      "GUI_components":{
+      "GUI_components": {
         "name": {
           "id_card_1": "DNI 1",
           "id_card_2": "DNI 2",
@@ -260,7 +284,7 @@
           "trash_4": "Basura 4",
           "trash_5": "Basura 5",
           "trash_6": "Basura 6",
-          
+
           "mail_1": "Correo 1",
           "mail_2": "Correo 2",
           "mail_3": "Correo 3",
@@ -452,7 +476,7 @@
           "crm_8": "CRM 8",
           "crm_9": "CRM 9"
 
-  },
+        },
         "description": {
           "id_card": "Ejemplo de un documento de identificación español. Este es uno de los diferentes DNIs",
           "delete": "Borrarbutton to use in the interfaz. This is one of differents buttons",
@@ -475,8 +499,8 @@
           "crm": "Icono de acceso al CRM para usar en la interfaz. Este es uno de los diferentes iconos de CRM que hay"
         }
       },
-      "assist":{
-        "empty" : "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
+      "assist": {
+        "empty": "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
         "download": "Descargar",
         "download_next": "Finalizar",
         "download_confirmation": "Descargaras el Json de configuración y no podrás seguir configurando esta actividad ¿Está seguro?",
@@ -492,11 +516,11 @@
           "font_size": "Tamaño de letra",
           "font_type": "Tipografía"
         },
-        "title":{
+        "title": {
           "elementselector": "Seleccione los elementos sobre los que operar de la imagen"
         },
         "back": "Al volver se perderán los cambios realizados en la captura. ¿Está seguro?",
-        "coordinates":{
+        "coordinates": {
           "coordinates": "Coordenadas",
           "topleft": "Coordenada superior izquierda",
           "rightbot": "Coordenada inferior derecha"
@@ -579,7 +603,10 @@
         "executionEnd": "Ejecución finalizada:",
         "scenariosNumber": "Número de escenarios: {{ val }}",
         "state": "Estado: {{ val }}",
-        "screenshotNameGenerationFunction": "Función generadora: {{ val }}"
+        "screenshotNameGenerationFunction": "Función generadora: {{ val }}",
+        "title": "Detalles del experimento",
+        "scenarios": "Descargar configuración de escenario",
+        "variabilityConf": "Descargar configuración de variabilidad"
       }
     }
   }
