@@ -48,8 +48,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
   const [fileContents, setFileContents]: [ any, React.Dispatch<React.SetStateAction<any>> ] = useState({});
 
-  console.log('initial values', initialValues);
-
   const seedLogField = register('seedLog');
   const screenshotsField = register('screenshots');
   const variabilityField = register('variability_conf');
@@ -64,6 +62,19 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       delete fileContents.scenarios_conf;
     }
   }, [watchNumberScenarios])
+
+  useEffect(() => {
+    if (initialValues.scenariosConf != null) {
+      setFileContents({
+        scenarios_conf: JSON.stringify(initialValues.scenariosConf)
+      })
+    }
+    if (initialValues.variabilityConf != null) {
+      setFileContents({
+        variability_conf: JSON.stringify(initialValues.variabilityConf)
+      })
+    }
+  }, [ initialValues ])
 
   const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
   const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
