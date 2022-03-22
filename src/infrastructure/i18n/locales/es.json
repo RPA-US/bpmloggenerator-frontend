@@ -51,7 +51,7 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "invalidCredentials": "Email o contraseña incorrectas"
+          "invalidcredentials": "Email o contraseña incorrectas"
         },
         "login": "Iniciar sesión"
       },
@@ -63,7 +63,8 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "passwordConfirmation": "Las contraseñas no coinciden"
+          "passwordConfirmation": "Las contraseñas no coinciden",
+          "invalidcredentials": "Email o contraseña no válido"
         },
         "signup": "Registro"
       }
@@ -135,17 +136,17 @@
         },
         "description": {
           "Button": "Categoría de la GUI para cambiar botones en la captura de pantalla",
-          "ImageView": "Categoría de la GUI para cambiar un elemento visual en la captura de pantalla",
+          "ImageView": "Categoría de la GUI para cambiar un elemento visual en la captura de pantalla, reutilizando el contenido de la columns de log con el mismo nombre",
           "Checkbox": "Categoría de la GUI para cambiar una casilla de selección en la captura de pantalla",
-          "TextInput": "Categoría de la GUI para cambiar una entrada de texto o númería en la captura de pantalla",
+          "TextInput": "Categoría de la GUI para cambiar una entrada de texto o número en la captura de pantalla",
           "TextView": "Categoría de la GUI para cambiar un texto mostrado en la captura de pantalla",
-          "ImageButton": "Categoría de la GUI para cambiar una entrada de texto o númería en la captura de pantalla",
+          "ImageButton": "Categoría de la GUI para cambiar una entrada de texto o número en la captura de pantalla",
           "EditText": "Categoría de la GUI para cambiar una edición de texto en la captura de pantalla",
           "CheckedTextView": "Categoría de la GUI para cambiar un check en un texto en la captura de pantalla",
           "RadioButton": "Categoría de la GUI para cambiar una casilla de selección circular en la captura de pantalla",
           "ProgressBar": "Categoría de la GUI para cambiar una barra de progreso en la captura de pantalla",
           "SeekBar": "Categoría de la GUI para cambiar una entrada de búsqueda en la captura de pantalla",
-          "NumberPicker": "Categoría de la GUI para cambiar una entrada númería en la captura de pantalla",
+          "NumberPicker": "Categoría de la GUI para cambiar una entrada número en la captura de pantalla",
           "Switch": "Categoría de la GUI para cambiar un boton de cambio deslizante en la captura de pantalla",
           "ToggleButton": "Categoría de la GUI para cambiar un botón de activación en la captura de pantalla",
           "RatingBar": "Categoría de la GUI para cambiar una entrada de valoración en la captura de pantalla",

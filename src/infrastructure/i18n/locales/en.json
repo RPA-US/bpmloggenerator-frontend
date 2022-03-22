@@ -51,7 +51,7 @@
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordRequired": "Please enter a valid password",
-          "invalidCredentials": "Email o contraseña incorrectas"
+          "invalidCredentials": "Email or password incorrect"
         },
         "login": "Login"
       },
@@ -63,7 +63,8 @@
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordConfirmation": "Passwords do not match",
-          "passwordRequired": "Please enter a valid password."
+          "passwordRequired": "Please enter a valid password.",
+          "invalidcredentials": "Email or password not valid"
         },
         "signup": "Sign up"
       }
@@ -138,7 +139,7 @@
           "Button": "GUI category of a button to be change in the screenshot",
           "ImageView": "GUI category of an screenshot element to be change in the screenshot",
           "Checkbox": "GUI category of a checkbox to be change in the screenshot",
-          "TextInput": "GUI category of a text input to be change in the screenshot",
+          "TextInput": "GUI category of a text input to be change in the screenshot, with the content of the log column with the same name",
           "TextView": "GUI category of a text showed in view to be change in the screenshot",
           "ImageButton": "GUI category of an image that acts like a button to be change in the screenshot",
           "EditText": "GUI category of a text edit input to be change in the screenshot",
