@@ -65,7 +65,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
   }, [watchNumberScenarios])
 
-  const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || getValues('screenshots').length == 0;
+  const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
   const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
 
   const validateForm = (data: any, submitter: string) => {

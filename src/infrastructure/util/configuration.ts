@@ -9,5 +9,5 @@ const env = (key: String, defaultValue?: any) => {
 
 export default {
   API_BASE_URL: env('API_BASE_URL'),
-  PREFIX: env('PREFIX'),
+  PREFIX: env('PREFIX', ''),
 }
