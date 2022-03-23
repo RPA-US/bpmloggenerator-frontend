@@ -14,6 +14,7 @@ import { getByID } from '../utils';
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import Tooltip from '@mui/material/Tooltip';
 import configuration from "infrastructure/util/configuration";
+import { Screenshot } from '@mui/icons-material';
 
 export interface IRandomColor {
     [name: string]: string[]
@@ -36,7 +37,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Init tmp var
     const initialArgs: IArguments = { id: 0, coordinates: [], name: "", args: {} }
     const initialScreen: IScreenshot = {}
-    const countID = 1;
+    const countID:number = 1;
     const initialDependency: IDependency = { Activity: "", V: 0, id: 0 }
     const initialparams: FunctionParamDTO[] = []
     const initialVarFunction: VariabilityFunctionDTO[] = []
@@ -45,14 +46,14 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const initialVariants: string[] = []
     const initialElements: GUIComponentDTO[] = []
     const initialElementID: string[] = []
-
+    const initialVarAct: string[] = ["", "", ""]
 
     //Status var to use
     let init_seed = { ...seed };
-    let redirect_at_end = configuration.PREFIX+'/column-variability/';
+    let redirect_at_end = configuration.PREFIX + '/column-variability/';
     if (variability_mode === 'scenario') {
         init_seed = { ...scenario_variability };
-        redirect_at_end = configuration.PREFIX+'/scenario-variability/';
+        redirect_at_end = configuration.PREFIX + '/scenario-variability/';
     }
     const [json_conf, setjJon_conf] = useState(init_seed);
 
@@ -77,9 +78,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [paramsL, setParams] = useState(initialparams);
     const [variantDependency, setVariantDependency] = useState(initialVariants);
     const [activityDependency, setActivityDependency] = useState(initialVariants);
+    const [idVariant, setIdVariant] = useState(initialVariants);
     const [elements, setElements] = useState(initialElements);
     const [components, setComponents] = useState(initialElements);
-    const [varAct, setVarAct] = useState(["", ""]);
+    const [varAct, setVarAct] = useState(initialVarAct);
     const colorRef = useRef<any>('');
     const sizeRef = useRef<any>(0);
     const listRef = useRef<any>("");
@@ -199,6 +201,11 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
             let screenshotTMP = screenshots
             for (let key of listKeys) {
                 let listColor: string[] = []
+                let tmpArgs = screenshotWizard[key]
+                for (let key2 in tmpArgs) {
+                    listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
+                    setCount(tmpArgs[key2].id+1)
+                }
                 Object.keys(screenshotWizard[key]).map((key2) => (listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))))
                 colorTMP[key] = listColor
             }
@@ -236,6 +243,26 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         let activityListTMP: string[] = []
         Object.keys(json_conf[variantKey]).map((key) => (activityListTMP.push(key)))
         setActivityDependency([...activityListTMP])
+    }
+
+    function IDbyActivities(variantKey: string, activityKey: string) {
+        let idListTMP: string[] = []
+        if (variantKey === variant && activityKey === act) {
+            Object.keys(screenshots).map((key, index) => (
+                Object.keys(screenshots[key]).map((key2, index2) => (
+                    idListTMP.push(screenshots[key][index2].id + "")
+                ))))
+        } else {
+            if (Object.keys(json_conf[variantKey][activityKey]["Screenshot"]["args"]).length > 0) {
+                for (let key in json_conf[variantKey][activityKey]["Screenshot"]["args"]) {
+                    let tmpArgs = json_conf[variantKey][activityKey]["Screenshot"]["args"][key]
+                    for (let key2 in tmpArgs) {
+                        idListTMP.push(tmpArgs[key2].id + "")
+                    }
+                }
+            }
+        }
+        setIdVariant([...idListTMP])
     }
 
     function getResolutionBRW() {
@@ -407,7 +434,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }));
             }
         }
-        history.push(redirect_at_end + variant + configuration.PREFIX+'/' + act)
+        history.push(redirect_at_end + variant + '/' + act)
     }
 
     function onLoadImage() {
@@ -448,13 +475,19 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function handleChangeVariantDependency(e: any) {
         let variantTMP: string = e.target.value;
-        setVarAct([variantTMP, ""]);
+        setVarAct([variantTMP, "", ""]);
         activitiesByVariant(variantTMP)
     }
 
     function handleChangeActivityDependency(e: any) {
         let activityTMP: string = e.target.value;
-        setVarAct([varAct[0], activityTMP]);
+        setVarAct([varAct[0], activityTMP, ""]);
+        IDbyActivities(varAct[0], activityTMP)
+    }
+
+    function handleChangeVariantID(e: any) {
+        let idTMP: string = e.target.value;
+        setVarAct([varAct[0], varAct[1], idTMP]);
     }
 
     function handleChangeGUI(e: any) {
@@ -535,10 +568,10 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 }
             } else {
                 let dependencyTMP: IDependency = initialDependency;
-                if (guiCatName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "") {
+                if (guiCatName !== null && +varAct[0].trim() !== 0 && varAct[1].trim() !== "" && +varAct[2].trim() !== 0) {
                     argumentTMP.id = countTMP;
                     argumentTMP.name = ""
-                    dependencyTMP.id = count
+                    dependencyTMP.id = +varAct[2].trim()
                     dependencyTMP.Activity = varAct[1].trim()
                     dependencyTMP.V = +varAct[0].trim()
                     argumentTMP.args_dependency = dependencyTMP;
@@ -578,7 +611,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function confirmBack() {
         if (window.confirm(t('features.experiment.assist.back'))) {
-            history.push(redirect_at_end + variant + configuration.PREFIX+'/' + act)
+            history.push(redirect_at_end + variant + '/' + act)
         }
     }
 
@@ -734,7 +767,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                             {functionID === 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                                        <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
+                                        <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
                                         <Select
                                             id="select_variant"
                                             value={varAct[0]}
@@ -747,7 +780,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                         </Select>
                                     </Box>
                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                                        <Typography component="div">{t('features.experiment.assist.function.variant_dependency')}:</Typography>
+                                        <Typography component="div">{t('features.experiment.assist.function.activity_dependency')}:</Typography>
                                         <Select
                                             disabled={+varAct[0].trim() === 0}
                                             id="select_activity"
@@ -757,6 +790,20 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                         >
                                             {Object.keys(activityDependency).map((key, index) => (
                                                 <MenuItem value={activityDependency[index]}>{activityDependency[index]}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </Box>
+                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                        <Typography component="div">{t('features.experiment.assist.function.variant_id')}:</Typography>
+                                        <Select
+                                            disabled={varAct[1].trim() === ""}
+                                            id="select_id_variant"
+                                            value={varAct[2]}
+                                            label={t('features.experiment.assist.function.variability_function')}
+                                            onChange={handleChangeVariantID}
+                                        >
+                                            {Object.keys(idVariant).map((key, index) => (
+                                                <MenuItem value={idVariant[index]}>{idVariant[index]}</MenuItem>
                                             ))}
                                         </Select>
                                     </Box>
@@ -843,6 +890,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 <Table aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
+                                            <TableCell align="center">ID</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.name')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.color')}</TableCell>
                                             <TableCell align="center">{t('features.experiment.assist.element.topleft')}&nbsp;(x,y)</TableCell>
@@ -859,6 +907,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                 >
                                                     <TableCell align="center" component="th" scope="row">
+                                                        {screenshots[key][index2].id}
+                                                    </TableCell>
+                                                    <TableCell align="center" component="th" scope="row">
                                                         {t(key)}
                                                     </TableCell>
                                                     <TableCell align="center" sx={{
@@ -867,7 +918,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     }}></TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[0]}, {screenshots[key][index2].coordinates[1]}</TableCell>
                                                     <TableCell align="center" >{screenshots[key][index2].coordinates[2]}, {screenshots[key][index2].coordinates[3]}</TableCell>
-                                                    <TableCell align="center" >{screenshots[key][index2].name}</TableCell>
+                                                    <TableCell align="center" >{t(screenshots[key][index2].name === "" ? 'features.experiment.assist.function.dependency' : screenshots[key][index2].name)}</TableCell>
                                                     <TableCell align="center" >
                                                         <Button variant="contained" color="secondary" onClick={() => removeElement(key, index2)}>
                                                             {t('features.experiment.assist.delete')}

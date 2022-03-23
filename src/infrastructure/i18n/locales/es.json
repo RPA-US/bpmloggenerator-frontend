@@ -513,6 +513,7 @@
           "dependency": "configurar_dependencia",
           "activity_dependency": "Actividad dependiente",
           "variant_dependency": "Variante dependiente",
+          "variant_id": "ID variante",
           "font_color": "Color de la letra",
           "font_size": "Tamaño de letra",
           "font_type": "Tipografía"
