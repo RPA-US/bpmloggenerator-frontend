@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Table from '@mui/material/Table';
-import { FunctionParamDTO } from 'infrastructure/http/dto/wizard';
+import { FunctionParamDTO, VariabilityFunctionDTO } from 'infrastructure/http/dto/wizard';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -65,7 +65,7 @@ const LogForm: React.FC = () => {
     }
   }
 
-  function functionConfigured(column: string) {
+  function functionParamConfigured(column: string) {
     if (seed !== null && column !== '' && param_args !== {}) {
       let columns_TMP = seed[variant][act][column]
       if (Object.keys(columns_TMP.args).length > 0 && columns_TMP.name !== "") {
@@ -74,6 +74,25 @@ const LogForm: React.FC = () => {
       }
     }
     return ""
+  }
+
+  function functionConfigured(column: string) {
+    if (seed !== null && column !== '' && functionID === 0) {
+      let columns_TMP = seed[variant][act][column]
+      if (columns_TMP.name !== "") {
+        let tmpFunction = functions.find(f => f.id_code===columns_TMP.name)
+        if(tmpFunction!=null){
+          setFunctionID(tmpFunction.id);
+          let paramTMP: FunctionParamDTO[] = []
+          for (let p of params) {
+            if (tmpFunction.params.includes(p.id)) {
+              paramTMP.push(p)
+            }
+          }
+          setParams([...paramTMP]);
+        }
+      }
+    }
   }
 
   const handleVariateOnClick = (variant: string, act: string, log_column_name: string, event: any) => {
@@ -103,14 +122,14 @@ const LogForm: React.FC = () => {
 
   const handleOpen = (column: string) => {
     setParamColumn(column);
-    let tmpParam = functionConfigured(column)
+    let tmpParam = functionParamConfigured(column)
     setParamArgs({ ...tmpParam });
+    functionConfigured(column)
     setOpen(true);
   }
 
   const handleClose = () => {
     let param_column = "args"
-    console.log(param_args)
     dispatch(wizardSlice.actions.setParamsColumnVariabilityColumn({ variant, act, column, param_column, param_args }));
     setParamColumn('');
     let tmpParam = {}
