@@ -1,6 +1,6 @@
-import React, {useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Modal, TextField, Typography,Theme } from '@mui/material';
+import { Box, Button, Modal, TextField, Typography, Theme } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
@@ -20,6 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeContext } from '@emotion/react';
+import { ConnectedTvOutlined } from '@mui/icons-material';
 
 
 const style = {
@@ -46,10 +47,34 @@ const LogForm: React.FC = () => {
   const [functionID, setFunctionID] = useState(0);
   const [open, setOpen] = useState(false);
   const [param_args, setParamArgs] = useState({});
-  const [param_column, setParamColumn] = useState('');
+  const [column, setParamColumn] = useState('');
   const initialparams: FunctionParamDTO[] = []
   const [paramsL, setParams] = useState(initialparams);
   const listRef = useRef<any>("");
+
+  function valueDictVal(jsonDict: any, key: string,keyList:any) {
+    if(keyList!==""){
+      if(Object.keys(jsonDict).includes(key)){
+        let listTMP = jsonDict[key]
+        return listTMP[keyList]
+      }else{
+        return ""
+      }
+    }else{
+      return jsonDict[key]
+    }
+  }
+
+  function functionConfigured(column: string) {
+    if (seed !== null && column !== '' && param_args !== {}) {
+      let columns_TMP = seed[variant][act][column]
+      if (Object.keys(columns_TMP.args).length > 0 && columns_TMP.name !== "") {
+        let tmpARGS = columns_TMP.args
+        return tmpARGS
+      }
+    }
+    return ""
+  }
 
   const handleVariateOnClick = (variant: string, act: string, log_column_name: string, event: any) => {
     const selectedValue = event.target.checked ? 1 : 0;
@@ -63,9 +88,9 @@ const LogForm: React.FC = () => {
       dispatch(wizardSlice.actions.setPossibleParamsInitialValues({ column: column, function_selected: functionSelected }));
       dispatch(wizardSlice.actions.setFunctionNameVariabilityFunction({ variant, act, column, function_name: selectedValue }));
       setFunctionID(functionSelected.id);
-      let paramTMP:FunctionParamDTO[] = []
-      for(let p of params){
-        if(functionSelected.params.includes(p.id)){
+      let paramTMP: FunctionParamDTO[] = []
+      for (let p of params) {
+        if (functionSelected.params.includes(p.id)) {
           paramTMP.push(p)
         }
       }
@@ -76,19 +101,20 @@ const LogForm: React.FC = () => {
 
   };
 
-
   const handleOpen = (column: string) => {
-    let tmpParam = {}
-    setParamArgs({...tmpParam});
     setParamColumn(column);
+    let tmpParam = functionConfigured(column)
+    setParamArgs({ ...tmpParam });
     setOpen(true);
   }
-  const handleClose = (column: string) => {
+
+  const handleClose = () => {
+    let param_column = "args"
     console.log(param_args)
     dispatch(wizardSlice.actions.setParamsColumnVariabilityColumn({ variant, act, column, param_column, param_args }));
     setParamColumn('');
     let tmpParam = {}
-    setParamArgs({...tmpParam});
+    setParamArgs({ ...tmpParam });
     setOpen(false);
   };
 
@@ -96,11 +122,19 @@ const LogForm: React.FC = () => {
     function_param: any,
     event: any
   ) => {
+    let func_name_TMP = function_param.label
     const selectedValue = event.target.value;
-    setParamArgs({
-      ...param_args,
-      [function_param.label]: [selectedValue]
-    });
+    if (function_param.data_type === "font") {
+      setParamArgs({
+        ...param_args,
+        [func_name_TMP]: ['resources/Roboto-Black.ttf', sizeRef.current.value, colorRef.current.value]
+      })
+    } else {
+      setParamArgs({
+        ...param_args,
+        [func_name_TMP]: [selectedValue]
+      })
+    };
   };
 
   const ParamFormModal = (log_column_name: string, log_column: any) => {
@@ -111,53 +145,53 @@ const LogForm: React.FC = () => {
       <div>
         <Button disabled={!log_column.variate} onClick={() => handleOpen(log_column_name)}>{t("features.wizard.columnVariability.configureParams")}</Button>
         <Modal
-          onClose={() => handleClose(log_column_name)}
+          onClose={() => handleClose()}
           open={open}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                {t("features.wizard.columnVariability.paramModalTitle")}
-              </Typography>
-              {Object.keys(functions).map((key, index) => (
-                functions[index].id === functionID && functions[index].params.length > 0 &&
-                <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
-                  <Typography component="div" >
-                    {t('features.experiment.assist.function.params_function')}
-                  </Typography>
-                  {Object.keys(paramsL).map((key2, index2) => (
-                    <Box component={"div"}>
-                      <Typography component="div">{t(paramsL[index2].description)}:</Typography>
-                      {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
-                        <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(functions[index], e)}/>
-                      }
-                      {(paramsL[index2].data_type === "font") &&
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              {t("features.wizard.columnVariability.paramModalTitle")}
+            </Typography>
+            {Object.keys(functions).map((key, index) => (
+              functions[index].id === functionID && functions[index].params.length > 0 &&
+              <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
+                <Typography component="div" >
+                  {t('features.experiment.assist.function.params_function')}
+                </Typography>
+                {Object.keys(paramsL).map((key2, index2) => (
+                  <Box component={"div"}>
+                    <Typography component="div">{t(paramsL[index2].description)}:</Typography>
+                    {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
+                      <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,"")} />
+                    }
+                    {(paramsL[index2].data_type === "font") &&
+                      <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                        <Select
+                          id="select_font"
+                          required={true}
+                          value={'resources/Roboto-Black.ttf'}
+                          label={t('features.experiment.assist.function.variability_function')}
+                          onChange={handleChangeParam}
+                        >
+                          <MenuItem value={'resources/Roboto-Black.ttf'}>Roboto_font</MenuItem>
+                        </Select>
                         <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                          <Select
-                            id="select_font"
-                            required={true}
-                            value={'resources/Roboto-Black.ttf'}
-                            label={t('features.experiment.assist.function.variability_function')}
-                            onChange={handleChangeParam}
-                          >
-                            <MenuItem value={'resources/Roboto-Black.ttf'}>Roboto_font</MenuItem>
-                          </Select>
-                          <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                            <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number"  onChange={e => handleChangeParam(functions[index], e)}/>
-                          </Box>
-                          <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                            <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" onChange={e => handleChangeParam(functions[index], e)}/>
-                          </Box>
+                          <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,1)}/>
                         </Box>
-                      }
-                      {(paramsL[index2].data_type === "list") &&
-                        <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(functions[index], e)}/>
-                      }
-                    </Box>
-                  ))}
-                </Box>
-              ))}
+                        <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                          <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,2)}/>
+                        </Box>
+                      </Box>
+                    }
+                    {(paramsL[index2].data_type === "list") &&
+                      <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,"")} />
+                    }
+                  </Box>
+                ))}
+              </Box>
+            ))}
           </Box>
         </Modal>
       </div>

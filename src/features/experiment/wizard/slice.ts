@@ -97,13 +97,9 @@ export const wizardSlice = createSlice({
     ) => {
       const { seed, initialValues } = state;
       const { variant, act, column, param_column, param_args } = payload;
-      const actObject = [variant, act, column].reduce((ob, key) => ob[key] || {}, seed);
-      if (actObject.args != null){
-        const aux = {...actObject.args};
-        actObject.args = {
-          aux,
-          [param_column]: param_args
-        };
+      const actObject =seed[variant][act][column]
+      if (actObject[param_column] != null){
+        actObject[param_column]= param_args
       }
       if (initialValues[column] != null){
         initialValues[column].params.possible_params = param_args
