@@ -85,7 +85,7 @@ const LogForm: React.FC = () => {
           setFunctionID(tmpFunction.id);
           let paramTMP: FunctionParamDTO[] = []
           for (let p of params) {
-            if (tmpFunction.params.includes(p.id)) {
+            if (p.variability_function.id === tmpFunction.id) {
               paramTMP.push(p)
             }
           }
@@ -109,7 +109,7 @@ const LogForm: React.FC = () => {
       setFunctionID(functionSelected.id);
       let paramTMP: FunctionParamDTO[] = []
       for (let p of params) {
-        if (functionSelected.params.includes(p.id)) {
+        if (p.variability_function.id === functionSelected.id) {
           paramTMP.push(p)
         }
       }
@@ -141,7 +141,7 @@ const LogForm: React.FC = () => {
     function_param: any,
     event: any
   ) => {
-    let func_name_TMP = function_param.label
+    let func_name_TMP = function_param.id_code
     const selectedValue = event.target.value;
     if (function_param.data_type === "font") {
       setParamArgs({
@@ -157,9 +157,6 @@ const LogForm: React.FC = () => {
   };
 
   const ParamFormModal = (log_column_name: string, log_column: any) => {
-    const defaultValue = log_column.variate === 1 && initialValues[log_column_name] ? initialValues[log_column_name].params : "";
-    const possible_params: Array<number> = initialValues[log_column_name]?.params?.possible_params;
-    const function_params: FunctionParamDTO[] = params.filter(p => Object.values(possible_params).includes(p.id));
     return (
       <div>
         <Button disabled={!log_column.variate} onClick={() => handleOpen(log_column_name)}>{t("features.wizard.columnVariability.configureParams")}</Button>
@@ -174,7 +171,7 @@ const LogForm: React.FC = () => {
               {t("features.wizard.columnVariability.paramModalTitle")}
             </Typography>
             {Object.keys(functions).map((key, index) => (
-              functions[index].id === functionID && functions[index].params.length > 0 &&
+              functions[index].id === functionID && paramsL.length > 0 &&
               <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
                 <Typography component="div" >
                   {t('features.experiment.assist.function.params_function')}
@@ -182,10 +179,10 @@ const LogForm: React.FC = () => {
                 {Object.keys(paramsL).map((key2, index2) => (
                   <Box component={"div"}>
                     <Typography component="div">{t(paramsL[index2].description)}:</Typography>
-                    {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
-                      <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,"")} />
+                    {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type !== "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
+                      <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].function_param_category.placeholder)} label={t(paramsL[index2].function_param_category.label)} type={paramsL[index2].function_param_category.data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,"")} />
                     }
-                    {(paramsL[index2].data_type === "font") &&
+                    {(paramsL[index2].function_param_category.data_type === "font") &&
                       <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                         <Select
                           id="select_font"
@@ -197,15 +194,15 @@ const LogForm: React.FC = () => {
                           <MenuItem value={'resources/Roboto-Black.ttf'}>Roboto_font</MenuItem>
                         </Select>
                         <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                          <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,1)}/>
+                          <TextField id="outlined-basic" inputRef={sizeRef} label={t('features.experiment.assist.function.font_size')} variant="outlined" type="number" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,1)}/>
                         </Box>
                         <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
-                          <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,2)}/>
+                          <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,2)}/>
                         </Box>
                       </Box>
                     }
-                    {(paramsL[index2].data_type === "list") &&
-                      <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].label,"")} />
+                    {(paramsL[index2].function_param_category.data_type === "list") &&
+                      <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].function_param_category.placeholder)} label={t(paramsL[index2].function_param_category.label)} type={paramsL[index2].function_param_category.data_type} onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,"")} />
                     }
                   </Box>
                 ))}

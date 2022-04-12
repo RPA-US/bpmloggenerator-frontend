@@ -115,6 +115,25 @@
           "screenshot_rename": "Funciones de variabilidad de renombrado de capturas"
         }
       },
+      "Param": {
+        "description":{
+        "mouse_list_coordenates": "Lista de límites de coordenadas de ratón separados por comas",
+        "number_random_words": "Número de palabras",
+        "extension_file": "Extensión del archivo ficticio a crear",
+        "dir_level": "Número de directorios de la ruta a crear",
+        "number_paragraphs": "Número de parrafos a crear",
+        "number_words": "Número de palabras",
+        "mouse_list_coordenates_x": "Lista de límites de coordenadas de ratón separados por comas",
+        "gui_elements_to_replace": "Selección de elementos GUI a emplear",
+        "font_configuration": "Configuración de la fuente",
+        "color_hidden_square": "Color con el que se oculta el GUI",
+        "text_to_insert": "Texto a insertar",
+        "word_configuration": "Configurar la creación de palabras",
+        "sentence_configuration": "Configurar la creación de sentencias",
+        "paragraph_configuration": "Configurar la creación de párrafos",
+        "mouse_list_coordenates_y": "Lista de límites de coordenadas de ratón separados por comas"
+        }
+      },
       "GUI_category": {
         "name": {
           "Button": "Botón",

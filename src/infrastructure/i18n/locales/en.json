@@ -115,6 +115,25 @@
           "screenshot_rename": "Variability function for the screenshot file rename method"
         }
       },
+      "Param": {
+        "description": {
+          "mouse_list_coordenates": "List of comma-separated mouse coordinate boundaries",
+          "number_random_words": "Number of words",
+          "extension_file": "Extension of the dummy file to be created",
+          "dir_level": "Number of directories in the path to be created",
+          "number_paragraphs": "Number of paragraphs to create",
+          "number_words": "Number of words",
+          "mouse_list_coordenates_x": "List of comma-separated mouse coordinate boundaries",
+          "gui_elements_to_replace": "Selection of GUI elements to be used",
+          "font_configuration": "Font configuration",
+          "color_hidden_square": "Color with which the GUI is hidden",
+          "text_to_insert": "Text to insert",
+          "word_configuration": "Configure word creation",
+          "sentence_configuration": "Configure sentence creation",
+          "paragraph_configuration": "Configure paragraph creation",
+          "mouse_list_coordenates_y": "List of comma-separated mouse coordinate boundaries"
+        }
+      },
       "GUI_category": {
         "name": {
           "Button": "Button",

@@ -5,7 +5,6 @@ export interface VariabilityFunctionDTO {
     filename: string
     path: string
     description: string
-    params: number[]
     variability_function_category: CategoryDTO[]
 }
 
@@ -19,13 +18,23 @@ export interface GUIComponentDTO {
     gui_component_category: number
 }
 
-export interface FunctionParamDTO {
+export interface FunctionParamCategoryDTO {
     id: number
     label: string
     placeholder: string
     data_type: string
     description: string
     validation_needs: any
+}
+
+export interface FunctionParamDTO {
+    id: number
+    order: number
+    id_code: string
+    description: string
+    function_param_category: FunctionParamCategoryDTO
+    validation_needs: any
+    variability_function: VariabilityFunctionDTO
 }
 
 export interface CategoryDTO {
@@ -55,4 +64,8 @@ export interface GUIComponentResponse {
 
 export interface FunctionParamResponse {
     results: FunctionParamDTO[]
+}
+
+export interface FunctionParamCategoryResponse {
+    results: FunctionParamCategoryDTO[]
 }

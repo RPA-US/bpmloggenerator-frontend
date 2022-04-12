@@ -218,15 +218,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function paramsByFunction(functionTMP: number) {
         let paramsTMP: FunctionParamDTO[] = [];
-        let paramsID = []
-        for (let f of variabilityFunctions) {
-            if (f.id === functionTMP && f.params.length > 0) {
-                for (let id2 of paramsList) {
-                    paramsID = f.params.filter(c => (id2.id === c) ? c : "");
-                    if (paramsID.length > 0) {
-                        paramsTMP.push(id2);
-                    }
-                }
+        for (let p of params){
+            if(p.variability_function.id === functionTMP){
+                paramsTMP.push(p);
             }
         }
         setParams([...paramsTMP]);
@@ -523,20 +517,20 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 let paramsTMP: FunctionParamDTO[] = paramsL;
                 if (guiCatName !== null && functionName !== null) {
                     argumentTMP.id = countTMP
-                    if (paramsTMP.length > 0 && functionName.params.length > 0) {
+                    if (paramsTMP.length > 0 && paramsL.length > 0) {
                         for (let j in paramsTMP) {
-                            if (paramsTMP[j].data_type === "element") {
-                                argumentTMP.args[paramsTMP[j].label] = elementID;
+                            if (paramsTMP[j].function_param_category.data_type === "element") {
+                                argumentTMP.args[paramsTMP[j].id_code] = elementID;
                             }
-                            if (paramsTMP[j].data_type === "font") {
-                                argumentTMP.args[paramsTMP[j].label] = [fontID, sizeRef.current.value, colorRef.current.value]
+                            if (paramsTMP[j].function_param_category.data_type === "font") {
+                                argumentTMP.args[paramsTMP[j].id_code] = [fontID, sizeRef.current.value, colorRef.current.value]
                             }
-                            if (paramsTMP[j].data_type === "list") {
-                                argumentTMP.args[paramsTMP[j].label] = listRef.current.value.split(',')
+                            if (paramsTMP[j].function_param_category.data_type === "list") {
+                                argumentTMP.args[paramsTMP[j].id_code] = listRef.current.value.split(',')
                             }
-                            if (paramsTMP[j].data_type !== "font" && paramsTMP[j].data_type !== "element") {
+                            if (paramsTMP[j].function_param_category.data_type !== "font" && paramsTMP[j].function_param_category.data_type !== "element") {
                                 if ((document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value !== null) {
-                                    argumentTMP.args[paramsTMP[j].label] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
+                                    argumentTMP.args[paramsTMP[j].id_code] = (document.getElementById(paramsTMP[j].id.toString()) as HTMLInputElement).value;
                                 }
                             }
                         }
@@ -593,6 +587,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                         setScreenshot({
                             ...screenTMP
                         })
+                        setRandomColor({ ...colorTMP })
                     }
                     countTMP = countTMP + 1
                     setCount(countTMP);
@@ -809,7 +804,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     </Box>
                                 </Box>}
                             {Object.keys(variabilityFunctions).map((key, index) => (
-                                variabilityFunctions[index].id === functionID && variabilityFunctions[index].params.length > 0 &&
+                                variabilityFunctions[index].id === functionID && paramsL.length > 0 &&
                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }} >
                                     <Typography component="div" >
                                         {t('features.experiment.assist.function.params_function')}
@@ -817,7 +812,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     {Object.keys(paramsL).map((key2, index2) => (
                                         <Box component={"div"}>
                                             <Typography component="div">{t(paramsL[index2].description)}:</Typography>
-                                            {(paramsL[index2].data_type === "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
+                                            {(paramsL[index2].function_param_category.data_type === "element") && (paramsL[index2].function_param_category.data_type !== "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
                                                 <Select
                                                     id="select_element"
                                                     multiple
@@ -838,12 +833,12 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     ))}
                                                 </Select>
                                             }
-                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type !== "list") &&
+                                            {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type !== "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
                                                 <Tooltip title={t(paramsL[index2].description) + ""} placement="right">
-                                                    <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                                    <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].function_param_category.placeholder)} label={t(paramsL[index2].function_param_category.label)} type={paramsL[index2].function_param_category.data_type} />
                                                 </Tooltip>
                                             }
-                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type === "font") && (paramsL[index2].data_type !== "list") &&
+                                            {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type === "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
                                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                                                     <Select
                                                         id="select_font"
@@ -862,9 +857,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     </Box>
                                                 </Box>
                                             }
-                                            {(paramsL[index2].data_type !== "element") && (paramsL[index2].data_type !== "font") && (paramsL[index2].data_type === "list") &&
+                                            {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type !== "font") && (paramsL[index2].function_param_category.data_type === "list") &&
                                                 <Tooltip title={t(paramsL[index2].description) + ""} placement="right">
-                                                    <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].placeholder)} label={t(paramsL[index2].label)} type={paramsL[index2].data_type} />
+                                                    <TextField id={paramsL[index2].id + ""} inputRef={listRef} placeholder={t(paramsL[index2].function_param_category.placeholder)} label={t(paramsL[index2].function_param_category.label)} type={paramsL[index2].function_param_category.data_type} />
                                                 </Tooltip>
                                             }
                                         </Box>
