@@ -533,9 +533,10 @@
           "activity_dependency": "Activity dependency",
           "variant_dependency": "Variant dependency",
           "variant_id": "Variant ID",
-          "font_color": "Color de la letra",
-          "font_size": "Tamaño de letra",
-          "font_type": "Tipografía"
+          "font_color": "Font color",
+          "font_back_color": "Background font color",
+          "font_size": "Font size",
+          "font_type": "Font family"
         },
         "title": {
           "elementselector": "Select image element to use"

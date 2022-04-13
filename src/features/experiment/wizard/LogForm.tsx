@@ -38,6 +38,7 @@ const style = {
 const LogForm: React.FC = () => {
   const { t } = useTranslation();
   const colorRef = useRef<any>("");
+  const colorBackRef = useRef<any>("");
   const sizeRef = useRef<any>(0);
   const { variant } = useParams<{ variant: string }>();
   const { act } = useParams<{ act: string }>();
@@ -146,7 +147,7 @@ const LogForm: React.FC = () => {
     if (function_param.data_type === "font") {
       setParamArgs({
         ...param_args,
-        [func_name_TMP]: ['resources/Roboto-Black.ttf', sizeRef.current.value, colorRef.current.value]
+        [func_name_TMP]: ['resources/Roboto-Black.ttf', sizeRef.current.value, colorRef.current.value, colorBackRef.current.value]
       })
     } else {
       setParamArgs({
@@ -198,6 +199,9 @@ const LogForm: React.FC = () => {
                         </Box>
                         <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                           <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,2)}/>
+                        </Box>
+                        <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                          <TextField id="outlined-basic" inputRef={colorBackRef} label={t('features.experiment.assist.function.font_back_color')} variant="outlined" type="String" onChange={e => handleChangeParam(paramsL[index2], e)} defaultValue={valueDictVal(param_args, paramsL[index2].function_param_category.label,2)}/>
                         </Box>
                       </Box>
                     }

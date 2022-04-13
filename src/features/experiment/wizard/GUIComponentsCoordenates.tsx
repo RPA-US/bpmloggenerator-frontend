@@ -37,7 +37,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Init tmp var
     const initialArgs: IArguments = { id: 0, coordinates: [], name: "", args: {} }
     const initialScreen: IScreenshot = {}
-    const countID:number = 1;
+    const countID: number = 1;
     const initialDependency: IDependency = { Activity: "", V: 0, id: 0 }
     const initialparams: FunctionParamDTO[] = []
     const initialVarFunction: VariabilityFunctionDTO[] = []
@@ -83,6 +83,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const [components, setComponents] = useState(initialElements);
     const [varAct, setVarAct] = useState(initialVarAct);
     const colorRef = useRef<any>('');
+    const colorBackRef = useRef<any>('');
     const sizeRef = useRef<any>(0);
     const listRef = useRef<any>("");
 
@@ -204,7 +205,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                 let tmpArgs = screenshotWizard[key]
                 for (let key2 in tmpArgs) {
                     listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))
-                    setCount(tmpArgs[key2].id+1)
+                    setCount(tmpArgs[key2].id + 1)
                 }
                 Object.keys(screenshotWizard[key]).map((key2) => (listColor.push("#" + Math.floor(Math.random() * 16777215).toString(16))))
                 colorTMP[key] = listColor
@@ -218,8 +219,8 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function paramsByFunction(functionTMP: number) {
         let paramsTMP: FunctionParamDTO[] = [];
-        for (let p of params){
-            if(p.variability_function.id === functionTMP){
+        for (let p of params) {
+            if (p.variability_function.id === functionTMP) {
                 paramsTMP.push(p);
             }
         }
@@ -523,7 +524,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                 argumentTMP.args[paramsTMP[j].id_code] = elementID;
                             }
                             if (paramsTMP[j].function_param_category.data_type === "font") {
-                                argumentTMP.args[paramsTMP[j].id_code] = [fontID, sizeRef.current.value, colorRef.current.value]
+                                argumentTMP.args[paramsTMP[j].id_code] = [fontID, sizeRef.current.value, colorRef.current.value, colorBackRef.current.value]
                             }
                             if (paramsTMP[j].function_param_category.data_type === "list") {
                                 argumentTMP.args[paramsTMP[j].id_code] = listRef.current.value.split(',')
@@ -854,6 +855,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                     </Box>
                                                     <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                                                         <TextField id="outlined-basic" inputRef={colorRef} label={t('features.experiment.assist.function.font_color')} variant="outlined" type="String" />
+                                                    </Box>
+                                                    <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
+                                                        <TextField id="outlined-basic" inputRef={colorBackRef} label={t('features.experiment.assist.function.font_back_color')} variant="outlined" type="String" />
                                                     </Box>
                                                 </Box>
                                             }

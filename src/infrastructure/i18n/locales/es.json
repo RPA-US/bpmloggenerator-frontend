@@ -534,6 +534,7 @@
           "variant_dependency": "Variante dependiente",
           "variant_id": "ID variante",
           "font_color": "Color de la letra",
+          "font_back_color": "Color de fondo de la letra",
           "font_size": "Tamaño de letra",
           "font_type": "Tipografía"
         },
