@@ -830,16 +830,17 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                                                 </div>
                                                             </Tooltip>
                                                         </MenuItem>
-
                                                     ))}
                                                 </Select>
                                             }
                                             {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type !== "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
+
                                                 <Tooltip title={t(paramsL[index2].description) + ""} placement="right">
                                                     <TextField id={paramsL[index2].id + ""} placeholder={t(paramsL[index2].function_param_category.placeholder)} label={t(paramsL[index2].function_param_category.label)} type={paramsL[index2].function_param_category.data_type} />
                                                 </Tooltip>
                                             }
                                             {(paramsL[index2].function_param_category.data_type !== "element") && (paramsL[index2].function_param_category.data_type === "font") && (paramsL[index2].function_param_category.data_type !== "list") &&
+
                                                 <Box component={"div"} style={{ marginTop: theme.spacing(2) }}>
                                                     <Select
                                                         id="select_font"

@@ -115,23 +115,33 @@
           "screenshot_rename": "Variability function for the screenshot file rename method"
         }
       },
-      "Param": {
+      "param": {
         "description": {
-          "mouse_list_coordenates": "List of comma-separated mouse coordinate boundaries",
-          "number_random_words": "Number of words",
-          "extension_file": "Extension of the dummy file to be created",
-          "dir_level": "Number of directories in the path to be created",
-          "number_paragraphs": "Number of paragraphs to create",
-          "number_words": "Number of words",
-          "mouse_list_coordenates_x": "List of comma-separated mouse coordinate boundaries",
-          "gui_elements_to_replace": "Selection of GUI elements to be used",
-          "font_configuration": "Font configuration",
-          "color_hidden_square": "Color with which the GUI is hidden",
-          "text_to_insert": "Text to insert",
-          "word_configuration": "Configure word creation",
-          "sentence_configuration": "Configure sentence creation",
-          "paragraph_configuration": "Configure paragraph creation",
-          "mouse_list_coordenates_y": "List of comma-separated mouse coordinate boundaries"
+          "mouse_list_coordenates_y_down":"Y coordinate lower boundary",
+          "number_words":"Number of words to be generated",
+          "extension_file":"File extensión",
+          "dir_level":"Number of directories to be generated in the path",
+          "number_paragraphs":"Number of paragraph to generate",
+          "number_random_words":"Number of words to be generated",
+          "mouse_list_coordenates_x_left":"Left limit of the X-coordinate",
+          "gui_elements_to_replace":"GUI elements",
+          "font_configuration":"Font configuration",
+          "color_hidden_square":"Hexadecimal color",
+          "text_to_insert":"TExt to insert",
+          "word_configuration_font":"Font configuration",
+          "sentence_configuration_font":"Font configuration",
+          "paragraph_configuration_font":"Font configuration",
+          "mouse_list_coordenates_y_left":"Left boundary of the Y-coordinate",
+          "mouse_list_coordenates_x_resolution":"Image width resolution",
+          "mouse_list_coordenates_x_right":"Right limit of the X-coordinate",
+          "mouse_list_coordenates_y_resolution":"Image height resolution",
+          "mouse_list_coordenates_y_right":"Y coordinate right boundary",
+          "mouse_list_coordenates_y_top":"Y-coordinate upper boundary",
+          "word_configuration_chat_limit":"Maximum number of characters",
+          "word_configuration_max_words":"Maximum number of words to be generated",
+          "sentence_configuration_char_limit":"Maximum number of characters",
+          "paragraph_configuration_char_limit":"Maximum number of characters",
+          "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated"
         }
       },
       "GUI_category": {

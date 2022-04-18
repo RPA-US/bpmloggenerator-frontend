@@ -116,22 +116,32 @@
         }
       },
       "Param": {
-        "description":{
-        "mouse_list_coordenates": "Lista de límites de coordenadas de ratón separados por comas",
-        "number_random_words": "Número de palabras",
-        "extension_file": "Extensión del archivo ficticio a crear",
-        "dir_level": "Número de directorios de la ruta a crear",
-        "number_paragraphs": "Número de parrafos a crear",
-        "number_words": "Número de palabras",
-        "mouse_list_coordenates_x": "Lista de límites de coordenadas de ratón separados por comas",
-        "gui_elements_to_replace": "Selección de elementos GUI a emplear",
-        "font_configuration": "Configuración de la fuente",
-        "color_hidden_square": "Color con el que se oculta el GUI",
-        "text_to_insert": "Texto a insertar",
-        "word_configuration": "Configurar la creación de palabras",
-        "sentence_configuration": "Configurar la creación de sentencias",
-        "paragraph_configuration": "Configurar la creación de párrafos",
-        "mouse_list_coordenates_y": "Lista de límites de coordenadas de ratón separados por comas"
+        "description": {
+          "mouse_list_coordenates_y_down":"Límite inferior de la coordenada Y",
+          "number_words":"Número de palabras a generar",
+          "extension_file":"Texto de extensión de archivo",
+          "dir_level":"Número de directorios a generar en la ruta",
+          "number_paragraphs":"Número de párrafos a generar",
+          "number_random_words":"Número de palabras a generar",
+          "mouse_list_coordenates_x_left":"Límite izquierdo de la coordenada X",
+          "gui_elements_to_replace":"Elementos GUI a emplear",
+          "font_configuration":"Configuración de la fuente",
+          "color_hidden_square":"Color en hexadecimal para el ocultado",
+          "text_to_insert":"Texto a insertar",
+          "word_configuration_font":"Configuración de la fuente",
+          "sentence_configuration_font":"Configuración de la fuente",
+          "paragraph_configuration_font":"Configuración de la fuente",
+          "mouse_list_coordenates_y_left":"Límite izquierdo de la coordenada Y",
+          "mouse_list_coordenates_x_resolution":"Resolución del ancho de la imagen",
+          "mouse_list_coordenates_x_right":"Límite derecho de la coordenada X",
+          "mouse_list_coordenates_y_resolution":"Resolución del alto de la imagen",
+          "mouse_list_coordenates_y_right":"Límite derecho de la coordenada Y",
+          "mouse_list_coordenates_y_top":"Límite superior de la coordenada Y",
+          "word_configuration_chat_limit":"Número máximo de caracteres",
+          "word_configuration_max_words":"Número máximo de palabras a generar",
+          "sentence_configuration_char_limit":"Número máximo de caracteres",
+          "paragraph_configuration_char_limit":"Número máximo de caracteres",
+          "paragraph_configuration_max_paragraph":"Número máximo de párrafos a generar"
         }
       },
       "GUI_category": {

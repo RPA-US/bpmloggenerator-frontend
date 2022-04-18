@@ -54,7 +54,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ filename, scenario_vari
       let firstRowkey = Object.keys(jsonTMP)[0]
       let secondRowkey = Object.keys(jsonTMP[firstRowkey])[0]
       firstRowFile = Object.keys(jsonTMP[firstRowkey][secondRowkey])
-      let notList = ["Case", "Activity", "Screenshot", "Variant", ""]
+      let notList = ["Case", "Activity", "Variant", ""]
       tmpColumns = firstRowFile.filter(function (obj: any) { return notList.indexOf(obj) === -1; })
       if (tmpColumns.indexOf("TextInput") > -1) {
         tmpColumns[tmpColumns.indexOf("TextInput")] = "features.experiment.GUI_category.name.TextInput"
