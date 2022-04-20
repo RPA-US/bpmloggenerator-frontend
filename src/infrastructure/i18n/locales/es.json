@@ -115,7 +115,7 @@
           "screenshot_rename": "Funciones de variabilidad de renombrado de capturas"
         }
       },
-      "Param": {
+      "param": {
         "description": {
           "mouse_list_coordenates_y_down":"Límite inferior de la coordenada Y",
           "number_words":"Número de palabras a generar",
