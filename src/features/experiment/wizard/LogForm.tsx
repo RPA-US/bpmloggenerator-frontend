@@ -145,11 +145,11 @@ const LogForm: React.FC = () => {
   ) => {
     let func_name_TMP = function_param.id_code
     const selectedValue = event.target.value;
-    if (function_param.data_type === "font") {
-      setParamArgs({
-        ...param_args,
-        [func_name_TMP]: ['resources/Roboto-Black.ttf', sizeRef.current.value, colorRef.current.value, colorBackRef.current.value]
-      })
+    if (function_param.function_param_category.data_type === "font") {
+        setParamArgs({
+          ...param_args,
+          [func_name_TMP]: ['resources/Roboto-Black.ttf', sizeRef.current.value, colorRef.current.value, colorBackRef.current.value]
+        })
     } else {
       setParamArgs({
         ...param_args,
