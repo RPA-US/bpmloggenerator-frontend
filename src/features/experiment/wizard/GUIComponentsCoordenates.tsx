@@ -113,7 +113,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     //Get DB info
     const selectVarFuncByCat = async (token: string, name: string) => {
         let categories: CategoryDTO[] = []
-        if (category_functions !== null) {
+        if (Object.keys(category_functions).length > 0 ) {
             categories = category_functions
         } else {
             let categoriesRes: CategoryResponse = await variabilityFunctionCategoryRepository.list(token);
@@ -121,7 +121,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         }
         let categoryId = selectCategoryByName(categories, name);
         let varFunc: VariabilityFunctionDTO[] = []
-        if (functions !== null) {
+        if (Object.keys(functions).length > 0 ) {
             varFunc = functions
         } else {
             let varFuncRes = await variabilityFunctionRepository.list(token);
@@ -164,7 +164,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const selectElement = async (token: string) => {
         let test: GUIComponentDTO[] = [];
         try {
-            if (gui_components !== null) {
+            if (Object.keys(gui_components).length > 0 ) {
                 test = gui_components
             } else {
                 let categories: GUIComponentResponse = await guiComponentRepository.list(token);
@@ -180,7 +180,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
     const paramsListResults = async (token: string) => {
         let paramTMP: FunctionParamDTO[] = []
         try {
-            if (params !== null) {
+            if (Object.keys(params).length > 0 ) {
                 paramTMP = params
             } else {
                 let paramRes: FunctionParamResponse = await paramFunctionCategoryRepository.list(token);
@@ -219,7 +219,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
 
     function paramsByFunction(functionTMP: number) {
         let paramsTMP: FunctionParamDTO[] = [];
-        for (let p of params) {
+        for (let p of paramsList) {
             if (p.variability_function.id === functionTMP) {
                 paramsTMP.push(p);
             }
