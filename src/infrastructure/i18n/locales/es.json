@@ -40,7 +40,7 @@
   "input": {
     "attach": "Seleccione el fichero",
     "addRow": "Añadir",
-    "next": "Save and go back"
+    "next": "Guargar y volver"
   },
   "features": {
     "auth": {
@@ -73,7 +73,9 @@
       "activitySelection": {
         "variant": "Variante",
         "variate": "Configuración de variabilidad",
-        "activity": "Actividad"
+        "activity": "Actividad",
+        "configured": "Configurado",
+        "not_configured": "No configurado"
       },
       "columnVariability": {
         "variate": "Variate",
@@ -82,7 +84,7 @@
         "variabilityFunction": "Función de variabilidad",
         "variabilityParams": "Parámetros",
         "screenshotVariability": "Variabilidad de captura",
-        "variability_function_label": "Variability Function",
+        "variability_function_label": "Función de variabilidad",
         "function_param_label": "Parámetros de función",
         "configureParams": "Configurar parámentros",
         "paramModalTitle": "Configurar parámetros"
@@ -117,7 +119,6 @@
       },
       "param": {
         "description": {
-          "mouse_list_coordenates_y_down":"Límite inferior de la coordenada Y",
           "number_words":"Número de palabras a generar",
           "extension_file":"Texto de extensión de archivo",
           "dir_level":"Número de directorios a generar en la ruta",
@@ -131,17 +132,24 @@
           "word_configuration_font":"Configuración de la fuente",
           "sentence_configuration_font":"Configuración de la fuente",
           "paragraph_configuration_font":"Configuración de la fuente",
+          "word_configuration_chat_limit":"Número máximo de caracteres",
+          "word_configuration_max_words":"Número máximo de palabras a generar",
+          "sentence_configuration_char_limit":"Número máximo de caracteres",
+          "paragraph_configuration_char_limit":"Número máximo de caracteres",
+          "paragraph_configuration_max_paragraph":"Número máximo de párrafos a generar",
           "mouse_list_coordenates_y_left":"Límite izquierdo de la coordenada Y",
           "mouse_list_coordenates_x_resolution":"Resolución del ancho de la imagen",
           "mouse_list_coordenates_x_right":"Límite derecho de la coordenada X",
           "mouse_list_coordenates_y_resolution":"Resolución del alto de la imagen",
           "mouse_list_coordenates_y_right":"Límite derecho de la coordenada Y",
           "mouse_list_coordenates_y_top":"Límite superior de la coordenada Y",
-          "word_configuration_chat_limit":"Número máximo de caracteres",
-          "word_configuration_max_words":"Número máximo de palabras a generar",
-          "sentence_configuration_char_limit":"Número máximo de caracteres",
-          "paragraph_configuration_char_limit":"Número máximo de caracteres",
-          "paragraph_configuration_max_paragraph":"Número máximo de párrafos a generar"
+          "mouse_list_coordenates_y_down":"Límite inferior de la coordenada Y",
+          "mouse_list_coordenates_resolution_x":"Resolución del ancho de la imagen",
+          "mouse_list_coordenates_down":"Límite inferior de la coordenada",
+          "mouse_list_coordenates_top":"Límite superior de la coordenada",
+          "mouse_list_coordenates_right":"Límite derecho de la coordenada",
+          "mouse_list_coordenates_left":"Límite izquierdo de la coordenada",
+          "mouse_list_coordenates_resolution_y":"Resolución del alto de la imagen"
         }
       },
       "GUI_category": {

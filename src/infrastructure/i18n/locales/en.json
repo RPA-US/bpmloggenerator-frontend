@@ -73,7 +73,9 @@
       "activitySelection": {
         "variant": "Variant",
         "variate": "Variability configuration",
-        "activity": "Activity"
+        "activity": "Activity",
+        "configured": "Configured",
+        "not_configured": "Not configured"
       },
       "columnVariability": {
         "variate": "Variate",
@@ -261,9 +263,9 @@
           "description": "Select GUI components for the function"
         },
         "list_input": {
-          "label": "Inserte el listado de parámetros necesatios para la función",
-          "placeholder": "Texto, texto...",
-          "description": "En la versión prototipo del proyecto, algunas funciones necesitan de un listado de parámetros conocidos por el usuario, para el empleo de la función"
+          "label": "Insert the list of required parameters for the function",
+          "placeholder": "Text, text...",
+          "description": "In the prototype version of the project, some functions require a list of parameters known to the user, for the use of the function"
         }
       },
       "GUI_components": {

@@ -65,14 +65,14 @@ const ExperimentAssist: React.FC = () => {
         <TableCell>
           {Object.keys(seed[variant][act]).some(column => seed[variant][act][column]['variate'] === 1) && (
             <div>
-              Configured
+              {t("features.wizard.activitySelection.configured")}
               {/* <DoneIcon />Variability configured */}
             </div>
           )}
 
           {!Object.keys(seed[variant][act]).some(column => seed[variant][act][column]['variate'] === 1) && (
             <div>
-              Not configured
+              {t("features.wizard.activitySelection.not_configured")}
               {/* <CloseIcon /> Variability not configured */}
             </div>
           )}
