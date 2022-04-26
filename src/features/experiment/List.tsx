@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { experimentsSelector, loadExperiments } from 'features/experiment/slice';
 import { Link as RouterLink } from 'react-router-dom';
 import configuration from "infrastructure/util/configuration";
-import { Button, Card, CardActions, CardContent, CircularProgress, Grid, LinearProgress, Theme, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CircularProgress, Grid, LinearProgress, Theme, Typography } from '@mui/material';
 import { ThemeContext } from '@emotion/react';import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
 import Spacer from 'components/Spacer';
@@ -62,7 +62,7 @@ const ExperimentsList: React.FC = () => {
         { experiments.length
             ? (experiments.map(((experiment, i) => (
               <Grid key={i} item xs={ 12 } sm={ 6 } lg={ 4 }>
-                <Card style={{ minHeight: 155 }}>
+                <Card style={{ minHeight: 155, position: 'relative' }}>
                   <CardContent>
                     <Button color='primary' variant="text" to={`${configuration.PREFIX}/experiment/${experiment.id}`} component={RouterLink}>
                       <Typography variant='h6'>{ experiment.name }</Typography>
@@ -80,7 +80,15 @@ const ExperimentsList: React.FC = () => {
                        </>)
                     }
                     {
-                      experiment.state === ExperimentState.CREATING && (<LinearProgress color="secondary" />)
+                      experiment.state === ExperimentState.CREATING && (
+                        <Box sx={{ width: '100%', position: 'absolute', bottom: theme.spacing(1), margin: `-${theme.spacing(1)}` }}>
+                          <LinearProgress 
+                            color="primary" 
+                            variant={ experiment.isBeingProcessed >= 0 ? 'determinate' : 'indeterminate' }
+                            value={ experiment.isBeingProcessed }
+                          />
+                        </Box>
+                      )
                     }
                   </CardActions>
                 </Card>

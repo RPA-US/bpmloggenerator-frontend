@@ -10,7 +10,6 @@ import { ErrorOption, SubmitHandler, useForm, ValidationRule } from 'react-hook-
 import styled from '@emotion/styled';
 import FileUpload from 'components/FileUpload';
 import Spacer from 'components/Spacer';
-import { Link as RouterLink } from 'react-router-dom';
 import Validations from 'infrastructure/util/validations';
 
 const TextInputContainer = styled('div')(({ theme }) => {
@@ -36,6 +35,9 @@ export interface ExperimentFormProperties {
 }
 
 const readFileContent = (file: Blob) => new Promise<string>((resolve, reject) => {
+  if (file == null) {
+    reject(new Error('file cannot be null or undefined'));
+  }
   const reader = new FileReader();
   reader.addEventListener('load', (evt: any) => resolve(evt.target.result));
   reader.addEventListener('error', reject);
@@ -43,6 +45,10 @@ const readFileContent = (file: Blob) => new Promise<string>((resolve, reject) =>
 });
 
 const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit, disabled = false, initialValues = {}}) => {
+  // hook to force component update manually
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({} as any), []);
+  
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
@@ -54,7 +60,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   const scenarioField = register('scenarios_conf');
 
   const watchNumberScenarios = watch('number_scenarios');
-  // setValue('number_scenarios', 0);
 
   useEffect(() => {
     if (watchNumberScenarios == 0) {
@@ -64,17 +69,20 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   }, [watchNumberScenarios])
 
   useEffect(() => {
+    let scenarios_conf;
+    let variability_conf;
     if (initialValues.scenariosConf != null) {
-      setFileContents({
-        scenarios_conf: JSON.stringify(initialValues.scenariosConf)
-      })
+      scenarios_conf = JSON.stringify(initialValues.scenariosConf)
     }
     if (initialValues.variabilityConf != null) {
-      setFileContents({
-        variability_conf: JSON.stringify(initialValues.variabilityConf)
-      })
+      variability_conf = JSON.stringify(initialValues.variabilityConf)
     }
-  }, [ initialValues ])
+    setFileContents({
+      ...fileContents,
+      scenarios_conf,
+      variability_conf,
+    });
+  }, [ ])
 
   const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
   const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
@@ -145,6 +153,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
       delete checkedData.logSize;
       delete checkedData.imbalancedCase;
+    }
+
+    if (checkedData.screenshots.length === 0 && initialValues.screenshotsPath != null) {
+      checkedData.screenshots_path = initialValues.screenshotsPath;
     }
     
     const formData = new FormData();
@@ -268,7 +280,13 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               disabled={ disabled }
               errorMessage={!formState.dirtyFields.screenshots && formState.errors?.screenshots?.message}
               fileName={(getValues('screenshots') ?? [])[0]?.name || initialValues.screenshotsPath}
-              inputProps={screenshotsField}
+              inputProps={{
+                  ...screenshotsField,
+                  onChange: (evt: any) => {
+                    screenshotsField.onChange(evt);
+                    forceUpdate();
+                  },
+              }}
             />
           </FormInput>
 

@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk, AppDispatch, RootState } from 'store/store';
-import { Experiment, ExperimentError, ExperimentsState, Pagination } from './types';
+import { Experiment, ExperimentError, ExperimentsState, ExperimentState, Pagination } from './types';
 import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
 import { wizardSlice } from './wizard/slice';
+import configuration from 'infrastructure/util/configuration';
 
 export const experimentRepository = new ExperimentRepository();
 
@@ -120,12 +121,22 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     const savedExperimentData = await experimentRepository.get(experimentResponse.id || experimentData.get("id"), auth.token ?? '');
+    const typedExperiment = experimentDTOToExperimentType(savedExperimentData);
+    if (typedExperiment.state === ExperimentState.CREATING) {
+      const checkStatus = () => setTimeout(async () => {
+        const newData = experimentDTOToExperimentType(await experimentRepository.get(typedExperiment.id, auth.token ?? ''));
+        dispatch(setExperimentInList(newData))
+        if (newData.state === ExperimentState.CREATING) {
+          checkStatus();
+        }
+      }, configuration.CREATING_EXPERIMENT_RELOAD_TIME);
+    }
     if (!hasPreviousId && experimentResponse.id != null) {
       if(experimentResponse.status === "PRE_SAVED") {
         const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
         dispatch(
           setExperiment({
-            detail: experimentDTOToExperimentType(savedExperimentData),
+            detail: typedExperiment,
             seed_log: case_conf
         }))
         dispatch(wizardSlice.actions.setVariabilityConfiguration(case_conf))
@@ -133,12 +144,12 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
       } else {
         const { experiments, pagination } = experiment;
         dispatch(setExperiments({
-          experiments: [experimentDTOToExperimentType(savedExperimentData)].concat(experiments),
+          experiments: [typedExperiment].concat(experiments),
           pagination,
         }));
       } 
     } else {
-      dispatch(setExperimentInList(experimentDTOToExperimentType(savedExperimentData)));
+      dispatch(setExperimentInList(typedExperiment));
     }
     actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {
