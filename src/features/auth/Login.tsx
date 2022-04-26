@@ -85,7 +85,7 @@ export default function Login(): JSX.Element {
 
                 {  displayError && (
                   <>
-                    { error?.code === 'invalid.credentials' && (<Typography color="error" variant="body2">{ t('features.auth.login.errors.invalidCredentials') }</Typography>)}
+                    { error?.code === 'invalid.credentials' && (<Typography color="error" variant="body2">{ t('features.auth.login.errors.invalidcredentials') }</Typography>)}
                   </>
                 ) }
 
