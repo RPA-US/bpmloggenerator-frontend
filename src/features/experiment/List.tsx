@@ -1,27 +1,15 @@
-import React, { useEffect, useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { experimentsSelector, loadExperiments } from 'features/experiment/slice';
+import React, { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import configuration from "infrastructure/util/configuration";
 import { Box, Button, Card, CardActions, CardContent, CircularProgress, Grid, LinearProgress, Theme, Typography } from '@mui/material';
-import { ThemeContext } from '@emotion/react';import DownloadIcon from '@mui/icons-material/Download';
+import { ThemeContext } from '@emotion/react';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
 import Spacer from 'components/Spacer';
-import { styled } from '@mui/system';
 
-import { authSelector } from 'features/auth/slice';
 import { experimentRepository } from './slice';
-import { ExperimentState } from './types';
+import { Experiment, ExperimentState } from './types';
 import { downloadFile } from './utils';
-
-
-const FlexDiv = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexFlow: 'row wrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: theme.spacing(4)
-}))
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
@@ -32,32 +20,19 @@ const downloadResults = async (experimentId: number, token: string) => {
   }
 }
 
-const ExperimentsList: React.FC = () => {
-  const { isLoading, pagination, experiments, error } = useSelector(experimentsSelector);
-  const { token } = useSelector(authSelector);
-  const dispatch = useDispatch();
+export interface ListProps {
+  experiments: Experiment[],
+  loadMoreFn: Function,
+  loadMoreDisabled: boolean,
+  isLoading: boolean,
+  downloadFn: Function,
+}
+
+const List: React.FC<ListProps> = ({ experiments, loadMoreFn, loadMoreDisabled, isLoading, downloadFn }) => {
   const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (experiments.length === 0) {
-      dispatch(loadExperiments());
-    }
-  }, [ dispatch ])
-
   return (
     <>
-      <FlexDiv>
-        <Typography variant="h4">
-          { t('features.experiment.list.title') }
-        </Typography>
-        
-        <Button 
-          variant="contained"
-          component={ RouterLink }
-          to={`${configuration.PREFIX}/add-experiment`}
-        >{ t('features.experiment.list.add') }</Button>
-      </FlexDiv>
       <Grid container spacing={ 4 }>
         { experiments.length
             ? (experiments.map(((experiment, i) => (
@@ -76,7 +51,7 @@ const ExperimentsList: React.FC = () => {
                     {
                       experiment.state === ExperimentState.CREATED && (<>
                         <Spacer />
-                        <Button color="secondary" startIcon={ <DownloadIcon /> } onClick={ () => downloadResults(experiment.id, token || '') }>{ t('features.experiment.list.downloadResults') }</Button>
+                        <Button color="secondary" startIcon={ <DownloadIcon /> } onClick={ () => downloadFn(experiment.id) }>{ t('features.experiment.list.downloadResults') }</Button>
                        </>)
                     }
                     {
@@ -100,8 +75,8 @@ const ExperimentsList: React.FC = () => {
         <Grid container justifyContent="center" style={{ marginTop: theme.spacing(3), marginBottom: theme.spacing(3) }}>
           { isLoading 
             ? (<CircularProgress color="secondary" />) 
-            : (experiments.length > 0 && pagination.hasNext && (
-                <Button variant="contained" color="secondary" onClick={ () => dispatch(loadExperiments()) }>
+            : (!loadMoreDisabled && (
+                <Button variant="contained" color="secondary" onClick={ () => loadMoreFn() }>
                   { t('features.experiment.list.viewMore') }
                 </Button>
             ))
@@ -112,4 +87,4 @@ const ExperimentsList: React.FC = () => {
   )
 }
 
-export default ExperimentsList;
+export default List;

@@ -129,7 +129,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
         "Screenshot": "Screenshot",
         "Variant": "Variant"
       }),
-      screenshot_name_generation_function: "screenshot_name_without_root_path"
+      screenshot_name_generation_function: "screenshot_name_without_root_path",
+      public: false
     }
 
     if (buttonName === "generate") {

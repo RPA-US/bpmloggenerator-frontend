@@ -31,7 +31,7 @@ const CreateExperiment: React.FC = () => {
           dispatch(saveExperiment(data, (status: string, error: any) => {
             setLoading(false);
             if(error != null){
-              alert('unexpected error occurred');
+              // alert('unexpected error occurred');
               console.error(error);
             } else {
               if(variability_mode === "scenarioVariability"){

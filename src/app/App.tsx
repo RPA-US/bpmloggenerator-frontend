@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container'; 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/system';
 import configuration from "infrastructure/util/configuration";
@@ -20,7 +19,7 @@ import { history } from 'store/store';
 import { authSelector, updateRedirectPath, checkSession, logout, signup } from 'features/auth/slice';
 import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
-import ExperimentsList from 'features/experiment/List';
+import ExperimentsList from 'features/experiment/ExperimentsList';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
 import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
@@ -32,6 +31,7 @@ import { useTranslation } from "react-i18next";
 
 import Theme from 'styles/theme';
 import PrivateRoute from './helpers/PrivateRoute';
+import PublicExperimentsList from 'features/experiment/PublicExperimentsList';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -93,6 +93,7 @@ function App() {
               <Switch>
                 <Route exact component={ Login } path={`${configuration.PREFIX}/login`} />
                 <Route exact component={ Signup } path={`${configuration.PREFIX}/signup`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ PublicExperimentsList } path={`${configuration.PREFIX}/public`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path={`${configuration.PREFIX}/add-experiment`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDetails } path={`${configuration.PREFIX}/experiment/:id`} />
                 {/* <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentDownload } path=`${configuration.PREFIX}/experiment/download/:id" /> */}

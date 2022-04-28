@@ -5,7 +5,11 @@ export default class ExperimentRepository {
 
   async list(page: number, token: string) {
     try {
-      return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', { page }), Http.authHeader(token))
+      const params: {page?:number } = {};
+      if (page > 0) {
+        params.page = page;
+      }
+      return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
     } catch (ex) {
       console.error('error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error

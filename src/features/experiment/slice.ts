@@ -116,12 +116,31 @@ export const addExperiment = (experimentOb: Experiment): AppThunk => async (disp
 export const saveExperiment = (experimentData: any, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth, experiment } = getState();
   const hasPreviousId = experimentData.get("id") != null;
+  
+  // clear seed log attached data
   const seedLog = experimentData.get('seedLog') ?? '';
   experimentData.delete('seedLog');
+
+  // for first saving we unset execute_mode field
+  const executeMode = experimentData.get('execute_mode') ?? 'false';
+  experimentData.delete('execute_mode');
+
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     const savedExperimentData = await experimentRepository.get(experimentResponse.id || experimentData.get("id"), auth.token ?? '');
     const typedExperiment = experimentDTOToExperimentType(savedExperimentData);
+
+    if (executeMode === 'true') {
+      experimentData.set('execute_mode', 'true');
+      try {
+        experimentRepository.save(experimentData, auth.token ?? '');
+        typedExperiment.state = ExperimentState.CREATING;
+      } catch (ex) {
+        console.error('error during project execution', ex);
+        throw ex;
+      }
+    }
+
     if (typedExperiment.state === ExperimentState.CREATING) {
       const checkStatus = () => setTimeout(async () => {
         const newData = experimentDTOToExperimentType(await experimentRepository.get(typedExperiment.id, auth.token ?? ''));
@@ -130,6 +149,8 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
           checkStatus();
         }
       }, configuration.CREATING_EXPERIMENT_RELOAD_TIME);
+
+      checkStatus();
     }
     if (!hasPreviousId && experimentResponse.id != null) {
       if(experimentResponse.status === "PRE_SAVED") {
