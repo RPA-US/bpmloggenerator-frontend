@@ -119,7 +119,7 @@ export default function Signup(): JSX.Element {
 
                 {  displayError && (
                   <>
-                    { error?.code === 'invalid.credentials' && (<Typography color="error" variant="body2">{ t('features.auth.signup.errors.invalidCredentials') }</Typography>)}
+                    { error?.code === 'invalid.credentials' && (<Typography color="error" variant="body2">{ t('features.auth.signup.errors.invalidcredentials') }</Typography>)}
                   </>
                 ) }
 
