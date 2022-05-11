@@ -5,6 +5,7 @@ import alert from 'features/alert/slice';
 import auth, { SESSION_TOKEN_ITEM } from 'features/auth/slice';
 import experiment from 'features/experiment/slice';
 import wizard from 'features/experiment/wizard/slice';
+import notifications from 'features/notifications/slice';
 
 const { localStorage } = window;
 
@@ -14,6 +15,7 @@ export default function configureRootReducer(history: any) {
     auth,
     experiment,
     wizard,
+    notifications,
     router: connectRouter(history),
   });
 

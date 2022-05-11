@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Card, CardContent, CardActions, Button, Grid, Theme, Typography, CircularProgress, LinearProgress, Chip, Box, styled, Fab } from '@mui/material';
+import { Card, CardContent, CardActions, Button, Grid, Theme, Typography, CircularProgress, LinearProgress, Chip, Box, styled, Fab, Switch, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import DownloadIcon from '@mui/icons-material/Download';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import LinkIcon from '@mui/icons-material/Link';
 import configuration from "infrastructure/util/configuration";
 import { useHistory, useParams } from 'react-router-dom';
 import { ThemeContext } from '@emotion/react';
@@ -14,8 +15,7 @@ import { experimentsSelector, addExperiment, saveExperiment, experimentRepositor
 import { experimentDTOToExperimentType } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
-import { downloadFile } from './utils';
-import Spacer from 'components/Spacer';
+import { downloadFile, copyTextToClipboard } from './utils';
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
@@ -30,6 +30,8 @@ const downloadJson = (filename: string, json: any) => {
   const strJson = JSON.stringify(json, null, 2)
   downloadFile(filename, new Blob([strJson], {type: "application/json"}));
 }
+
+const buildPublicLink = (id: any): string => `${configuration.PUBLIC_LINK_PART}/experiment/${id}`;
 
 const BoldKey = styled(Typography)`
   font-weight: bold;
@@ -120,7 +122,20 @@ const ExperimentDetails: React.FC = () => {
       { experiment != null && experiment.state !== ExperimentState.NOT_LAUNCHED && (
         <Card style={{ marginTop: theme.spacing(4)}}>
           <CardContent>
-            <Typography variant="h6">{ experiment.name }</Typography>
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Typography variant="h6">{ experiment.name }</Typography>
+              </Grid>
+              <Grid item>
+                <label>{ t('features.experiment.details.published') }</label>
+                <Switch 
+                  color="secondary"
+                  checked={ experiment.isPublic }
+                  onChange={ () => alert('publishExp()') }
+                  inputProps={{ 'aria-label': t('features.experiment.details.publish') }}
+                />
+              </Grid>
+            </Grid>
             <Box>
               { experiment.creationDate != null && (
                 <Typography variant="caption" sx={{ display: 'inline' }}>
@@ -171,12 +186,32 @@ const ExperimentDetails: React.FC = () => {
                 </Typography>) 
             }
 
-            { /*<Grid container spacing={ 3 }>
-              <Grid item> 
-              { t('features.experiment.details.sizeBalance') }
+            { experiment.isPublic && (
+              <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(2) }} alignItems="center">
+                <Grid item>
+                  <BoldKey variant="body1">{ t('features.experiment.details.author') }</BoldKey>
+                  { experiment.author }
+                </Grid>
+                <Grid item>
+                  <Tooltip title={ t('features.experiment.details.copyLink') as string }>
+                    <Button
+                      color="secondary"
+                      startIcon={ <LinkIcon /> }
+                      onClick={ () => copyTextToClipboard(buildPublicLink(experiment.id)) } 
+                      style={{
+                        ...theme.typography.subtitle1,
+                        padding: theme.spacing(1),
+                        textTransform: 'initial',
+                        fontWeight: 'bold',
+                        backgroundColor: theme.palette.grey['100'],
+                       }}
+                    >
+                      { buildPublicLink(experiment.id) }  
+                    </Button>
+                  </Tooltip>
+                </Grid>
               </Grid>
-            </Grid>*/
-            }
+            )}
             
             <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(1) }}>
               { (experiment.numberScenarios ?? 0) > 0  && 
@@ -226,7 +261,7 @@ const ExperimentDetails: React.FC = () => {
                   { t('features.experiment.list.downloadResults') }
                 </Fab>
               </>
-            )}            
+            )}
           </CardActions>
         </Card>
       )}

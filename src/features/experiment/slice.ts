@@ -6,6 +6,9 @@ import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
 import { wizardSlice } from './wizard/slice';
 import configuration from 'infrastructure/util/configuration';
+import ExperimentStatusChecker from './ExperimentStatusChecker';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
 
 export const experimentRepository = new ExperimentRepository();
 
@@ -72,11 +75,17 @@ export const experimentsSlice = createSlice({
 
 const { setLoading, addExperiments, setExperiment, setExperimentInList, setExperiments, setError } = experimentsSlice.actions
 
+export { setExperimentInList };
+
 // ================================== Root STATE ==================================
 
 export const experimentsSelector = (state: RootState) => state.experiment;
 
 // ================================== THUNK middleware ==================================
+
+export const experimentStatusChecker = new ExperimentStatusChecker(
+  async(id: number, authToken: string) => experimentDTOToExperimentType(await experimentRepository.get(id, authToken))
+);
 
 export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { auth, experiment } = getState();
@@ -141,17 +150,6 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
       }
     }
 
-    if (typedExperiment.state === ExperimentState.CREATING) {
-      const checkStatus = () => setTimeout(async () => {
-        const newData = experimentDTOToExperimentType(await experimentRepository.get(typedExperiment.id, auth.token ?? ''));
-        dispatch(setExperimentInList(newData))
-        if (newData.state === ExperimentState.CREATING) {
-          checkStatus();
-        }
-      }, configuration.CREATING_EXPERIMENT_RELOAD_TIME);
-
-      checkStatus();
-    }
     if (!hasPreviousId && experimentResponse.id != null) {
       if(experimentResponse.status === "PRE_SAVED") {
         const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))

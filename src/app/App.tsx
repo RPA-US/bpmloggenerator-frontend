@@ -16,7 +16,8 @@ import Toolbar from 'components/Toolbar';
 import Spacer from 'components/Spacer';
 
 import { history } from 'store/store';
-import { authSelector, updateRedirectPath, checkSession, logout, signup } from 'features/auth/slice';
+import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
+import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
 import ExperimentsList from 'features/experiment/ExperimentsList';
@@ -33,10 +34,19 @@ import Theme from 'styles/theme';
 import PrivateRoute from './helpers/PrivateRoute';
 import PublicExperimentsList from 'features/experiment/PublicExperimentsList';
 
+
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   marginTop: theme.spacing(3)
 }))
+
+const NotificationsContainer = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  top: '64px', // under header bar
+  right: 0,
+  padding: theme.spacing(1),
+  zIndex: 1,
+}));
 
 function App() {
   const { t } = useTranslation();
@@ -88,6 +98,11 @@ function App() {
                 )
               }
             </Toolbar>
+
+            <NotificationsContainer>
+              <NotificationsBoard />
+            </NotificationsContainer>
+
 
             { checked && (<StyledContainer maxWidth="xl">
               <Switch>

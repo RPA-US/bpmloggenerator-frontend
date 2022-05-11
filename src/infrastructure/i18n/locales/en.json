@@ -583,7 +583,10 @@
         "screenshotNameGenerationFunction": "Function generation: {{ val }}",
         "title": "Experiment Details",
         "scenarios": "Download scenario conf",
-        "variabilityConf": "Download variability conf"
+        "variabilityConf": "Download variability conf",
+        "published": "Published",
+        "author": "Author",
+        "copyLink": "Copy link"
       },
       "form": {
         "save": "Save",

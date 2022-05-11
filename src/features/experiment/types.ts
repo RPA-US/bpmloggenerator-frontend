@@ -24,6 +24,8 @@ export interface Experiment {
   sizeBalance: any
   specialColnames: any
   status: string | null
+  isPublic: boolean
+  author?: string
 }
 
 export interface ExperimentError {

@@ -646,7 +646,10 @@
         "screenshotNameGenerationFunction": "Función generadora: {{ val }}",
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
-        "variabilityConf": "Descargar configuración de variabilidad"
+        "variabilityConf": "Descargar configuración de variabilidad",
+        "published": "Público",
+        "author": "Autor",
+        "copyLink": "Copiar enlace"
       }
     }
   }
