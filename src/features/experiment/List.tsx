@@ -7,19 +7,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
 import Spacer from 'components/Spacer';
 
-import { experimentRepository } from './slice';
 import { Experiment, ExperimentState } from './types';
-import { downloadFile } from './utils';
-
-const downloadResults = async (experimentId: number, token: string) => {
-  try {
-    const { filename, blob }: any = await experimentRepository.download(experimentId, token);
-    downloadFile(filename, blob);    
-  } catch (ex) {
-    console.error('error downloading experiment result', ex);
-  }
-}
-
 export interface ListProps {
   experiments: Experiment[],
   loadMoreFn: Function,
