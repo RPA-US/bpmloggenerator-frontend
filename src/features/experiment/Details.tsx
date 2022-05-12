@@ -11,7 +11,7 @@ import { ThemeContext } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
-import { experimentsSelector, addExperiment, saveExperiment, experimentRepository } from './slice';
+import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice} from './slice';
 import { experimentDTOToExperimentType } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
@@ -20,7 +20,7 @@ import { downloadFile, copyTextToClipboard } from './utils';
 const downloadResults = async (experimentId: number, token: string) => {
   try {
     const { filename, blob }: any = await experimentRepository.download(experimentId, token);
-    downloadFile(filename, blob);    
+    downloadFile(filename, blob);
   } catch (ex) {
     console.error('error downloading experiment result', ex);
   }
@@ -28,7 +28,7 @@ const downloadResults = async (experimentId: number, token: string) => {
 
 const downloadJson = (filename: string, json: any) => {
   const strJson = JSON.stringify(json, null, 2)
-  downloadFile(filename, new Blob([strJson], {type: "application/json"}));
+  downloadFile(filename, new Blob([strJson], { type: "application/json" }));
 }
 
 const buildPublicLink = (id: any): string => `${configuration.PUBLIC_LINK_PART}/experiment/${id}`;
@@ -53,11 +53,11 @@ const ExperimentDetails: React.FC = () => {
   const { experiments } = useSelector(experimentsSelector);
   const { token } = useSelector(authSelector);
   const { id } = useParams<{ id: string }>();
-  const [ experiment, setExperimentInList ]:any = useState(null);
-  const [ loading, setLoading ]:any = useState(false);
+  const [experiment, setExperimentInList]: any = useState(null);
+  const [loading, setLoading]: any = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   useEffect(() => {
     (async () => {
       try {
@@ -83,7 +83,7 @@ const ExperimentDetails: React.FC = () => {
     <>
       <Typography variant="h4">
         <BackButton to={`${configuration.PREFIX}/`} />
-        { t('features.experiment.details.title') }
+        {t('features.experiment.details.title')}
       </Typography>
 
       {
@@ -96,140 +96,144 @@ const ExperimentDetails: React.FC = () => {
         )
       }
 
-      { experiment != null && experiment.state === ExperimentState.NOT_LAUNCHED && (
+      {experiment != null && experiment.state === ExperimentState.NOT_LAUNCHED && (
         <ExperimentFormComponent
-          initialValues={ experiment }
+          initialValues={experiment}
           onSubmit={(data: any) => {
             console.log('Edit component data received:', data);
+            const variability_mode = data.get('variability_mode');
             data.set('id', id);
-            dispatch(saveExperiment(data,(status: string, error: any) => {
+            dispatch(saveExperiment(data, (status: string, error: any) => {
               setLoading(false);
-              if(error == null){
-                if(status === "PRE_SAVED"){
-                  history.push(configuration.PREFIX+'/case-variability');
+              if (error == null) {
+                if (status === "PRE_SAVED") {
+                  if (variability_mode === "scenarioVariability") {
+                    history.push(configuration.PREFIX + '/scenario-variability');
+                  } else if (variability_mode === "caseVariability") {
+                    history.push(configuration.PREFIX + '/case-variability');
+                  }} else {
+                    history.push(configuration.PREFIX + '/');
+                  }
                 } else {
-                  history.push(configuration.PREFIX+'/');
+                  alert('unexpected error occurred');
+                  console.error(error);
                 }
-              } else {
-                alert('unexpected error occurred');
-                console.error(error);
-              }
-            }));
+              }));
           }}
         />
       )}
 
-      { experiment != null && experiment.state !== ExperimentState.NOT_LAUNCHED && (
-        <Card style={{ marginTop: theme.spacing(4)}}>
+      {experiment != null && experiment.state !== ExperimentState.NOT_LAUNCHED && (
+        <Card style={{ marginTop: theme.spacing(4) }}>
           <CardContent>
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <Typography variant="h6">{ experiment.name }</Typography>
+                <Typography variant="h6">{experiment.name}</Typography>
               </Grid>
               <Grid item>
-                <label>{ t('features.experiment.details.published') }</label>
-                <Switch 
+                <label>{t('features.experiment.details.published')}</label>
+                <Switch
                   color="secondary"
-                  checked={ experiment.isPublic }
-                  onChange={ () => alert('publishExp()') }
+                  checked={experiment.isPublic}
+                  onChange={() => alert('publishExp()')}
                   inputProps={{ 'aria-label': t('features.experiment.details.publish') }}
                 />
               </Grid>
             </Grid>
             <Box>
-              { experiment.creationDate != null && (
+              {experiment.creationDate != null && (
                 <Typography variant="caption" sx={{ display: 'inline' }}>
-                  { t('features.experiment.details.createdAt', { val: experiment.creationDate }) }
-                  { experiment.lastEditionDate != null ? ',' : '' }
+                  {t('features.experiment.details.createdAt', { val: experiment.creationDate })}
+                  {experiment.lastEditionDate != null ? ',' : ''}
                 </Typography>
-              ) }
-              { experiment.lastEditionDate != null && (
+              )}
+              {experiment.lastEditionDate != null && (
                 <Typography variant="caption" sx={{ display: 'inline', ml: 1 }}>
-                    { t('features.experiment.details.modifiedAt', { val: experiment.lastEditionDate }) }
+                  {t('features.experiment.details.modifiedAt', { val: experiment.lastEditionDate })}
                 </Typography>
-              ) }
+              )}
             </Box>
 
             <ChipProperty
               color="primary"
-              label={ t('features.experiment.details.scenariosNumber', { val: experiment.numberScenarios }) as string }
+              label={t('features.experiment.details.scenariosNumber', { val: experiment.numberScenarios }) as string}
             />
-            
-            <ChipProperty
-              color="primary"
-              label={ t('features.experiment.details.state', { val: ExperimentState[experiment.state] }) as string }
-            />            
-            
-            <ChipProperty
-              color="primary"
-              label={ t('features.experiment.details.screenshotNameGenerationFunction', { val: experiment.screenshotNameGenerationFunction }) as string }
-            />            
 
-            <Grid container spacing={ 3 }>
+            <ChipProperty
+              color="primary"
+              label={t('features.experiment.details.state', { val: ExperimentState[experiment.state] }) as string}
+            />
+
+            <ChipProperty
+              color="primary"
+              label={t('features.experiment.details.screenshotNameGenerationFunction', { val: experiment.screenshotNameGenerationFunction }) as string}
+            />
+
+            <Grid container spacing={3}>
               <Grid item style={{ marginTop: theme.spacing(3) }}>
-                <BoldKey variant="body1">{ t('features.experiment.details.executionStart') }</BoldKey>{ t('commons:datetime', { val: experiment.executionStart }) }
+                <BoldKey variant="body1">{t('features.experiment.details.executionStart')}</BoldKey>{t('commons:datetime', { val: experiment.executionStart })}
               </Grid>
               <Grid item style={{ marginTop: theme.spacing(3) }}>
-                <BoldKey variant="body1">{ t('features.experiment.details.executionEnd') }</BoldKey>{ t('commons:datetime', { val: experiment.executionEnd }) }
+                <BoldKey variant="body1">{t('features.experiment.details.executionEnd')}</BoldKey>{t('commons:datetime', { val: experiment.executionEnd })}
               </Grid>
             </Grid>
-            
-            <Typography variant="subtitle2" style={{ marginTop: theme.spacing(2) }}>{ t('features.experiment.details.description') }</Typography>
-            { experiment.description != null && 
-              (<Typography variant="body1" 
+
+            <Typography variant="subtitle2" style={{ marginTop: theme.spacing(2) }}>{t('features.experiment.details.description')}</Typography>
+            {experiment.description != null &&
+              (<Typography variant="body1"
                 style={{
                   marginTop: theme.spacing(1),
                   padding: theme.spacing(2),
-                  backgroundColor: theme.palette.grey['200'] 
+                  backgroundColor: theme.palette.grey['200']
                 }}>
-                  { experiment.description ?? t('features.experiment.details.noDescription') }
-                </Typography>) 
+                {experiment.description ?? t('features.experiment.details.noDescription')}
+              </Typography>)
             }
 
-            { experiment.isPublic && (
-              <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(2) }} alignItems="center">
+            {experiment.isPublic && (
+              <Grid container spacing={3} style={{ marginTop: theme.spacing(2) }} alignItems="center">
                 <Grid item>
-                  <BoldKey variant="body1">{ t('features.experiment.details.author') }</BoldKey>
-                  { experiment.author }
+                  <BoldKey variant="body1">{t('features.experiment.details.author')}</BoldKey>
+                  {experiment.author}
                 </Grid>
                 <Grid item>
-                  <Tooltip title={ t('features.experiment.details.copyLink') as string }>
+                  <Tooltip title={t('features.experiment.details.copyLink') as string}>
                     <Button
                       color="secondary"
-                      startIcon={ <LinkIcon /> }
-                      onClick={ () => copyTextToClipboard(buildPublicLink(experiment.id)) } 
+                      startIcon={<LinkIcon />}
+                      onClick={() => copyTextToClipboard(buildPublicLink(experiment.id))}
                       style={{
                         ...theme.typography.subtitle1,
                         padding: theme.spacing(1),
                         textTransform: 'initial',
                         fontWeight: 'bold',
                         backgroundColor: theme.palette.grey['100'],
-                       }}
+                      }}
                     >
-                      { buildPublicLink(experiment.id) }  
+                      {buildPublicLink(experiment.id)}
                     </Button>
                   </Tooltip>
                 </Grid>
               </Grid>
             )}
-            
-            <Grid container spacing={ 3 } style={{ marginTop: theme.spacing(1) }}>
-              { (experiment.numberScenarios ?? 0) > 0  && 
+
+            <Grid container spacing={3} style={{ marginTop: theme.spacing(1) }}>
+              {(experiment.numberScenarios ?? 0) > 0 &&
                 (<Grid item style={{ marginTop: theme.spacing(1) }}>
                   <FileBox component="span" sx={{ p: 2 }}>
                     <Button
-                      startIcon={ <AttachFileIcon /> }
-                      onClick={ () => downloadJson('scenarios_conf.json', experiment.scenariosConf)}
-                    >{ t('features.experiment.details.scenarios') }</Button>
+                      startIcon={<AttachFileIcon />}
+                      onClick={() => downloadJson('scenarios_conf.json', experiment.scenariosConf)}
+                    >{t('features.experiment.details.scenarios')}</Button>
                   </FileBox>
                 </Grid>)
               }
               <Grid item style={{ marginTop: theme.spacing(1) }}>
                 <FileBox component="span" sx={{ p: 2 }}>
                   <Button
-                    startIcon={ <AttachFileIcon /> }
-                    onClick={ () => downloadJson('variability_conf.json', experiment.variabilityConf)}
-                  >{ t('features.experiment.details.variabilityConf') }</Button>
+                    startIcon={<AttachFileIcon />}
+                    onClick={() => downloadJson('variability_conf.json', experiment.variabilityConf)}
+                  >{t('features.experiment.details.variabilityConf')}</Button>
                 </FileBox>
               </Grid>
               { /*<Grid item style={{ marginTop: theme.spacing(1) }}>
@@ -244,21 +248,21 @@ const ExperimentDetails: React.FC = () => {
           </CardContent>
 
           <CardActions style={{ padding: theme.spacing(2) }}>
-            { experiment.state === ExperimentState.CREATING && (
+            {experiment.state === ExperimentState.CREATING && (
               <>
-                <Typography variant="body1">{ t('features.experiment.creating') }</Typography>
+                <Typography variant="body1">{t('features.experiment.creating')}</Typography>
                 <LinearProgress color="secondary" />
               </>
             )}
-            { experiment.state === ExperimentState.CREATED && (
+            {experiment.state === ExperimentState.CREATED && (
               <>
                 <Fab
                   variant="extended"
                   color="secondary"
-                  onClick={ () => downloadResults(experiment.id, token ?? '') }
+                  onClick={() => downloadResults(experiment.id, token ?? '')}
                 >
                   <DownloadIcon sx={{ mr: 1 }} />
-                  { t('features.experiment.list.downloadResults') }
+                  {t('features.experiment.list.downloadResults')}
                 </Fab>
               </>
             )}
