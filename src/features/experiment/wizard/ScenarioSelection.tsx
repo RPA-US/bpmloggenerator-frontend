@@ -38,7 +38,7 @@ const ScenarioSelection: React.FC = () => {
             </TableCell>
             <TableCell align="center">
               <Button
-                  disabled={scenario_variability[variant][act][screenshot_column_name].variate === 1}
+                  //disabled={scenario_variability[variant][act][screenshot_column_name].variate === 1}
                   variant="contained"
                   component={RouterLink}
                   to={`${configuration.PREFIX}/get-gui-component-coordinates/scenario/${variant}/${act}/${scenario_variability[variant][act][screenshot_column_name].initValue}`}
