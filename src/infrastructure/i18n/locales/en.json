@@ -99,7 +99,8 @@
         "launchedAt": "LaunchedAt",
         "edit": "Edit",
         "downloadResults": "Download results",
-        "viewMore": "View More"
+        "viewMore": "View More",
+        "public": "Public experiments"
       },
       "function_category": {
         "name": {
