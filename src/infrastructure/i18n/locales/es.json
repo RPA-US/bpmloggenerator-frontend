@@ -652,6 +652,68 @@
         "author": "Autor",
         "copyLink": "Copiar enlace"
       }
+    },
+    "user": {
+      "profileView": "Perfil",
+      "logout": "Desconectar",
+      "form": {
+        "addComponent": "Añadir componente",
+        "save": "Guardar",
+        "username": {
+          "label": "Nombre de usuario"
+        },
+        "firstName": {
+          "label": "Nombre",
+          "placeholder": "Introduce tu nombre"
+        },
+        "lastName": {
+          "label": "Apellido",
+          "placeholder": "Introduce tu apellido"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Introduce tu email"
+        },
+        "currentPassword": {
+          "label": "Contraseña actual",
+          "placeholder": "Introduce tu contraseña actual"
+        },
+        "password": {
+          "label": "Contraseña nueva",
+          "placeholder": "Introduce la nueva contraseña"
+        },
+        "repeatedPassword": {
+          "label": "Repetir contraseña",
+          "placeholder": "Repite la contraseña"
+        }
+      },
+      "gui-components": {
+        "addComponent": "Añadir componente",
+        "category": "Categoría:",
+        "empty": "No se ha añadido ningún componente aún",
+        "form": {
+          "title": "GUI Component",
+          "name": {
+            "label": "Nombre",
+            "placeholder": "nombre del componente"
+          },
+          "description": {
+            "label": "Descripción",
+            "placeholder": "breve descripción"
+          },
+          "category": {
+            "label": "Categoría"
+          },
+          "thumbnail": {
+            "label": "Imagen"
+          },
+          "errors": {
+            "nameRequired": "El nombre del componente es obligatorio",
+            "categoryRequired": "Por favor, seleccione una categoría",
+            "thumbnailRequired": "Por favor, introduzca una imagen"
+          }
+        }
+      }
     }
   }
 }

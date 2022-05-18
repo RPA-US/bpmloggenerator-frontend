@@ -10,6 +10,8 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/system';
+import { useTranslation } from "react-i18next";
+import 'infrastructure/i18n/config';
 import configuration from "infrastructure/util/configuration";
 
 import Toolbar from 'components/Toolbar';
@@ -26,14 +28,13 @@ import ExperimentDetails from 'features/experiment/Details';
 import ExperimentGetGUIComponentsCoordenates from 'features/experiment/wizard/GUIComponentsCoordenates';
 import ExperimentAssist from 'features/experiment/wizard/ActivitySelection';
 import ScenarioSelection from 'features/experiment/wizard/ScenarioSelection';
-import ColumnVariability from 'features/experiment/wizard/ColumnVariability'
-import 'infrastructure/i18n/config';
-import { useTranslation } from "react-i18next";
+import ColumnVariability from 'features/experiment/wizard/ColumnVariability';
+import UserMenu from 'features/user/UserMenu';
+import UserProfile from 'features/user/Profile';
 
 import Theme from 'styles/theme';
 import PrivateRoute from './helpers/PrivateRoute';
 import PublicExperimentsList from 'features/experiment/PublicExperimentsList';
-
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -77,14 +78,9 @@ function App() {
               
               {
                 isAuth ? (
-                  <>
-                    <Typography variant="button" color="white" component="div">
-                      { currentUser?.email }
-                    </Typography>
-                    <IconButton onClick={ () => dispatch(logout()) } aria-label="logout">
-                      <Typography color="white"><LogoutIcon /></Typography>
-                    </IconButton>
-                  </>
+                  <UserMenu>
+                    <Typography color="white">{ currentUser?.email }</Typography>
+                  </UserMenu>
                 ) :
                 (
                   <>
@@ -116,6 +112,7 @@ function App() {
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentGetGUIComponentsCoordenates } path={`${configuration.PREFIX}/get-gui-component-coordinates/:variability_mode/:variant/:act/:screenshot_filename`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ColumnVariability } path={`${configuration.PREFIX}/column-variability/:variant/:act`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ScenarioSelection } path={`${configuration.PREFIX}/scenario-variability`} />
+                <PrivateRoute {...defaultProtectedRouteProps} component={ UserProfile } path={`${configuration.PREFIX}/profile`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentsList } path={`${configuration.PREFIX}/`} />
               </Switch>
             </StyledContainer>) }

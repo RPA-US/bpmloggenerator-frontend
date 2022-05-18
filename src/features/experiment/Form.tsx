@@ -11,18 +11,8 @@ import styled from '@emotion/styled';
 import FileUpload from 'components/FileUpload';
 import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
-
-const TextInputContainer = styled('div')(({ theme }) => {
-  const t = theme as any;
-  return {
-    maxWidth: '100%',
-    marginBottom: t.spacing(2),
-    [t.breakpoints.up('md')]: {
-      maxWidth: `400px`,
-      marginBottom: 0,
-    }
-  }
-});
+import TextInputContainer from 'components/TextInputContainer';
+import { objectToFormData } from 'infrastructure/util/form';
 
 const RelativeContainer = styled('div')`
   position: relative;
@@ -160,22 +150,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       checkedData.screenshots_path = initialValues.screenshotsPath;
     }
     
-    const formData = new FormData();
-    Object.keys(checkedData)
-      .forEach(key => {
-        const value = (fileContents as any)[key] ?? checkedData[key];
-        if (value instanceof FileList) {
-          if (value[0] != null) {
-            formData.append(key, value[0])
-          }
-        } else if (value != null) {
-          if (typeof value === 'string') {
-            if (value.trim() !== '') formData.append(key, value.trim())
-          } else {
-            formData.append(key, value)
-          }
-        }
-      });
+    const formData = objectToFormData(checkedData, fileContents);
     onSubmit(formData)
   }
 

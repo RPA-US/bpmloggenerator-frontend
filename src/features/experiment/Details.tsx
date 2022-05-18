@@ -106,18 +106,19 @@ const ExperimentDetails: React.FC = () => {
             dispatch(saveExperiment(data, (status: string, error: any) => {
               setLoading(false);
               if (error == null) {
-                if (status === "PRE_SAVED") {
+                if (status != "LAUNCHED") {
                   if (variability_mode === "scenarioVariability") {
                     history.push(configuration.PREFIX + '/scenario-variability');
                   } else if (variability_mode === "caseVariability") {
                     history.push(configuration.PREFIX + '/case-variability');
-                  }} else {
-                    history.push(configuration.PREFIX + '/');
                   }
                 } else {
-                  alert('unexpected error occurred');
-                  console.error(error);
+                  history.push(configuration.PREFIX + '/');
                 }
+              } else {
+                alert('unexpected error occurred');
+                console.error(error);
+              }
               }));
           }}
         />

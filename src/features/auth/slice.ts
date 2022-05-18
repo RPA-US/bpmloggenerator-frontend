@@ -64,6 +64,8 @@ function userDTOToUserType(userData: UserDTO): User {
     id: `${userData.pk}`,
     email: userData.email,
     displayName: userData.username,
+    firstName: userData.first_name,
+    lastName: userData.last_name,
   }
 }
 

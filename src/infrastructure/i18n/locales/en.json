@@ -646,6 +646,68 @@
         },
         "generate": "Execute"
       }
+    },
+    "user": {
+      "profileView": "Profile",
+      "logout": "Logout",
+      "form": {
+        "addComponent": "Add component",
+        "save": "Save",
+        "username": {
+          "label": "Username"
+        },
+        "firstName": {
+          "label": "Name",
+          "placeholder": "Enter your name"
+        },
+        "lastName": {
+          "label": "Last name",
+          "placeholder": "Enter your last name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter your email"
+        },
+        "currentPassword": {
+          "label": "Current password",
+          "placeholder": "Enter your current password"
+        },
+        "password": {
+          "label": "New password",
+          "placeholder": "Enter a valid password"
+        },
+        "repeatedPassword": {
+          "label": "Repeat password",
+          "placeholder": "Repeat the password"
+        }
+      },
+      "gui-components": {
+        "addComponent": "Add component",
+        "category": "Category:",
+        "empty": "There's any component created yet",
+        "form": {
+          "title": "GUI Component",
+          "name": {
+            "label": "Name",
+            "placeholder": "component's name"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "component's description"
+          },
+          "category": {
+            "label": "Category"
+          },
+          "thumbnail": {
+            "label": "Thumbnail"
+          },
+          "errors": {
+            "nameRequired": "The name is mandatory",
+            "categoryRequired": "Please select a valida category",
+            "thumbnailRequired": "Please select an image"
+          }
+        }
+      }
     }
   }
 }

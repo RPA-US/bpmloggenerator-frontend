@@ -99,6 +99,7 @@ const ExperimentsList: React.FC = () => {
       />
 
       { /* <NotificationsTester /> */ }
+      <NotificationsTester />
     </>
   )
 }

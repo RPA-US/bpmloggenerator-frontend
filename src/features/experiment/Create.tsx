@@ -11,7 +11,6 @@ import { experimentsSelector, saveExperiment} from './slice';
 const CreateExperiment: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { experiments } = useSelector(experimentsSelector);
   const [ loading, setLoading ] = useState(false)
   const dispatch = useDispatch();
  

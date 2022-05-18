@@ -96,10 +96,9 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
         if (url === "") {
 
             try {
-                const res = await screenshotRepository.get(
+                const imageBlob = await screenshotRepository.get(
                     path, token
                 );
-                const imageBlob = await res.blob();
                 src = URL.createObjectURL(imageBlob);
                 setUrl(src);
             } catch (ex) {

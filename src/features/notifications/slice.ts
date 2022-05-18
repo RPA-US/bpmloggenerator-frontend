@@ -67,7 +67,6 @@ export { addNotification, removeNotification };
 
 export const showNotification = (notification: NotificationAlert, hideCallback?: Function): AppThunk => async (dispatch: AppDispatch, getState) => {
   const { notifications } = getState();
-  debugger;
   if (notification.id == null || notifications.list.every((n: Notification) => n.id !== notification.id)) {
     dispatch(addNotification(notification));
   }

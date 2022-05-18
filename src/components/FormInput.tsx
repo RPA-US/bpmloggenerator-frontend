@@ -11,6 +11,8 @@ export interface FormInputProps {
   style?: React.CSSProperties
   titleAlignment?: string
   tooltip?: string
+  labelGridValue?: number,
+  valueGridValue?: number,
 }
 
 const HelperText = styled(Typography)<TypographyProps<'small', {}>>(({theme}) => ({
@@ -22,13 +24,13 @@ const HelperText = styled(Typography)<TypographyProps<'small', {}>>(({theme}) =>
   }
 }));
 
-const FormInput: React.FC<FormInputProps> = ({ title, helperText, tooltip, style, children, titleAlignment = 'center' }) => {
+const FormInput: React.FC<FormInputProps> = ({ title, helperText, tooltip, style, children, titleAlignment = 'center', labelGridValue, valueGridValue }) => {
   const { t } = useTranslation();
 
   return (
     <Grid container alignItems={ titleAlignment } style={ style }>
       { title && (
-        <Grid item xs={ 12 } md={ 5 }>
+        <Grid item xs={ 12 } md={ labelGridValue ?? 5 }>
           { typeof tooltip === 'string' && (
             <Tooltip title={ t(tooltip) as string }  >
                 <InfoIcon style={{ fontSize: 16, marginRight: 4 }} />
@@ -42,7 +44,7 @@ const FormInput: React.FC<FormInputProps> = ({ title, helperText, tooltip, style
           )}
         </Grid>
       )}
-      <Grid item xs={ 12 } md={ 7 }>
+      <Grid item xs={ 12 } md={ valueGridValue ?? 7 }>
         { children }
       </Grid>
     </Grid>
