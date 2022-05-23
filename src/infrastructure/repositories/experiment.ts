@@ -5,10 +5,26 @@ export default class ExperimentRepository {
 
   async list(page: number, token: string) {
     try {
-      const params: {page?:number } = {};
+      const params: {page?:number, public?:boolean } = {};
       if (page > 0) {
         params.page = page;
       }
+
+      return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
+    } catch (ex) {
+      console.error('error caught in ExperimentRepository.list', ex);
+      // TODO handle session caduced error
+      throw ex;
+    }
+  }
+  
+  async findPublic(page: number, token: string) {
+    try {
+      const params: {page?:number, public?:boolean } = { public: true };
+      if (page > 0) {
+        params.page = page;
+      }
+
       return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
     } catch (ex) {
       console.error('error caught in ExperimentRepository.list', ex);

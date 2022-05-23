@@ -32,6 +32,7 @@ const GUIComponentsList: React.FC<GUIComponentsListProps> = (props) => {
           categories={ categories }
           onClick={ () => onSelect != null && onSelect(component)  }
           id={ component.id }
+          idCode={ component.idCode } 
           name={ component.name }
           description={ component.description }
           category={ component.category}

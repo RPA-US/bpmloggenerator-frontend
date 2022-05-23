@@ -691,6 +691,10 @@
             "label": "Name",
             "placeholder": "component's name"
           },
+          "idCode": {
+            "label": "Unique identifier",
+            "placeholder": "unique_identifier"
+          },
           "description": {
             "label": "Description",
             "placeholder": "component's description"
@@ -704,7 +708,9 @@
           "errors": {
             "nameRequired": "The name is mandatory",
             "categoryRequired": "Please select a valida category",
-            "thumbnailRequired": "Please select an image"
+            "thumbnailRequired": "Please select an image",
+            "idCodeRequired": "Please enter an unique identifier",
+            "idCodeMustNotContainsWhiteSpace": "The unique identifier must not contains white spaces"
           }
         }
       }

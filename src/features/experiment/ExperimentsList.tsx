@@ -92,7 +92,7 @@ const ExperimentsList: React.FC = () => {
 
       <List
         loadMoreFn={ () => loadExperiments() }
-        loadMoreDisabled={ experiments.length > 0 && pagination.hasNext }
+        loadMoreDisabled={ experiments.length > 0 && !pagination.hasNext }
         isLoading={ isLoading }
         experiments={ experiments }
         downloadFn = { (id: number) => downloadResults(id, token ?? '') }

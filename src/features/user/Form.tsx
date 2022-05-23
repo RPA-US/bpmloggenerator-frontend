@@ -27,22 +27,9 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
       valid = false;
       setError(field, error);
     }
-    /*// if (fileContents.seedLog == null) setError({ type: 'required', message: t('features.experiment.form.errors.seedLogRequired') as string });
-      if ((data.screenshots == null || data.screenshots.length < 1) && (initialValues.screenshotsPath == null || initialValues.screenshotsPath === '')) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
-      if (fileContents.variability_conf == null && initialValues.variabilityConf == null) setFormError('variability_conf', { type: 'required', message: t('features.experiment.form.errors.variabilityRequired') as string });
-      if (Validations.isPositiveInteger(data.number_scenarios) && data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
-      if (!Validations.isPositiveInteger(data.number_scenarios)) setFormError('number_scenarios', { type: 'required', message: t('features.experiment.form.errors.scenariosNumberRequired') as string });
-      if (Validations.isBlank(data.logSize)) setFormError('logSize', { type: 'required', message: t('features.experiment.form.errors.logSizeRequired') as string });
-      if (Validations.isBlank(data.imbalancedCase)) {
-        setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseRequired') as string });
-      } else {
-        const tokenizedImbalanced = data.imbalancedCase.split(',');
-        if (tokenizedImbalanced.length === 1) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseInvalidLength') as string });
-        const sum = tokenizedImbalanced.reduce((tot: number, curr: string) => tot + parseFloat(curr), 0);
-        if (sum != 1.0) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseSumDistinctOfOne') as string });
-      }
-    if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
-    console.log('is form valid', valid, ', evalued data', data);*/
+
+    if (Validations.isBlank(data.email)) setFormError('email', { type: 'required', message: t('features.user.form.errors.emailRequired') as string });
+    // TODO FIX MAX LENGTH?
     return valid;
   }
 
@@ -106,7 +93,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
               fullWidth
               placeholder={t('features.user.form.firstName.placeholder')}
               inputProps={
-                register('firstName', {
+                register('first_name', {
                   // required: t('features.experiment.form.errors.firstNameRequired') as string,
                   value: initialValues.firstName
                 })
@@ -129,7 +116,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
               fullWidth
               placeholder={t('features.user.form.lastName.placeholder')}
               inputProps={
-                register('lastName', {
+                register('last_name', {
                   // required: t('features.experiment.form.errors.lastNameRequired') as string,
                   value: initialValues.lastName
                 })
@@ -164,7 +151,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
           </TextInputContainer>
         </FormInput>
 
-        <Typography variant="h6" style={{ margin: theme.spacing(2) }}>
+        { /*<Typography variant="h6" style={{ margin: theme.spacing(2) }}>
           Cambio de contraseña
         </Typography>
         <Typography variant="body1" style={{ marginLeft: theme.spacing(2) }}>
@@ -238,8 +225,8 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
           </TextInputContainer>
         </FormInput>
 
+             */}
       </CardContent>
-
       <CardActions style={{ marginRight: theme.spacing(2) }}>
           <Spacer />
 

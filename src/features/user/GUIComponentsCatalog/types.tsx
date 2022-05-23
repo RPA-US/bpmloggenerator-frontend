@@ -1,6 +1,7 @@
 
 export interface GUIComponentType {
   id: number | null
+  idCode: string
   category: number
   name: string
   description?: string

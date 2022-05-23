@@ -37,8 +37,7 @@ const GUIComponent: React.FC<GUIComponentProps> = (props) => {
       try {
         let blob;
         if (thumbnail == null) {
-          let tmpSrc = `${path?.split('/').pop()}/${filename}`;
-          blob = await screenshotRepository.get(tmpSrc, token ?? '');
+          blob = await screenshotRepository.get(path ?? '', token ?? '');
         } else {
           blob = thumbnail;
         }

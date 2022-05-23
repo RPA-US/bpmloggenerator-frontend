@@ -77,19 +77,4 @@ export default class AuthRepository {
     }
   }
 
-  async saveUser(userData: any, token: string) {
-    try {
-      return await Http.put<any>(Http.buildURL('/users/auth/user/'), userData, Http.authHeader(token))
-    } catch (error) {
-      if (error instanceof Response) {
-        if (error.status === 400) {
-          throw new AuthError('session.expired', 'session token expired')
-        }
-        throw new AuthError('unhandled', error.statusText);
-      }
-      console.error('error in AuthRepository.userData', error);
-      throw error;
-    }
-  }
-
 }

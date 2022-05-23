@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography } from '@mui/material'; 
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { authSelector } from 'features/auth/slice';
 import BackButton from 'components/BackButton';
@@ -10,20 +10,23 @@ import GUIComponentsCatalog from './GUIComponentsCatalog';
 
 import GUIComponentRepository from 'infrastructure/repositories/gui-component';
 import GUIComponentCategoryRepository from 'infrastructure/repositories/gui-component-category';
-import { t } from 'i18next';
+import { updateUser } from 'features/auth/slice';
 import { GUIComponentCategoryType, GUIComponentType } from './GUIComponentsCatalog/types';
+import { guiComponentDTOToGUIComponent } from './utils';
+import { GUIComponentResponse } from 'infrastructure/http/dto/wizard';
 
 const guiComponentRepository = new GUIComponentRepository();
 const guiComponentCategoryRepository = new GUIComponentCategoryRepository();
 
 const Profile: React.FC = () => {
   const { t } = useTranslation();
-  const { currentUser, token } = useSelector( authSelector );
+  const dispatch = useDispatch();
+
+  const { currentUser, token, isLoading } = useSelector( authSelector );
 
   const [ categories, setCategories ]: [ GUIComponentCategoryType[], any] = useState([]);
   const [ components, setComponents ]: [ GUIComponentType[], any] = useState([]);
-
-  console.log('currentUser', currentUser);
+;
   useEffect(() => {
     guiComponentCategoryRepository.list(token ?? '')
       .then((categoriesData) => {
@@ -37,20 +40,10 @@ const Profile: React.FC = () => {
         setCategories(categories);
       });
 
-    guiComponentRepository.list(token ?? '')
-      .then((guiComponentsData) => {
-        console.log('gui components data', guiComponentsData);
-
-        setComponents([{
-          id: 2,
-          name: t('features.experiment.GUI_components.name.id_card_2'),
-          description: t('features.experiment.GUI_components.description.id_card'),
-          category: 2,
-          thumbnail: null, // `/private-media/resources/GUI_components/dni/dni2.jpg`
-          filename: 'dni2.jpg',
-          // id_code: "id_card_2"
-          path: 'resources/GUI_components/dni'
-        }])
+    guiComponentRepository.ownedByUser(token ?? '')
+      .then((guiComponentsResponse:GUIComponentResponse) => {
+        console.log('gui components data', guiComponentsResponse);
+        setComponents(guiComponentsResponse.results.map(guiComponent => guiComponentDTOToGUIComponent(guiComponent)))
       })
   }, [])
 
@@ -64,19 +57,21 @@ const Profile: React.FC = () => {
       { /* USER FORM */ }
       <UserForm 
         onSubmit={ (data: any) => {
-          console.log('submitted user form!', data);
+          console.log('submitted user form!', [...data.entries()]);
+          dispatch(updateUser(data));
         } }
+        disabled={ isLoading }
         initialValues={ currentUser }
       />
 
       { /* GUI Components catalog */}
       <GUIComponentsCatalog
-        disabled={ false }
+        disabled={ isLoading }
         components= { components }
         categories={ categories }
         
         onComponentAdd={ (component: GUIComponentType) => {
-          console.log('on component add', component)
+          console.log('on component add', component);          
           setComponents([
             ...components,
             component

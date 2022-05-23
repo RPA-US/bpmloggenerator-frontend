@@ -39,6 +39,10 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
 
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.user.gui-components.form.errors.nameRequired') as string });
     if (!Validations.isPositiveInteger(data.category))  setFormError('category', { type: 'required', message: t('features.user.gui-components.form.errors.categoryRequired') as string });
+    if (Validations.isBlank(data.id_code)) 
+      setFormError('id_code', { type: 'required', message: t('features.user.gui-components.form.errors.idCodeRequired') as string });
+    else if (data.id_code.includes(' '))
+      setFormError('id_code', { type: 'required', message: t('features.user.gui-components.form.errors.idCodeMustNotContainsWhiteSpace') as string });
     if ((data.thumbnail == null || data.thumbnail.length < 1) && initialValues.filename == null) {
       setFormError('thumbnail', { type: 'required', message: t('features.user.gui-components.form.errors.thumbnailRequired') as string });
     }
@@ -52,6 +56,14 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
     }
 
     const formData = objectToFormData(data, {});
+
+    formData.set('image', formData.get('thumbnail') ?? '');
+    formData.delete('thumbnail');
+
+    // formData.set('gui_component_category', JSON.stringify({ id: parseInt(categoryId) }));
+    formData.set('gui_component_category', formData.get('category') ?? '');
+    formData.delete('category');
+
     onSubmit(formData);
   }
 
@@ -72,6 +84,26 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
             }
             error={formState.errors.name != null}
             helperText={formState.errors.name?.message}
+            disabled={ disabled }
+          />
+        </TextInputContainer>
+      </FormInput>
+
+      <FormInput
+        title="features.user.gui-components.form.idCode.label"
+        style={{ marginTop: theme.spacing(2) }}
+      >
+        <TextInputContainer>
+          <TextField
+            fullWidth
+            placeholder={t('features.user.gui-components.form.idCode.placeholder')}
+            inputProps={
+              register('id_code', {
+                value: initialValues.idCode
+              })
+            }
+            error={formState.errors.idCode != null}
+            helperText={formState.errors.idCode?.message}
             disabled={ disabled }
           />
         </TextInputContainer>

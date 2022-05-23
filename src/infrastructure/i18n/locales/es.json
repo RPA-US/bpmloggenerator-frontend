@@ -697,6 +697,10 @@
             "label": "Nombre",
             "placeholder": "nombre del componente"
           },
+          "idCode": {
+            "label": "Identificador único",
+            "placeholder": "identificador_unico"
+          },
           "description": {
             "label": "Descripción",
             "placeholder": "breve descripción"
@@ -710,7 +714,9 @@
           "errors": {
             "nameRequired": "El nombre del componente es obligatorio",
             "categoryRequired": "Por favor, seleccione una categoría",
-            "thumbnailRequired": "Por favor, introduzca una imagen"
+            "thumbnailRequired": "Por favor, introduzca una imagen",
+            "idCodeRequired": "Por favor, introduzca un identificador único",
+            "idCodeMustNotContainsWhiteSpace": "El identificador no puede contener espacios en blanco"
           }
         }
       }
