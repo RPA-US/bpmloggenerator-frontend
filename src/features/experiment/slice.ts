@@ -140,6 +140,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     const typedExperiment = experimentDTOToExperimentType(savedExperimentData);
 
     if (executeMode === 'true') {
+      experimentData.set('id', typedExperiment.id);
       experimentData.set('execute_mode', 'true');
       try {
         experimentRepository.save(experimentData, auth.token ?? '');
