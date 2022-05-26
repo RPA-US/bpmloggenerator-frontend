@@ -710,7 +710,8 @@
             "categoryRequired": "Please select a valida category",
             "thumbnailRequired": "Please select an image",
             "idCodeRequired": "Please enter an unique identifier",
-            "idCodeMustNotContainsWhiteSpace": "The unique identifier must not contains white spaces"
+            "idCodeMustNotContainsWhiteSpace": "The unique identifier must not contains white spaces",
+            "idCodeMustBeUnique": "This identifier is being used by another component"
           }
         }
       }

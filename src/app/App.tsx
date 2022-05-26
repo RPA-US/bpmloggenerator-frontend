@@ -7,8 +7,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container'; 
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/system';
 import { useTranslation } from "react-i18next";
 import 'infrastructure/i18n/config';
@@ -35,10 +33,15 @@ import UserProfile from 'features/user/Profile';
 import Theme from 'styles/theme';
 import PrivateRoute from './helpers/PrivateRoute';
 import PublicExperimentsList from 'features/experiment/PublicExperimentsList';
+import LanguageSelector from 'features/language/languageSelector';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   marginTop: theme.spacing(3)
+}))
+
+const LanguageSelectorContainer = styled('div')(({ theme }) => ({
+  marginRight: theme.spacing(2)
 }))
 
 const NotificationsContainer = styled('div')(({ theme }) => ({
@@ -75,6 +78,10 @@ function App() {
                 </Typography>
               </Button>
               <Spacer />
+              
+              <LanguageSelectorContainer>
+                <LanguageSelector />
+              </LanguageSelectorContainer>
               
               {
                 isAuth ? (

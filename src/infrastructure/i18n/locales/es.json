@@ -716,7 +716,8 @@
             "categoryRequired": "Por favor, seleccione una categoría",
             "thumbnailRequired": "Por favor, introduzca una imagen",
             "idCodeRequired": "Por favor, introduzca un identificador único",
-            "idCodeMustNotContainsWhiteSpace": "El identificador no puede contener espacios en blanco"
+            "idCodeMustNotContainsWhiteSpace": "El identificador no puede contener espacios en blanco",
+            "idCodeMustBeUnique": "El identificador introducido ya está siendo utilizado"
           }
         }
       }

@@ -139,15 +139,20 @@ const ExperimentDetails: React.FC = () => {
                   checked={experiment.isPublic}
                   onChange={() => {
                     const experimentData: any = experimentToFormData(experiment);
-                    experimentData.set('public', true);
+                    const newValue = !experiment.isPublic;
+                    experimentData.set('public', newValue);
                     console.log('experimentToFormData', [...experimentData.entries()]);
                     dispatch(saveExperiment(experimentData, () => {
-                      const notification = NotificationFactory.success(`Experiment "${experiment.name}" successfully published`)
+                      const notification = NotificationFactory.success(`Experiment "${experiment.name}" successfully ${newValue ? 'published' : 'unpublished'}`)
                         .dismissible()
                         .build();
 
                       setTimeout(() => {
                         dispatch(showNotification(notification));
+                        setExperimentInList({
+                          ...experiment,
+                          isPublic: newValue
+                        })
                       }, 0)
                     }))
                   }}

@@ -8,12 +8,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import { useSelector } from 'react-redux';
 import { authSelector } from 'features/auth/slice';
+import { guiComponentRepository } from 'features/experiment/wizard/slice';
 import CenteredModal from 'components/CenteredModal';
 
 import GUIComponentsList from './List';
 import { GUIComponentCategoryType, GUIComponentType } from './types';
 import CreateGUIComponentForm from './Form';
-import { guiComponentRepository } from 'features/experiment/wizard/slice';
+import { guiComponentDTOToGUIComponent } from '../utils';
 
 
 export interface GUIComponentsCatalogProps {
@@ -139,10 +140,9 @@ const GUIComponentsCatalog: React.FC<GUIComponentsCatalogProps> = (props) => {
       <CreateGUIComponentForm
         onSubmit={ async (guiComponentData: any) => {
           console.log('TODO: handle gui component creation form submit', guiComponentData);
-
           const isNewComponent = typeof (initialValues as any).id === 'number';
           const result = await guiComponentRepository.save(guiComponentData, token ?? '');
-          const guiComponent = await guiComponentRepository.get(result.id, token ?? '');
+          const guiComponent = guiComponentDTOToGUIComponent(await guiComponentRepository.get(result.id, token ?? ''));
 
             // temp method to add and display saved gui-component
           if (isNewComponent) {
@@ -153,11 +153,11 @@ const GUIComponentsCatalog: React.FC<GUIComponentsCatalogProps> = (props) => {
 
           setCreationModal(false);
           setInitialValues({});
-
         }}
         disabled={ guiComponentsLoading }
         categories={ categories }
         initialValues={ initialValues }
+        repository={ guiComponentRepository }
       />
     </CenteredModal>
 

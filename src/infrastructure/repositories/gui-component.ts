@@ -24,6 +24,16 @@ export default class GUIComponentRepository {
     }
   }
 
+  async checkIdCode(idCode: string, token: string) {
+    try {
+      const params = { id_code: idCode };
+      return await Http.get<{ exists: boolean }>(Http.buildURL('/gui-component/checkId/', params), Http.authHeader(token))
+    } catch (ex) {
+      console.error('error caught checking id_code', ex)
+      throw ex;
+    } 
+  }
+
   async get(id: number, token: string) {
     try {
       return await Http.get<GUIComponentDTO>(Http.buildURL(`/gui-component/${id}/`), Http.authHeader(token))

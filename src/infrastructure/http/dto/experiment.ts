@@ -13,10 +13,12 @@ export interface ExperimentDTO {
   last_edition: string
   foldername: string
   is_active: boolean
+  public: boolean,
   scenarios_conf: any
   screenshots_path: string
   size_balance: any
   status: string
+  user?: any
 }
 
 export interface ExperimentResponse {
