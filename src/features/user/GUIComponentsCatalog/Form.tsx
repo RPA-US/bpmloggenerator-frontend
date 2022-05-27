@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Button, Grid, MenuItem, Select, TextField, Theme } from '@mui/material';
+import React, { useContext } from 'react';
+import { Button, FormHelperText, Grid, MenuItem, Select, TextField, Theme } from '@mui/material';
 import { ThemeContext } from '@mui/styled-engine';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
@@ -13,20 +13,25 @@ import { objectToFormData } from 'infrastructure/util/form';
 import Spacer from 'components/Spacer';
 
 import { GUIComponentCategoryType, GUIComponentType } from './types';
+import GUIComponentRepository from 'infrastructure/repositories/gui-component';
+import { useSelector } from 'react-redux';
+import { authSelector } from 'features/auth/slice';
 
 export interface CreateGUIComponentFormProps {
   onSubmit: any
-  disabled?: boolean,
-  initialValues?: any,
+  disabled?: boolean
+  initialValues?: any
   categories: GUIComponentCategoryType[]
+  repository: GUIComponentRepository
 }
 
-const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmit, disabled = false, initialValues = {}, categories }) => {
+const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmit, disabled = false, initialValues = {}, categories, repository }) => {
   const theme = useContext(ThemeContext) as Theme;
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({} as any), []);
   const { t } = useTranslation();
-  const { register, formState, handleSubmit, getValues, setValue, setError } = useForm();
+  const { token } = useSelector(authSelector);
+  const { register, formState, handleSubmit, getValues, setValue, setError, clearErrors } = useForm();
 
   const thumbnailField = register('thumbnail');
 
@@ -39,6 +44,10 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
 
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.user.gui-components.form.errors.nameRequired') as string });
     if (!Validations.isPositiveInteger(data.category))  setFormError('category', { type: 'required', message: t('features.user.gui-components.form.errors.categoryRequired') as string });
+    if (Validations.isBlank(data.id_code)) 
+      setFormError('id_code', { type: 'required', message: t('features.user.gui-components.form.errors.idCodeRequired') as string });
+    else if (data.id_code.includes(' '))
+      setFormError('id_code', { type: 'required', message: t('features.user.gui-components.form.errors.idCodeMustNotContainsWhiteSpace') as string });
     if ((data.thumbnail == null || data.thumbnail.length < 1) && initialValues.filename == null) {
       setFormError('thumbnail', { type: 'required', message: t('features.user.gui-components.form.errors.thumbnailRequired') as string });
     }
@@ -52,6 +61,14 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
     }
 
     const formData = objectToFormData(data, {});
+
+    formData.set('image', formData.get('thumbnail') ?? '');
+    formData.delete('thumbnail');
+
+    // formData.set('gui_component_category', JSON.stringify({ id: parseInt(categoryId) }));
+    formData.set('gui_component_category', formData.get('category') ?? '');
+    formData.delete('category');
+
     onSubmit(formData);
   }
 
@@ -73,6 +90,31 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
             error={formState.errors.name != null}
             helperText={formState.errors.name?.message}
             disabled={ disabled }
+          />
+        </TextInputContainer>
+      </FormInput>
+
+      <FormInput
+        title="features.user.gui-components.form.idCode.label"
+        style={{ marginTop: theme.spacing(2) }}
+      >
+        <TextInputContainer>
+          <TextField
+            fullWidth
+            placeholder={t('features.user.gui-components.form.idCode.placeholder')}
+            inputProps={
+              register('id_code', {
+                value: initialValues.idCode,
+                validate: async(value) => {
+                  const existsResponse = await repository.checkIdCode(value, token ?? '');
+                  console.log('validate id_code', value, 'exists', existsResponse);
+                  return !existsResponse.exists || t('features.user.gui-components.form.errors.idCodeMustBeUnique') as string;
+                }
+              })
+            }
+            error={formState.errors.id_code != null}
+            helperText={formState.errors.id_code?.message}
+            disabled={ initialValues.id_code != null || disabled }
           />
         </TextInputContainer>
       </FormInput>
@@ -106,7 +148,8 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
           error={formState.errors.category != null}
           value={ (getValues('category') || initialValues.category) ?? '' }
           onChange={ (evt) => {
-            setValue('category', evt.target.value);
+            setValue('category', evt.target.value, { shouldValidate: true });
+            clearErrors('category');
             forceUpdate();
           }}
           style={{ width: '100%', maxWidth: '400px', marginRight: theme.spacing(4) }}
@@ -118,7 +161,9 @@ const CreateGUIComponentForm: React.FC<CreateGUIComponentFormProps> = ({ onSubmi
             >{ category.name }</MenuItem>
           )) }
         </Select>
-
+        { formState.errors.category != null && (
+          <FormHelperText>{ formState.errors.category?.message }</FormHelperText>
+        )}
       </FormInput>
 
       <FormInput

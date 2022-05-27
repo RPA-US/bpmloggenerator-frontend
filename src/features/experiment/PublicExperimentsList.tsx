@@ -76,7 +76,7 @@ const PublicExperimentsList: React.FC = () => {
     dispatch({ type: 'load' });
     const page: number = state.hasNext ? state.page + 1 : state.page;
     try {
-      const response = await experimentRepository.list(page, token ?? '');
+      const response = await experimentRepository.findPublic(page, token ?? '');
       const list = response.results.map((exp: ExperimentDTO) => experimentDTOToExperimentType(exp));
       dispatch({
         type: 'load_success',

@@ -51,11 +51,14 @@ export const authSlice = createSlice({
     setChecked: (state, { payload }: PayloadAction<boolean>) => {
       state.checked = payload;
     },
+    updateAuthUser: (state, { payload }: PayloadAction<User>) => {
+      state.currentUser = payload;
+    }
   }
 })
 
 
-const { setAuthSuccess, setLogOut, setLoading, setAuthFailed, setRedirectPath, setChecked } = authSlice.actions
+const { setAuthSuccess, setLogOut, setLoading, setAuthFailed, setRedirectPath, setChecked, updateAuthUser } = authSlice.actions
 
 export const authSelector = (state: RootState) => state.auth;
 
@@ -140,6 +143,26 @@ export const logout = (redirectPath?: string): AppThunk => async (dispatch: AppD
     dispatch(setLoading(false));
   }
   localStorage.removeItem(SESSION_TOKEN_ITEM);
+}
+
+export const updateUser = (userData: FormData): AppThunk => async (dispatch: AppDispatch, getState) => {
+  if (userData == null) {
+    throw new Error('payload data cannot be null or undefined');
+  }
+  const { auth } = getState();
+  try {
+    const { currentUser } = auth;
+
+    userData.set('username', currentUser?.displayName ?? '');
+
+    dispatch(setLoading(true));
+    const response = await repository.saveUser(userData, auth.token ?? '');
+    dispatch(updateAuthUser(userDTOToUserType(response)));
+  } catch (error) {
+    console.error('error updating user data', error);
+  } finally {
+    dispatch(setLoading(false));
+  }
 }
 
 export const updateRedirectPath = (redirectPath: string = ''): AppThunk => async (dispatch: AppDispatch) => {

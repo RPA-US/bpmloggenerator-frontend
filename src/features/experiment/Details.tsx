@@ -12,10 +12,11 @@ import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
 import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice} from './slice';
-import { experimentDTOToExperimentType } from './utils';
+import { experimentDTOToExperimentType, downloadFile, copyTextToClipboard, experimentToFormData } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
-import { downloadFile, copyTextToClipboard } from './utils';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
@@ -136,7 +137,25 @@ const ExperimentDetails: React.FC = () => {
                 <Switch
                   color="secondary"
                   checked={experiment.isPublic}
-                  onChange={() => alert('publishExp()')}
+                  onChange={() => {
+                    const experimentData: any = experimentToFormData(experiment);
+                    const newValue = !experiment.isPublic;
+                    experimentData.set('public', newValue);
+                    console.log('experimentToFormData', [...experimentData.entries()]);
+                    dispatch(saveExperiment(experimentData, () => {
+                      const notification = NotificationFactory.success(`Experiment "${experiment.name}" successfully ${newValue ? 'published' : 'unpublished'}`)
+                        .dismissible()
+                        .build();
+
+                      setTimeout(() => {
+                        dispatch(showNotification(notification));
+                        setExperimentInList({
+                          ...experiment,
+                          isPublic: newValue
+                        })
+                      }, 0)
+                    }))
+                  }}
                   inputProps={{ 'aria-label': t('features.experiment.details.publish') }}
                 />
               </Grid>

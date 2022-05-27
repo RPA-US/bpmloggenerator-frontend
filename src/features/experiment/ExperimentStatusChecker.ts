@@ -5,6 +5,7 @@ type QueuedChecker = {
   id: number;
   checkFunction: Function;
   updaterFunction?: Function;
+  nCalls: number;
 }
 
 export default class ExperimentStatusChecker {
@@ -23,8 +24,11 @@ export default class ExperimentStatusChecker {
         const { queue } = this; 
         queuedChecker = {
           id: experiment.id,
+          nCalls: 0,
           checkFunction: function () {
             const checkStatus = (cb: Function) => {
+              this.nCalls ++;
+              const delay = Math.ceil(this.nCalls / 4);
               setTimeout(async () => {
                 const newData = await retrievalByIdFn();
                 if (this.updaterFunction != null) {
@@ -37,7 +41,7 @@ export default class ExperimentStatusChecker {
                   if (index !== -1) queue.splice(index, 1);
                   onFinish != null && onFinish(newData);
                 }
-              }, configuration.CREATING_EXPERIMENT_RELOAD_TIME);
+              }, configuration.CREATING_EXPERIMENT_RELOAD_TIME * delay);
             };
 
             checkStatus(checkStatus);

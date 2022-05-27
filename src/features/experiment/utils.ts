@@ -1,6 +1,7 @@
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { Experiment, ExperimentState } from './types';
 import Papa from 'papaparse';
+import { objectToFormData } from 'infrastructure/util/form';
 
 export const downloadFile = function downloadFile(filename: string, blob: Blob) {
   const url = window.URL.createObjectURL(new Blob([blob]));
@@ -47,9 +48,35 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
     sizeBalance: experiment.size_balance ?? undefined,
     specialColnames: experiment.special_colnames ?? '',
     status: '',
-    isPublic: true,
-    author: 'First Second LastName'
+    isPublic: experiment.public,
+    author: experiment.user != null ? `${experiment.user.first_name} ${experiment.user.last_name}` : undefined
   }
+}
+
+export function experimentToFormData(experiment: Experiment): FormData {
+  if (experiment != null) {
+    return objectToFormData({
+      'id': `${experiment.id}`,
+      // 'created_at': experiment.creationDate,
+      'description': experiment.description,
+      // 'execution_finish': experiment.executionEnd,
+      // 'execution_start': experiment.executionStart,
+      'foldername': experiment.foldername,
+      // 'is_active': experiment.isActive ?? 'true',
+      // 'is_being_processed': experiment.isBeingProcessed ?? '0',
+      // 'last_edition': experiment.lastEditionDate,
+      'name': experiment.name,
+      // 'number_scenarios': experiment.numberScenarios ?? '0',
+      'scenarios_conf': experiment.scenariosConf,
+      'screenshot_name_generation_function': experiment.screenshotNameGenerationFunction,
+      'screenshots_path': experiment.screenshotsPath,
+      'size_balance': experiment.sizeBalance,
+      'special_colnames': experiment.specialColnames,
+      'status': experiment.status ?? '',
+      'variability_conf': experiment.variabilityConf
+    }, {})
+  }
+  return new FormData();
 }
 
 export function csvLogToJSON(seed: any, specialColnames: any): any {

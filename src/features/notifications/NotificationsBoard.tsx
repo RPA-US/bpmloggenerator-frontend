@@ -4,8 +4,8 @@ import { Theme, styled, Alert, AlertTitle, AlertColor, Collapse, IconButton, Pap
 import { ThemeContext } from '@emotion/react';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { notificationsSelector, hideNotification, removeNotification } from './slice';
-import { NotificationType, Notification } from './types';
+import { notificationsSelector, removeNotification } from './slice';
+import { NotificationType } from './types';
 import { NotificationAlert } from './notification';
 import { Link } from 'react-router-dom';
 

@@ -6,11 +6,15 @@ import { useTranslation } from 'react-i18next';
 import ClearIcon from '@mui/icons-material/Clear';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
+import { useSelector } from 'react-redux';
+import { authSelector } from 'features/auth/slice';
+import { guiComponentRepository } from 'features/experiment/wizard/slice';
 import CenteredModal from 'components/CenteredModal';
 
 import GUIComponentsList from './List';
 import { GUIComponentCategoryType, GUIComponentType } from './types';
 import CreateGUIComponentForm from './Form';
+import { guiComponentDTOToGUIComponent } from '../utils';
 
 
 export interface GUIComponentsCatalogProps {
@@ -25,6 +29,7 @@ export interface GUIComponentsCatalogProps {
 const GUIComponentsCatalog: React.FC<GUIComponentsCatalogProps> = (props) => {
   const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
+  const { token } = useSelector(authSelector);
   const [ category, setCategory ]: [GUIComponentCategoryType, any] = useState({} as GUIComponentCategoryType);
 
   const [ creationModal, setCreationModal ] = useState(false);
@@ -133,37 +138,26 @@ const GUIComponentsCatalog: React.FC<GUIComponentsCatalogProps> = (props) => {
       </Typography>
 
       <CreateGUIComponentForm
-        onSubmit={ (guiComponentData: any) => {
+        onSubmit={ async (guiComponentData: any) => {
           console.log('TODO: handle gui component creation form submit', guiComponentData);
+          const isNewComponent = typeof (initialValues as any).id === 'number';
+          const result = await guiComponentRepository.save(guiComponentData, token ?? '');
+          const guiComponent = guiComponentDTOToGUIComponent(await guiComponentRepository.get(result.id, token ?? ''));
 
             // temp method to add and display saved gui-component
-          if (typeof (initialValues as any).id === 'number') {
-            props.onComponentChange({
-              ...initialValues,
-              name: guiComponentData.get('name'),
-              category: parseInt(guiComponentData.get('category')),
-              description: guiComponentData.get('description'),
-              path: (initialValues as any).path,
-              filename: (guiComponentData.get('thumbnail') || [])[0]?.name || (initialValues as any).filename,
-            })
+          if (isNewComponent) {
+            props.onComponentChange(guiComponent);
           } else {
-            props.onComponentAdd({
-              id: Math.round(Math.random() * 1000),
-              name: guiComponentData.get('name'),
-              category: parseInt(guiComponentData.get('category')),
-              description: guiComponentData.get('description'),
-              path: 'some/random/string',
-              filename: guiComponentData.get('thumbnail').name,
-            });
+            props.onComponentAdd(guiComponent);
           }
 
           setCreationModal(false);
           setInitialValues({});
-
         }}
         disabled={ guiComponentsLoading }
         categories={ categories }
         initialValues={ initialValues }
+        repository={ guiComponentRepository }
       />
     </CenteredModal>
 
