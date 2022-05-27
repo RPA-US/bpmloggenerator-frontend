@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import { Button, Menu, MenuList, MenuItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import configuration from "infrastructure/util/configuration";
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -47,7 +48,7 @@ const UserMenu: React.FC = ({ children }) => {
           <MenuItem
             onClick={ () => {
               setAnchorEl(null);
-              history.push('/profile');
+              history.push(configuration.PREFIX+'/profile');
             }}
           >
             <ListItemIcon>
