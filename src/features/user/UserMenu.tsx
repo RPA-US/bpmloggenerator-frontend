@@ -7,7 +7,7 @@ import configuration from "infrastructure/util/configuration";
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
+import { logout } from 'features/auth/slice';
 
 const UserMenu: React.FC = ({ children }) => {
   const history = useHistory();
@@ -59,7 +59,7 @@ const UserMenu: React.FC = ({ children }) => {
           <MenuItem 
             onClick={ () => {
               setAnchorEl(null);
-              dispatch(logout);
+              dispatch(logout());
             }}
           >
             <ListItemIcon>
