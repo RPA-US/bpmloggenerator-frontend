@@ -97,15 +97,8 @@ const ExperimentsList: React.FC = () => {
         experiments={ experiments }
         downloadFn = { (id: number) => downloadResults(id, token ?? '') }
       />
-
-      { /* <NotificationsTester /> */ }
-      <NotificationsTester />
     </>
   )
 }
 
 export default ExperimentsList;
-
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}
