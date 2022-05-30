@@ -59,7 +59,7 @@
         "title": "Registro",
         "email": "email",
         "password": "contraseña",
-        "confirmpassword": "Confirme contraseña",
+        "confirmpassword": "confirmar contraseña",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",

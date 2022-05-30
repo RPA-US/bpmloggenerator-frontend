@@ -92,10 +92,10 @@ function App() {
                 (
                   <>
                     <Button component={ Link } to={`${configuration.PREFIX}/login`}>
-                      <Typography color="white">Login</Typography>
+                      <Typography color="white">{ t('features.auth.login.title') }</Typography>
                     </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/signup`}>
-                      <Typography color="white">Sign up</Typography>
+                      <Typography color="white">{ t('features.auth.signup.title') }</Typography>
                     </Button>
                   </>
                 )
