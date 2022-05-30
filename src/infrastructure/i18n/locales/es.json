@@ -51,7 +51,7 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "invalidcredentials": "Email o contraseña incorrectas"
+          "invalidCredentials": "Email o contraseña incorrectas"
         },
         "login": "Iniciar sesión"
       },
@@ -63,8 +63,7 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "passwordConfirmation": "Las contraseñas no coinciden",
-          "invalidcredentials": "Email o contraseña no válido"
+          "passwordConfirmation": "Las contraseñas no coinciden"
         },
         "signup": "Registro"
       }
