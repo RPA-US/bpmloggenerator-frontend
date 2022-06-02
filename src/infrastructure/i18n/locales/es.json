@@ -631,7 +631,12 @@
           "tooltip": "Número de filas de cada variante que tendrá el log en el caso imbalanceado. Para cada escenario, se generarán logs balanceados e imbalanceados por cada uno de los tamaños que se indiquen. Si tenemos un número de escenarios igual a 1, un tamaño de log '100,1000' y porcentajes para el imbalanceado de '0.7,0.3', generarán dos escenarios (uno con el look and feel de las capturas que se pasan, y otro con variaciones sintéticas) con logs balanceados e imbalanceados con 100 y 1000 filas, donde en el caso imbalanceado, el 70% de las filas corresponderán a la variante 1 y el 30% de la variante 2."
         },
         "errors": {
-          "nameRequired": "Por favor introduzca un nombre válido"
+          "nameRequired": "Por favor introduzca un nombre válido",
+          "screenShotsRequired": "Por favor introduzca un zip con las capturas de pantalla",
+          "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
+          "logSizeRequired": "Por favor introduzca un tamaño del log válido separado por comas",
+          "imbalancedCaseRequired": "Por favor introduzca los porcentajes de log no balanceados separados por coma",
+          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido"
         },
         "generate": "Ejecutar"
       },

@@ -642,7 +642,12 @@
           "tooltip": "Number of rows per variant that the log will have in the imbalanced case. For each scenario, balanced and imbalanced logs will be generated for each of the sizes indicated. If we have a number of scenarios equal to 1, a log size '100,1000' and percentages for the imbalanced of '0.7,0.3', the experiment will get as a result two scenarios (one with the look and feel of the captures being passed, and another with synthetic variations of user inputs) with balanced and imbalanced logs, where in the second, 70% of the rows will correspond to variant 1 and 30% of variant 2, and with 100 and 1000 rows independently of their balance"
         },
         "errors": {
-          "nameRequired": "Please enter a valid name."
+          "nameRequired": "Please enter a valid name.",
+          "screenShotsRequired": "Please enter a zip with the screenshots",
+          "scenarioRequired": "Please enter a valid screenshots configuration file",
+          "logSizeRequired": "Please enter a valid log size separated by commas",
+          "imbalancedCaseRequired": "Please enter valid imbalanced case percentages separated by commas",
+          "variabilityRequired": "Please enter a valid variability configuration file"
         },
         "generate": "Execute"
       }
