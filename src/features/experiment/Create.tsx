@@ -24,7 +24,6 @@ const CreateExperiment: React.FC = () => {
       <ExperimentFormComponent
         onSubmit={(data: any) => {
           setLoading(true)
-          console.log('Create component data received:', data);
           const variability_mode = data.get('variability_mode');
           data.delete('variability_mode');
           dispatch(saveExperiment(data, (status: string, error: any) => {

@@ -5,10 +5,7 @@ import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
 import { wizardSlice } from './wizard/slice';
-import configuration from 'infrastructure/util/configuration';
 import ExperimentStatusChecker from './ExperimentStatusChecker';
-import NotificationFactory from 'features/notifications/notification';
-import { showNotification } from 'features/notifications/slice';
 
 export const experimentRepository = new ExperimentRepository();
 

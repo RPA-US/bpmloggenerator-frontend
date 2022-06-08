@@ -133,7 +133,7 @@ const ExperimentDetails: React.FC = () => {
                 <Typography variant="h6">{experiment.name}</Typography>
               </Grid>
               <Grid item>
-                <label>{t('features.experiment.details.published')}</label>
+                <label>{t('features.experiment.details.public')}</label>
                 <Switch
                   color="secondary"
                   checked={experiment.isPublic}
@@ -143,7 +143,7 @@ const ExperimentDetails: React.FC = () => {
                     experimentData.set('public', newValue);
                     console.log('experimentToFormData', [...experimentData.entries()]);
                     dispatch(saveExperiment(experimentData, () => {
-                      const notification = NotificationFactory.success(`Experiment "${experiment.name}" successfully ${newValue ? 'published' : 'unpublished'}`)
+                      const notification = NotificationFactory.success(t('features.experiment.details.publishResult', { name: experiment.name, published: t(`features.experiment.details.${newValue ? 'published' : 'unpublished'}`).toLowerCase() }))
                         .dismissible()
                         .build();
 

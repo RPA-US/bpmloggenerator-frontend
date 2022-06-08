@@ -53,7 +53,19 @@
           "passwordRequired": "Por favor introduzca una contraseña válida",
           "invalidCredentials": "Email o contraseña incorrectas"
         },
-        "login": "Iniciar sesión"
+        "login": "Iniciar sesión",
+        "forgotPassword": "¿Ha olvidado su contraseña?",
+        "forgotPasswordSuccess": "Se ha enviado un mail a la cuenta proporcionada, por favor compruebe su bandeja de entrada"
+      },
+      "forgotPassword": {
+        "title": "Recuperación de contraseña",
+        "description": "Por favor introduzca el email asociado a la cuenta sobre la que quiere recuperar la contraseña",
+        "email": "Email",
+        "goBack": "Volver",
+        "sendRequest": "Enviar solicitud",
+        "errors": {
+          "emailRequired": "Por favor introduzca un email válido"
+        }
       },
       "signup": {
         "title": "Registro",
@@ -99,7 +111,9 @@
         "edit": "Editar",
         "downloadResults": "Descargar resultados",
         "viewMore": "Ver más",
-        "public": "Experimentos públicos"
+        "public": "Experimentos públicos",
+        "executionCompleted": "Ejecución del experimento {{mame}} completada",
+        "executionCompletedDescription": "Haga click sobre el título de la notificación para ver los detalles"
       },
       "function_category": {
         "name": {
@@ -652,9 +666,12 @@
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
         "variabilityConf": "Descargar configuración de variabilidad",
-        "published": "Público",
+        "public": "Público",
+        "published": "Publicado",
+        "unpublished": "No publicado",
         "author": "Autor",
-        "copyLink": "Copiar enlace"
+        "copyLink": "Copiar enlace",
+        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'"
       }
     },
     "user": {
@@ -677,18 +694,6 @@
         "email": {
           "label": "Email",
           "placeholder": "Introduce tu email"
-        },
-        "currentPassword": {
-          "label": "Contraseña actual",
-          "placeholder": "Introduce tu contraseña actual"
-        },
-        "password": {
-          "label": "Contraseña nueva",
-          "placeholder": "Introduce la nueva contraseña"
-        },
-        "repeatedPassword": {
-          "label": "Repetir contraseña",
-          "placeholder": "Repite la contraseña"
         }
       },
       "gui-components": {
@@ -722,6 +727,32 @@
             "idCodeRequired": "Por favor, introduzca un identificador único",
             "idCodeMustNotContainsWhiteSpace": "El identificador no puede contener espacios en blanco",
             "idCodeMustBeUnique": "El identificador introducido ya está siendo utilizado"
+          }
+        }
+      },
+      "changePassword": {
+        "button": "Cambiar contraseña",
+        "title": "Cambio de contraseña",
+        "form": {
+          "currentPassword": {
+            "label": "Constraseña actual",
+            "placeholder": "Introduzca su contraseña actual"
+          },
+          "password": {
+            "label": "Contraseña nueva",
+            "placeholder": "Introduzca una nueva contraseña"
+          },
+          "repeatedPassword": {
+            "label": "Repetir contraseña",
+            "placeholder": "Repita la nueva contraseña"
+          },
+          "save": "Cambiar contraseña",
+          "errors": {
+            "currentPasswordRequired": "Por favor introduzca su contraseña actual",
+            "passwordRequired": "Por favor introduzca la nueva contraseña",
+            "repeatedPasswordRequired": "Debe volver a introducir la contraseña nueva",
+            "passwordsDontMatch": "Las contraseñas no coinciden",
+            "passwordLengthRequired": "La contraseña debe contener al menos nueve caracteres"
           }
         }
       }

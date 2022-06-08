@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, Card, CardActions, CardContent, TextField, Theme, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import { ThemeContext } from '@mui/styled-engine';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +57,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
     onSubmit(formData)
   }
 
-  return (<div>
+  return (
     <Card
       style={{ marginTop: theme.spacing(4) }}
       component="form"
@@ -66,7 +66,6 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
       onSubmit={handleSubmit(formSubmit)}
     >
       <CardContent>
-
         <FormInput
           title="features.user.form.username.label"
           style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(2) }}
@@ -151,79 +150,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
           </TextInputContainer>
         </FormInput>
 
-        { /*<Typography variant="h6" style={{ margin: theme.spacing(2) }}>
-          Cambio de contraseña
-        </Typography>
-        <Typography variant="body1" style={{ marginLeft: theme.spacing(2) }}>
-          Para cambiarla debes introducir la actual y la nueva dos veces para después, pulsar sobre actualizar
-        </Typography>
-
-        <FormInput
-          title="features.user.form.currentPassword.label"
-          style={{ marginTop: theme.spacing(3), marginLeft: theme.spacing(2) }}
-          labelGridValue={ 2 }
-          valueGridValue={ 10 }
-        >
-          <TextInputContainer>
-            <TextField
-              fullWidth
-              placeholder={t('features.user.form.currentPassword.placeholder')}
-              inputProps={
-                register('currentPassword', {
-                  // required: t('features.experiment.form.errors.currentPasswordRequired') as string,
-                  value: initialValues.currentPassword
-                })
-              }
-              error={formState.errors.currentPassword != null}
-              helperText={formState.errors.currentPassword?.message}
-              disabled={ disabled }
-            />
-          </TextInputContainer>
-        </FormInput>
-
-        <FormInput
-          title="features.user.form.password.label"
-          style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(2) }}
-          labelGridValue={ 2 }
-          valueGridValue={ 10 }
-        >
-          <TextInputContainer>
-            <TextField
-              fullWidth
-              placeholder={t('features.user.form.password.placeholder')}
-              inputProps={
-                register('password', {
-                  // required: t('features.experiment.form.errors.passwordRequired') as string,
-                  value: initialValues.password
-                })
-              }
-              error={formState.errors.password != null}
-              helperText={formState.errors.password?.message}
-              disabled={ disabled }
-            />
-          </TextInputContainer>
-        </FormInput>
-
-        <FormInput
-          title="features.user.form.repeatedPassword.label"
-          style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(2) }}
-          labelGridValue={ 2 }
-          valueGridValue={ 10 }
-        >
-          <TextInputContainer>
-            <TextField
-              fullWidth
-              inputProps={
-                register('repeatedPassword', {
-                  required: getValues('password') != null && t('features.experiment.form.errors.repeatedPasswordRequired') as string,
-                })
-              }
-              error={formState.errors.repeatedPassword != null}
-              helperText={formState.errors.repeatedPassword?.message}
-              disabled={ disabled }
-            />
-          </TextInputContainer>
-        </FormInput>
+        { /*
 
              */}
       </CardContent>
@@ -234,8 +161,7 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
             {t('features.user.form.save')}
           </Button>
         </CardActions>
-    </Card>
-  </div>)
+    </Card>)
 }
 
 export default UserForm
