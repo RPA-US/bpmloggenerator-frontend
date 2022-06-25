@@ -605,15 +605,11 @@
         "unpublished": "Unpublished",
         "author": "Author",
         "copyLink": "Copy link",
-<<<<<<< HEAD
         "experiment": "Experiment",
         "success": "successfully",
         "publish": "published",
-        "unpublish": "unpublished"
-
-=======
+        "unpublish": "unpublished",
         "publishResult": "Experiment {{ name }} successfully {{ published }}"
->>>>>>> f37806e15e455408219aed753ee0e558eecd4ca9
       },
       "form": {
         "save": "Save",

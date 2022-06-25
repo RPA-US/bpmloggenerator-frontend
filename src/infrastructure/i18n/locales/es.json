@@ -112,12 +112,9 @@
         "downloadResults": "Descargar resultados",
         "viewMore": "Ver más",
         "public": "Experimentos públicos",
-<<<<<<< HEAD
-        "myexperiments": "Mis experimentos"
-=======
+        "myexperiments": "Mis experimentos",
         "executionCompleted": "Ejecución del experimento {{mame}} completada",
         "executionCompletedDescription": "Haga click sobre el título de la notificación para ver los detalles"
->>>>>>> f37806e15e455408219aed753ee0e558eecd4ca9
       },
       "function_category": {
         "name": {
