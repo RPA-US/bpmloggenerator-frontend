@@ -59,7 +59,7 @@ const UserMenu: React.FC = ({ children }) => {
           <MenuItem 
             onClick={ () => {
               setAnchorEl(null);
-              dispatch(logout);
+              dispatch(logout());
             }}
           >
             <ListItemIcon>
