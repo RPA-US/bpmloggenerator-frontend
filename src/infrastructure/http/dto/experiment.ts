@@ -21,6 +21,11 @@ export interface ExperimentDTO {
   user?: any
 }
 
+export interface ExperimentDetail {
+  owned: boolean
+  experiment: ExperimentDTO
+}
+
 export interface ExperimentResponse {
   count: number
   next: string

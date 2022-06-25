@@ -12,7 +12,6 @@ import { experimentRepository } from './slice';
 import { downloadFile } from './utils';
 import List from './List';
 
-import NotificationsTester from 'features/notifications/NotificationsTester';
 import { ExperimentState } from './types';
 import NotificationFactory from 'features/notifications/notification';
 import { showNotification } from 'features/notifications/slice';
@@ -54,7 +53,7 @@ const ExperimentsList: React.FC = () => {
           (expData: any) => dispatch(setExperimentInList(expData)),
           token ?? '',
           (experiment: any) => {
-            const notification = NotificationFactory.success(`Experiment "${experiment.name}" execution completed`, `Click on the notification title to view details`, `${configuration.PREFIX}/experiment/${experiment.id}`)
+            const notification = NotificationFactory.success(t('features.experiment.list.executionCompleted', { name: experiment.name }), t('features.experiment.list.executionCompletedDescription'), `${configuration.PREFIX}/experiment/${experiment.id}`)
               .dismissible()
               .build();
 
@@ -97,15 +96,8 @@ const ExperimentsList: React.FC = () => {
         experiments={ experiments }
         downloadFn = { (id: number) => downloadResults(id, token ?? '') }
       />
-
-      { /* <NotificationsTester /> */ }
-      <NotificationsTester />
     </>
   )
 }
 
 export default ExperimentsList;
-
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}

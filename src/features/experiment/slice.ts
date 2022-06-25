@@ -5,10 +5,7 @@ import ExperimentRepository from 'infrastructure/repositories/experiment';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 import { experimentDTOToExperimentType, csvLogToJSON } from './utils';
 import { wizardSlice } from './wizard/slice';
-import configuration from 'infrastructure/util/configuration';
 import ExperimentStatusChecker from './ExperimentStatusChecker';
-import NotificationFactory from 'features/notifications/notification';
-import { showNotification } from 'features/notifications/slice';
 
 export const experimentRepository = new ExperimentRepository();
 
@@ -84,7 +81,7 @@ export const experimentsSelector = (state: RootState) => state.experiment;
 // ================================== THUNK middleware ==================================
 
 export const experimentStatusChecker = new ExperimentStatusChecker(
-  async(id: number, authToken: string) => experimentDTOToExperimentType(await experimentRepository.get(id, authToken))
+  async(id: number, authToken: string) => experimentDTOToExperimentType((await experimentRepository.get(id, authToken)).experiment)
 );
 
 export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, getState) => {
@@ -137,7 +134,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   try {
     const experimentResponse = await experimentRepository.save(experimentData, auth.token ?? '');
     const savedExperimentData = await experimentRepository.get(experimentResponse.id || experimentData.get("id"), auth.token ?? '');
-    const typedExperiment = experimentDTOToExperimentType(savedExperimentData);
+    const typedExperiment = experimentDTOToExperimentType(savedExperimentData.experiment);
 
     if (executeMode === 'true') {
       experimentData.set('id', typedExperiment.id);

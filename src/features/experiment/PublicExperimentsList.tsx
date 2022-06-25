@@ -2,14 +2,16 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import configuration from "infrastructure/util/configuration";
+// import configuration from "infrastructure/util/configuration";
 import { Button,  Theme, Typography } from '@mui/material';
-import { ThemeContext } from '@emotion/react';
+// import { ThemeContext } from '@emotion/react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/system';
 import { experimentRepository } from './slice';
 import { downloadFile, experimentDTOToExperimentType } from './utils';
+import { authSelector } from '../auth/slice';
 
-import { authSelector } from 'features/auth/slice';
+// import { authSelector } from 'features/auth/slice';
 import { ExperimentDTO } from 'infrastructure/http/dto/experiment';
 
 import List from './List';
@@ -53,9 +55,9 @@ function reducer(state: any, action: any) {
   }
 }
 
-const downloadResults = async (experimentId: number, token: string) => {
+const downloadResults = async (experimentId: number) => {
   try {
-    const { filename, blob }: any = await experimentRepository.download(experimentId, token);
+    const { filename, blob }: any = await experimentRepository.download(experimentId, "");
     downloadFile(filename, blob);    
   } catch (ex) {
     console.error('error downloading experiment result', ex);
@@ -64,8 +66,7 @@ const downloadResults = async (experimentId: number, token: string) => {
 
 const PublicExperimentsList: React.FC = () => {
   const [ state, dispatch ] = useReducer(reducer, viewInitialState);
-  const { token } = useSelector(authSelector);
-  const theme = useContext(ThemeContext) as Theme;
+  // const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
 
   const loadExperiments = async () => {
@@ -76,7 +77,7 @@ const PublicExperimentsList: React.FC = () => {
     dispatch({ type: 'load' });
     const page: number = state.hasNext ? state.page + 1 : state.page;
     try {
-      const response = await experimentRepository.findPublic(page, token ?? '');
+      const response = await experimentRepository.findPublic(page, "");
       const list = response.results.map((exp: ExperimentDTO) => experimentDTOToExperimentType(exp));
       dispatch({
         type: 'load_success',
@@ -90,6 +91,7 @@ const PublicExperimentsList: React.FC = () => {
       dispatch({ type: 'load_error', payload: ex });
     }    
   }
+  const { isAuth } = useSelector( authSelector );
 
   useEffect(() => {
     loadExperiments();
@@ -99,8 +101,19 @@ const PublicExperimentsList: React.FC = () => {
     <>
       <FlexDiv>
         <Typography variant="h4">
-          Lista de artefactos
+          {t('features.experiment.list.title')}
         </Typography>
+        { isAuth && (
+        <div>
+          <Button 
+                variant="contained"
+                component={ RouterLink }
+                to={`${configuration.PREFIX}/`}
+                style={{ marginRight: '24px' }}
+              >{ t('features.experiment.list.myexperiments') }
+          </Button>
+        </div>
+        )}
       </FlexDiv>
       
       <List
@@ -108,7 +121,7 @@ const PublicExperimentsList: React.FC = () => {
         loadMoreDisabled={ state.list.length > 0 && !state.hasNext }
         isLoading={ state.loading }
         experiments={ state.list as Experiment[] }
-        downloadFn = { (id: number) => downloadResults(id, token ?? '') }
+        downloadFn = { (id: number) => downloadResults(id) }
       />
     </>
   )

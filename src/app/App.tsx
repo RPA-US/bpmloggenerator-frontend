@@ -17,9 +17,10 @@ import Spacer from 'components/Spacer';
 
 import { history } from 'store/store';
 import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
-import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import Login from 'features/auth/Login';
+import ForgotPassword from 'features/auth/ForgotPassword';
 import Signup from 'features/auth/Signup';
+// import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import ExperimentsList from 'features/experiment/ExperimentsList';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
@@ -44,13 +45,13 @@ const LanguageSelectorContainer = styled('div')(({ theme }) => ({
   marginRight: theme.spacing(2)
 }))
 
-const NotificationsContainer = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: '64px', // under header bar
-  right: 0,
-  padding: theme.spacing(1),
-  zIndex: 1,
-}));
+// const NotificationsContainer = styled('div')(({ theme }) => ({
+//   position: 'absolute',
+//   top: '64px', // under header bar
+//   right: 0,
+//   padding: theme.spacing(1),
+//   zIndex: 1,
+// }));
 
 function App() {
   const { t } = useTranslation();
@@ -79,9 +80,6 @@ function App() {
               </Button>
               <Spacer />
               
-              <LanguageSelectorContainer>
-                <LanguageSelector />
-              </LanguageSelectorContainer>
               
               {
                 isAuth ? (
@@ -91,25 +89,32 @@ function App() {
                 ) :
                 (
                   <>
+                    <Button component={ Link } to={`${configuration.PREFIX}/public`}>
+                      <Typography color="white">Public experiments</Typography>
+                    </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/login`}>
-                      <Typography color="white">Login</Typography>
+                      <Typography color="white">{ t('features.auth.login.title') }</Typography>
                     </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/signup`}>
-                      <Typography color="white">Sign up</Typography>
+                      <Typography color="white">{ t('features.auth.signup.title') }</Typography>
                     </Button>
                   </>
                 )
               }
+            <LanguageSelectorContainer>
+              <LanguageSelector />
+            </LanguageSelectorContainer>
             </Toolbar>
 
-            <NotificationsContainer>
+            {/* <NotificationsContainer>
               <NotificationsBoard />
-            </NotificationsContainer>
+            </NotificationsContainer> */}
 
 
             { checked && (<StyledContainer maxWidth="xl">
               <Switch>
                 <Route exact component={ Login } path={`${configuration.PREFIX}/login`} />
+                <Route exact component={ ForgotPassword } path={`${configuration.PREFIX}/forgot-password`} />
                 <Route exact component={ Signup } path={`${configuration.PREFIX}/signup`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ PublicExperimentsList } path={`${configuration.PREFIX}/public`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path={`${configuration.PREFIX}/add-experiment`} />

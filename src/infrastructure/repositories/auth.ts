@@ -92,4 +92,37 @@ export default class AuthRepository {
     }
   }
 
+  async changePassword(old: string, _new: string, repeated: string, token: string) {
+    try {
+      return await Http.post<any>(Http.buildURL('/users/auth/password/change/'), {
+        old_password: old,
+        new_password1: _new,
+        new_password2: repeated
+      }, Http.authHeader(token))
+    } catch (error) {
+      if (error instanceof Response) {
+        if (error.status === 400) {
+          throw new AuthError('session.expired', 'session token expired')
+        }
+        throw new AuthError('unhandled', error.statusText);
+      }
+      console.error('error in AuthRepository.userData', error);
+      throw error;
+    }
+  }
+
+  async resetPassword(email: string) {
+    try {
+      return await Http.post<any>(Http.buildURL('/users/auth/password/reset/'), {
+        email
+      })
+    } catch (error) {
+      if (error instanceof Response) {
+        throw new AuthError('unhandled', error.statusText);
+      }
+      console.error('error in AuthRepository.resetPassword', error);
+      throw error;
+    }
+  }
+
 }

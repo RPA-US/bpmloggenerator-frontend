@@ -26,7 +26,7 @@
     },
     "scenario": {
       "label": "Escenario",
-      "tooltip": "Un escenario se corresponde con el ecosistema de las distintas aplicaciones que va a utilizar un usuario durante el proceso. Cuando nos referimos a la variabilidad a nivel de escenario, hacemos referencia a que variaremos los componentes GUI relativos al look and feel de las distintas aplicaciones que aparezcan en las capturas del proceso. Usando las capturas de la semilla y variándolas para los X escenarios distintos que se quieran obtener. Esas variaciones se llevarán a cabo una vez y se generarán como resultado X semillas con look and feels distintos."
+      "tooltip": "Un escenario se corresponde con el ecosistema de las distintas aplicaciones que va a utilizar un usuario durante el proceso. Cuando nos referimos a la variabilidad a nivel de escenario, hacemos referencia a que variaremos los UI elements GUI relativos al look and feel de las distintas aplicaciones que aparezcan en las capturas del proceso. Usando las capturas de la semilla y variándolas para los X escenarios distintos que se quieran obtener. Esas variaciones se llevarán a cabo una vez y se generarán como resultado X semillas con look and feels distintos."
     },
     "experiment": {
       "label": "Experimento",
@@ -51,20 +51,31 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "invalidcredentials": "Email o contraseña incorrectas"
+          "invalidCredentials": "Email o contraseña incorrectas"
         },
-        "login": "Iniciar sesión"
+        "login": "Iniciar sesión",
+        "forgotPassword": "¿Ha olvidado su contraseña?",
+        "forgotPasswordSuccess": "Se ha enviado un mail a la cuenta proporcionada, por favor compruebe su bandeja de entrada"
+      },
+      "forgotPassword": {
+        "title": "Recuperación de contraseña",
+        "description": "Por favor introduzca el email asociado a la cuenta sobre la que quiere recuperar la contraseña",
+        "email": "Email",
+        "goBack": "Volver",
+        "sendRequest": "Enviar solicitud",
+        "errors": {
+          "emailRequired": "Por favor introduzca un email válido"
+        }
       },
       "signup": {
         "title": "Registro",
         "email": "email",
         "password": "contraseña",
-        "confirmpassword": "Confirme contraseña",
+        "confirmpassword": "confirmar contraseña",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "passwordConfirmation": "Las contraseñas no coinciden",
-          "invalidcredentials": "Email o contraseña no válido"
+          "passwordConfirmation": "Las contraseñas no coinciden"
         },
         "signup": "Registro"
       }
@@ -100,7 +111,10 @@
         "edit": "Editar",
         "downloadResults": "Descargar resultados",
         "viewMore": "Ver más",
-        "public": "Experimentos públicos"
+        "public": "Experimentos públicos",
+        "myexperiments": "Mis experimentos",
+        "executionCompleted": "Ejecución del experimento {{mame}} completada",
+        "executionCompletedDescription": "Haga click sobre el título de la notificación para ver los detalles"
       },
       "function_category": {
         "name": {
@@ -234,15 +248,15 @@
           "mouse_position_range_x": "Genera una posición aleatoria del raton dentro para el eje X. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen en la coordenada X (1 coordenada), y la anchura del area de la UI",
           "mouse_position_range_y": "Genera una posición aleatoria del raton dentro para el eje Y. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen en la coordenada Y (1 coordenada), y la altura del area de la UI",
           "mouse_or_keyboard": "Genera un 0 o un 1 en el log indicando si la entrada es de ratón o de teclado",
-          "replace_gui_component_by_other": "Reemplaza un componente GUI por otro seleccionado",
-          "given_text_in_image": "Inserta en la imagen el texto que haya en la columna del log con el mismo nombre que el componente GUI. Ejemplo: el texto de la columna Texto se inserta el la localización del componente visual texto. El parámetro es: la configuración de la fuente",
+          "replace_gui_component_by_other": "Reemplaza un UI element por otro seleccionado",
+          "given_text_in_image": "Inserta en la imagen el texto que haya en la columna del log con el mismo nombre que el UI element. Ejemplo: el texto de la columna Texto se inserta el la localización del componente visual texto. El parámetro es: la configuración de la fuente",
           "hidden_gui_element": "Oculta un elemento visual con un color plano. Necesita el color en hexadecimal empezado con #",
-          "replace_gui_element_various_places": "Reemplaza un GUI component por otro en múltiples lugares. Actualmente sin uso",
+          "replace_gui_element_various_places": "Reemplaza un UI element por otro en múltiples lugares. Actualmente sin uso",
           "screenshot_name_without_root_path": "Genera una copia de la imagen renombrada para el log y devuelve sin ruta relativa",
-          "random_text_in_image": "Inserta un texto en la imagen e las coordenadas del componente GUI. El parámetro es un texto",
-          "random_paragraph_in_image": "Inserta un parrafo aleatorio en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por línea y un número máximo de aleatoriedad de parrafos a generar",
-          "random_words_in_image": "Inserta una palabra aleatoria en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por líena y un número máximo de aleatoriedad de sentencias a generar",
-          "random_sentence_in_image": "Inserta una sentencia aleatoria en la imagen e las coordenadas del componente GUI. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo",
+          "random_text_in_image": "Inserta un texto en la imagen e las coordenadas del UI element. El parámetro es un texto",
+          "random_paragraph_in_image": "Inserta un parrafo aleatorio en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por línea y un número máximo de aleatoriedad de parrafos a generar",
+          "random_words_in_image": "Inserta una palabra aleatoria en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por líena y un número máximo de aleatoriedad de sentencias a generar",
+          "random_sentence_in_image": "Inserta una sentencia aleatoria en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo",
           "image_copy_renamed": "Genera una copia de la imagen renombrada para el log",
           "image_copy_renamed_and_return_path": "Genera una copia de la imagen renombrada para el log y devuelve toda la ruta relativa"
         }
@@ -260,12 +274,12 @@
         },
         "element_input": {
           "label": "Seleciona componentes GUI",
-          "placeholder": "Componente GUI",
+          "placeholder": "UI element",
           "description": "Selecciona los componentes GUI a usar en por la función"
         },
         "font_input": {
           "label": "Selecciona tipo, tamaño y color de la fuente",
-          "placeholder": "Componente GUI",
+          "placeholder": "UI element",
           "description": "Selecciona los componentes GUI a usar en por la función"
         },
         "list_input": {
@@ -539,7 +553,7 @@
         }
       },
       "assist": {
-        "empty": "Para agregar una modificación necesita seleccionar un componente GUI a editar, las coordenadas, la función de edición y rellenar sus parámetros",
+        "empty": "Para agregar una modificación necesita seleccionar un UI element a editar, las coordenadas, la función de edición y rellenar sus parámetros",
         "download": "Descargar",
         "download_next": "Finalizar",
         "download_confirmation": "Descargaras el Json de configuración y no podrás seguir configurando esta actividad ¿Está seguro?",
@@ -547,7 +561,7 @@
         "function": {
           "variability_function": "Función de variabilidad",
           "params_function": "Parámetros de la función seleccionada",
-          "gui_components": "Componente GUI a editar",
+          "gui_components": "UI element a editar",
           "dependency": "configurar_dependencia",
           "activity_dependency": "Actividad dependiente",
           "variant_dependency": "Variante dependiente",
@@ -632,7 +646,12 @@
           "tooltip": "Número de filas de cada variante que tendrá el log en el caso imbalanceado. Para cada escenario, se generarán logs balanceados e imbalanceados por cada uno de los tamaños que se indiquen. Si tenemos un número de escenarios igual a 1, un tamaño de log '100,1000' y porcentajes para el imbalanceado de '0.7,0.3', generarán dos escenarios (uno con el look and feel de las capturas que se pasan, y otro con variaciones sintéticas) con logs balanceados e imbalanceados con 100 y 1000 filas, donde en el caso imbalanceado, el 70% de las filas corresponderán a la variante 1 y el 30% de la variante 2."
         },
         "errors": {
-          "nameRequired": "Por favor introduzca un nombre válido"
+          "nameRequired": "Por favor introduzca un nombre válido",
+          "screenShotsRequired": "Por favor introduzca un zip con las capturas de pantalla",
+          "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
+          "logSizeRequired": "Por favor introduzca un tamaño del log válido separado por comas",
+          "imbalancedCaseRequired": "Por favor introduzca los porcentajes de log no balanceados separados por coma",
+          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido"
         },
         "generate": "Ejecutar"
       },
@@ -644,20 +663,27 @@
         "executionEnd": "Ejecución finalizada:",
         "scenariosNumber": "Número de escenarios: {{ val }}",
         "state": "Estado: {{ val }}",
-        "screenshotNameGenerationFunction": "Función generadora: {{ val }}",
+        "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
         "variabilityConf": "Descargar configuración de variabilidad",
-        "published": "Público",
+        "public": "Público",
+        "published": "Publicado",
+        "unpublished": "No publicado",
         "author": "Autor",
-        "copyLink": "Copiar enlace"
+        "copyLink": "Copiar enlace",
+        "experiment": "Experimento",
+        "success": "exitosamente",
+        "publish": "publicado",
+        "unpublish": "despublicado",
+        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'"
       }
     },
     "user": {
       "profileView": "Perfil",
       "logout": "Desconectar",
       "form": {
-        "addComponent": "Añadir componente",
+        "addComponent": "Añadir UI element",
         "save": "Guardar",
         "username": {
           "label": "Nombre de usuario"
@@ -673,29 +699,17 @@
         "email": {
           "label": "Email",
           "placeholder": "Introduce tu email"
-        },
-        "currentPassword": {
-          "label": "Contraseña actual",
-          "placeholder": "Introduce tu contraseña actual"
-        },
-        "password": {
-          "label": "Contraseña nueva",
-          "placeholder": "Introduce la nueva contraseña"
-        },
-        "repeatedPassword": {
-          "label": "Repetir contraseña",
-          "placeholder": "Repite la contraseña"
         }
       },
       "gui-components": {
-        "addComponent": "Añadir componente",
+        "addComponent": "Añadir UI element",
         "category": "Categoría:",
-        "empty": "No se ha añadido ningún componente aún",
+        "empty": "No se ha añadido ningún UI element aún",
         "form": {
-          "title": "GUI Component",
+          "title": "UI element",
           "name": {
             "label": "Nombre",
-            "placeholder": "nombre del componente"
+            "placeholder": "nombre del UI element"
           },
           "idCode": {
             "label": "Identificador único",
@@ -712,12 +726,38 @@
             "label": "Imagen"
           },
           "errors": {
-            "nameRequired": "El nombre del componente es obligatorio",
+            "nameRequired": "El nombre del UI element es obligatorio",
             "categoryRequired": "Por favor, seleccione una categoría",
             "thumbnailRequired": "Por favor, introduzca una imagen",
             "idCodeRequired": "Por favor, introduzca un identificador único",
             "idCodeMustNotContainsWhiteSpace": "El identificador no puede contener espacios en blanco",
             "idCodeMustBeUnique": "El identificador introducido ya está siendo utilizado"
+          }
+        }
+      },
+      "changePassword": {
+        "button": "Cambiar contraseña",
+        "title": "Cambio de contraseña",
+        "form": {
+          "currentPassword": {
+            "label": "Constraseña actual",
+            "placeholder": "Introduzca su contraseña actual"
+          },
+          "password": {
+            "label": "Contraseña nueva",
+            "placeholder": "Introduzca una nueva contraseña"
+          },
+          "repeatedPassword": {
+            "label": "Repetir contraseña",
+            "placeholder": "Repita la nueva contraseña"
+          },
+          "save": "Cambiar contraseña",
+          "errors": {
+            "currentPasswordRequired": "Por favor introduzca su contraseña actual",
+            "passwordRequired": "Por favor introduzca la nueva contraseña",
+            "repeatedPasswordRequired": "Debe volver a introducir la contraseña nueva",
+            "passwordsDontMatch": "Las contraseñas no coinciden",
+            "passwordLengthRequired": "La contraseña debe contener al menos nueve caracteres"
           }
         }
       }
