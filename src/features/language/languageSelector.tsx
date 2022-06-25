@@ -27,10 +27,10 @@ const LanguageSelector: React.FC = () => {
       }} 
     >
       <MenuItem value="es">
-        <Avatar alt="Cindy Baker" src={ esThumbnail } />
+        <Avatar alt="Cindy Baker" sx={{ width: 24, height: 24 }} src={ esThumbnail } />
       </MenuItem>
       <MenuItem value="en">
-        <Avatar alt="Cindy Baker" src={ enThumbnail } />
+        <Avatar alt="Cindy Baker" sx={{ width: 24, height: 24 }} src={ enThumbnail } />
       </MenuItem>
     </Select>
   )

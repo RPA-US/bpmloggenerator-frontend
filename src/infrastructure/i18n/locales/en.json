@@ -100,7 +100,8 @@
         "edit": "Edit",
         "downloadResults": "Download results",
         "viewMore": "View More",
-        "public": "Public experiments"
+        "public": "Public experiments",
+        "myexperiments": "My experiments"
       },
       "function_category": {
         "name": {

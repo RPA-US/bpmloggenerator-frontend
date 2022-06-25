@@ -59,7 +59,7 @@ function App() {
 
   const defaultProtectedRouteProps = {
     auth: isAuth,
-    authPath: configuration.PREFIX+'/public',
+    authPath: configuration.PREFIX+'/login',
     redirectPath,
     setRedirectPath: (path: string) => dispatch(updateRedirectPath(path)),
   }
@@ -79,9 +79,6 @@ function App() {
               </Button>
               <Spacer />
               
-              <LanguageSelectorContainer>
-                <LanguageSelector />
-              </LanguageSelectorContainer>
               
               {
                 isAuth ? (
@@ -91,6 +88,9 @@ function App() {
                 ) :
                 (
                   <>
+                    <Button component={ Link } to={`${configuration.PREFIX}/public`}>
+                      <Typography color="white">Public experiments</Typography>
+                    </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/login`}>
                       <Typography color="white">Login</Typography>
                     </Button>
@@ -100,6 +100,9 @@ function App() {
                   </>
                 )
               }
+            <LanguageSelectorContainer>
+              <LanguageSelector />
+            </LanguageSelectorContainer>
             </Toolbar>
 
             {/* <NotificationsContainer>

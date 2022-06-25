@@ -25,7 +25,14 @@ export default class ExperimentRepository {
         params.page = page;
       }
 
-      return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
+      let res;
+      if(token != ""){
+        res = await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
+      } else {
+        res = await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params))
+      }
+
+      return res;
     } catch (ex) {
       console.error('error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error
