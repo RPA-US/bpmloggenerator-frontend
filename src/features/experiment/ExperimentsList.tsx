@@ -12,7 +12,6 @@ import { experimentRepository } from './slice';
 import { downloadFile } from './utils';
 import List from './List';
 
-import NotificationsTester from 'features/notifications/NotificationsTester';
 import { ExperimentState } from './types';
 import NotificationFactory from 'features/notifications/notification';
 import { showNotification } from 'features/notifications/slice';
@@ -98,8 +97,6 @@ const ExperimentsList: React.FC = () => {
         downloadFn = { (id: number) => downloadResults(id, token ?? '') }
       />
 
-      { /* <NotificationsTester /> */ }
-      <NotificationsTester />
     </>
   )
 }

@@ -17,9 +17,9 @@ import Spacer from 'components/Spacer';
 
 import { history } from 'store/store';
 import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
-import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import Login from 'features/auth/Login';
 import Signup from 'features/auth/Signup';
+// import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import ExperimentsList from 'features/experiment/ExperimentsList';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
@@ -44,13 +44,13 @@ const LanguageSelectorContainer = styled('div')(({ theme }) => ({
   marginRight: theme.spacing(2)
 }))
 
-const NotificationsContainer = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: '64px', // under header bar
-  right: 0,
-  padding: theme.spacing(1),
-  zIndex: 1,
-}));
+// const NotificationsContainer = styled('div')(({ theme }) => ({
+//   position: 'absolute',
+//   top: '64px', // under header bar
+//   right: 0,
+//   padding: theme.spacing(1),
+//   zIndex: 1,
+// }));
 
 function App() {
   const { t } = useTranslation();
@@ -59,7 +59,7 @@ function App() {
 
   const defaultProtectedRouteProps = {
     auth: isAuth,
-    authPath: configuration.PREFIX+'/login',
+    authPath: configuration.PREFIX+'/public',
     redirectPath,
     setRedirectPath: (path: string) => dispatch(updateRedirectPath(path)),
   }
@@ -102,9 +102,9 @@ function App() {
               }
             </Toolbar>
 
-            <NotificationsContainer>
+            {/* <NotificationsContainer>
               <NotificationsBoard />
-            </NotificationsContainer>
+            </NotificationsContainer> */}
 
 
             { checked && (<StyledContainer maxWidth="xl">
