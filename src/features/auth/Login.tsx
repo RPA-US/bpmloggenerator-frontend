@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Box, Button, Card, CardContent, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, TextField, Theme, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { login, authSelector } from './slice';
 import { useTranslation } from 'react-i18next';
+import Spacer from 'components/Spacer';
+import { ThemeContext } from '@emotion/react';
 
 const LoginBoxContainer = styled('div')`
   position: absolute;
@@ -14,14 +16,12 @@ const LoginBoxContainer = styled('div')`
   left: 50%
 `;
 
-const SpacedSubmitButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2)
-}))
-
 export default function Login(): JSX.Element {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const history = useHistory();
+  const theme = useContext(ThemeContext) as Theme;
+  
   const { reset, register, setError, clearErrors, formState, handleSubmit } = useForm();
   const { isLoading, isAuth, redirectPath, error } = useSelector( authSelector );
   // const [ displayError, setDisplayError ] = useState(false)
@@ -89,14 +89,26 @@ export default function Login(): JSX.Element {
                   </>
                 ) }
 
-                <SpacedSubmitButton 
-                  variant="contained"
-                  color="secondary"
-                  type='submit'
-                  disabled={ isLoading }
-                >
-                  { t('features.auth.login.login') }
-                </SpacedSubmitButton>
+                <Grid container alignItems="center" style={{ marginTop: theme.spacing(2) }}>
+                  <Grid item>
+                    <Button 
+                      variant="contained"
+                      color="secondary"
+                      type='submit'
+                      disabled={ isLoading }
+                    >
+                      { t('features.auth.login.login') }
+                    </Button>
+                  </Grid>
+                  <Spacer />
+                  <Grid item>
+                    <Link to="forgot-password">
+                      <Typography variant="body2">
+                      { t('features.auth.login.forgotPassword') }
+                      </Typography>
+                    </Link>
+                  </Grid>
+                </Grid>
               </form>
             </Box>
           </CardContent>

@@ -18,6 +18,7 @@ import Spacer from 'components/Spacer';
 import { history } from 'store/store';
 import { authSelector, updateRedirectPath, checkSession, logout } from 'features/auth/slice';
 import Login from 'features/auth/Login';
+import ForgotPassword from 'features/auth/ForgotPassword';
 import Signup from 'features/auth/Signup';
 // import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import ExperimentsList from 'features/experiment/ExperimentsList';
@@ -92,10 +93,10 @@ function App() {
                       <Typography color="white">Public experiments</Typography>
                     </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/login`}>
-                      <Typography color="white">Login</Typography>
+                      <Typography color="white">{ t('features.auth.login.title') }</Typography>
                     </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/signup`}>
-                      <Typography color="white">Sign up</Typography>
+                      <Typography color="white">{ t('features.auth.signup.title') }</Typography>
                     </Button>
                   </>
                 )
@@ -113,6 +114,7 @@ function App() {
             { checked && (<StyledContainer maxWidth="xl">
               <Switch>
                 <Route exact component={ Login } path={`${configuration.PREFIX}/login`} />
+                <Route exact component={ ForgotPassword } path={`${configuration.PREFIX}/forgot-password`} />
                 <Route exact component={ Signup } path={`${configuration.PREFIX}/signup`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ PublicExperimentsList } path={`${configuration.PREFIX}/public`} />
                 <PrivateRoute {...defaultProtectedRouteProps} component={ ExperimentCreation } path={`${configuration.PREFIX}/add-experiment`} />

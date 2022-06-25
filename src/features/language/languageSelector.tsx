@@ -12,13 +12,17 @@ const LanguageSelector: React.FC = () => {
     i18n.changeLanguage(evt.target.value);
   };
 
-  console.log('i18n language', i18n.language)
+  // initial value checker
+  if (!['en', 'es'].some(lang => i18n.language === lang)) {
+    if (i18n.language.startsWith('es'))
+      changeLanguage({target: { value: 'es' }});
+    else
+    changeLanguage({target: { value: 'en' }});
+  } 
+
   return (
     <Select
-      labelId="demo-simple-select-label"
-      id="demo-simple-select"
       value={ i18n.language }
-      label="Age"
       onChange={ changeLanguage }
       sx={{
         '&, & .MuiOutlinedInput-notchedOutline': {

@@ -53,7 +53,19 @@
           "passwordRequired": "Please enter a valid password",
           "invalidCredentials": "Email or password incorrect"
         },
-        "login": "Login"
+        "login": "Login",
+        "forgotPassword": "Forgot your password?",
+        "forgotPasswordSuccess": "An email was sent to account provided, please check your inbox"
+      },
+      "forgotPassword": {
+        "title": "Password recovering form",
+        "description": "Please enter the account email where you need to recover the credentials",
+        "email": "Email",
+        "goBack": "go back",
+        "sendRequest": "send request",
+        "errors": {
+          "emailRequired": "Please enter a valid email"
+        }
       },
       "signup": {
         "title": "Sign up",
@@ -101,7 +113,9 @@
         "downloadResults": "Download results",
         "viewMore": "View More",
         "public": "Public experiments",
-        "myexperiments": "My experiments"
+        "myexperiments": "My experiments",
+        "executionCompleted": "Experiment {{mame}} execution completed",
+        "executionCompletedDescription": "Click on the notification title to view details"
       },
       "function_category": {
         "name": {
@@ -586,14 +600,20 @@
         "title": "Experiment Details",
         "scenarios": "Download scenario conf",
         "variabilityConf": "Download variability conf",
+        "public": "Public",
         "published": "Published",
+        "unpublished": "Unpublished",
         "author": "Author",
         "copyLink": "Copy link",
+<<<<<<< HEAD
         "experiment": "Experiment",
         "success": "successfully",
         "publish": "published",
         "unpublish": "unpublished"
 
+=======
+        "publishResult": "Experiment {{ name }} successfully {{ published }}"
+>>>>>>> f37806e15e455408219aed753ee0e558eecd4ca9
       },
       "form": {
         "save": "Save",
@@ -648,7 +668,12 @@
           "tooltip": "Number of rows per variant that the log will have in the imbalanced case. For each scenario, balanced and imbalanced logs will be generated for each of the sizes indicated. If we have a number of scenarios equal to 1, a log size '100,1000' and percentages for the imbalanced of '0.7,0.3', the experiment will get as a result two scenarios (one with the look and feel of the captures being passed, and another with synthetic variations of user inputs) with balanced and imbalanced logs, where in the second, 70% of the rows will correspond to variant 1 and 30% of variant 2, and with 100 and 1000 rows independently of their balance"
         },
         "errors": {
-          "nameRequired": "Please enter a valid name."
+          "nameRequired": "Please enter a valid name.",
+          "screenShotsRequired": "Please enter a zip with the screenshots",
+          "scenarioRequired": "Please enter a valid screenshots configuration file",
+          "logSizeRequired": "Please enter a valid log size separated by commas",
+          "imbalancedCaseRequired": "Please enter valid imbalanced case percentages separated by commas",
+          "variabilityRequired": "Please enter a valid variability configuration file"
         },
         "generate": "Execute"
       }
@@ -673,18 +698,6 @@
         "email": {
           "label": "Email",
           "placeholder": "Enter your email"
-        },
-        "currentPassword": {
-          "label": "Current password",
-          "placeholder": "Enter your current password"
-        },
-        "password": {
-          "label": "New password",
-          "placeholder": "Enter a valid password"
-        },
-        "repeatedPassword": {
-          "label": "Repeat password",
-          "placeholder": "Repeat the password"
         }
       },
       "gui-components": {
@@ -718,6 +731,32 @@
             "idCodeRequired": "Please enter an unique identifier",
             "idCodeMustNotContainsWhiteSpace": "The unique identifier must not contains white spaces",
             "idCodeMustBeUnique": "This identifier is being used by another component"
+          }
+        }
+      },
+      "changePassword": {
+        "button": "Change password",
+        "title": "Password change form",
+        "form": {
+          "currentPassword": {
+            "label": "Current password",
+            "placeholder": "Enter your current password"
+          },
+          "password": {
+            "label": "New password",
+            "placeholder": "Enter a valid password"
+          },
+          "repeatedPassword": {
+            "label": "Repeat password",
+            "placeholder": "Repeat the password"
+          },
+          "save": "Change password",
+          "errors": {
+            "currentPasswordRequired": "Please, enter your current password",
+            "passwordRequired": "Please, enter your new password",
+            "repeatedPasswordRequired": "You must repeat the new password",
+            "passwordsDontMatch": "Repeated password doesn't match",
+            "passwordLengthRequired": "Password must contains at least 9 characters"
           }
         }
       }
