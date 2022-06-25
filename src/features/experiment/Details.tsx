@@ -56,6 +56,7 @@ const ExperimentDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [experiment, setExperimentInList]: any = useState(null);
   const [loading, setLoading]: any = useState(false);
+  const [owned, setOwned]: any = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -68,7 +69,8 @@ const ExperimentDetails: React.FC = () => {
         let experimentDetail = experiments.find((exp) => exp.id === idParam);
         if (experimentDetail == null) {
           const response = await experimentRepository.get(idParam, token ?? '');
-          experimentDetail = experimentDTOToExperimentType(response);
+          setOwned(response.owned)
+          experimentDetail = experimentDTOToExperimentType(response.experiment);
           dispatch(addExperiment)
         }
         setExperimentInList(experimentDetail);
@@ -78,12 +80,14 @@ const ExperimentDetails: React.FC = () => {
         setLoading(false)
       }
     })();
-  }, [id]);
+  }, [id,token]);
+
+
 
   return (
     <>
       <Typography variant="h4">
-        <BackButton to={`${configuration.PREFIX}/`} />
+        <BackButton to={`${configuration.PREFIX}/public`} />
         {t('features.experiment.details.title')}
       </Typography>
 
@@ -132,35 +136,37 @@ const ExperimentDetails: React.FC = () => {
               <Grid item>
                 <Typography variant="h6">{experiment.name}</Typography>
               </Grid>
-              <Grid item>
-                <label>{t('features.experiment.details.published')}</label>
-                <Switch
-                  color="secondary"
-                  checked={experiment.isPublic}
-                  onChange={() => {
-                    const experimentData: any = experimentToFormData(experiment);
-                    const newValue = !experiment.isPublic;
-                    experimentData.set('public', newValue);
-                    console.log('experimentToFormData', [...experimentData.entries()]);
-                    dispatch(saveExperiment(experimentData, () => {
-                      const notification = NotificationFactory.success(
-                          t('features.experiment.details.experiment') + `${experiment.name}` + t('features.experiment.details.success') + `${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
-                        )
-                        .dismissible()
-                        .build();
+              { owned &&
+                <Grid item>
+                  <label>{t('features.experiment.details.published')}</label>
+                  <Switch
+                    color="secondary"
+                    checked={experiment.isPublic}
+                    onChange={() => {
+                      const experimentData: any = experimentToFormData(experiment);
+                      const newValue = !experiment.isPublic;
+                      experimentData.set('public', newValue);
+                      console.log('experimentToFormData', [...experimentData.entries()]);
+                      dispatch(saveExperiment(experimentData, () => {
+                        const notification = NotificationFactory.success(
+                            t('features.experiment.details.experiment') + `${experiment.name}` + t('features.experiment.details.success') + `${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
+                          )
+                          .dismissible()
+                          .build();
 
-                      setTimeout(() => {
-                        dispatch(showNotification(notification));
-                        setExperimentInList({
-                          ...experiment,
-                          isPublic: newValue
-                        })
-                      }, 0)
-                    }))
-                  }}
-                  inputProps={{ 'aria-label': t('features.experiment.details.publish') }}
-                />
-              </Grid>
+                        setTimeout(() => {
+                          dispatch(showNotification(notification));
+                          setExperimentInList({
+                            ...experiment,
+                            isPublic: newValue
+                          })
+                        }, 0)
+                      }))
+                    }}
+                    inputProps={{ 'aria-label': t('features.experiment.details.publish') }}
+                  />
+                </Grid>
+              }
             </Grid>
             <Box>
               {experiment.creationDate != null && (
