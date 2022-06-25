@@ -26,7 +26,7 @@
     },
     "scenario": {
       "label": "scenario",
-      "tooltip": "A scenario corresponds to the ecosystem of different applications that a user is going to use during the process. When we refer to variability at the scenario level, we mean that we will vary the GUI components relative to the look and feel of the different applications that appear in the process snapshots. Using the seed screenshots and varying them for the X different scenarios that we want to obtain. Those variations will be carried out once and will result in X seeds with different looks and feels."
+      "tooltip": "A scenario corresponds to the ecosystem of different applications that a user is going to use during the process. When we refer to variability at the scenario level, we mean that we will vary the UI elements relative to the look and feel of the different applications that appear in the process snapshots. Using the seed screenshots and varying them for the X different scenarios that we want to obtain. Those variations will be carried out once and will result in X seeds with different looks and feels."
     },
     "experiment": {
       "label": "experiment",
@@ -127,7 +127,7 @@
           "number_paragraphs":"Number of paragraph to generate",
           "number_random_words":"Number of words to be generated",
           "mouse_list_coordenates_x_left":"Left limit of the X-coordinate",
-          "gui_elements_to_replace":"GUI elements",
+          "gui_elements_to_replace":"UI elements",
           "font_configuration":"Font configuration",
           "color_hidden_square":"Hexadecimal color",
           "text_to_insert":"TExt to insert",
@@ -229,15 +229,15 @@
           "mouse_position_range_x": "Generate a random mouse position for x coordinate. The params are: the down-left position of the screenshot position, the resolution image for X exe, and the widht of the element",
           "mouse_position_range_y": "Generate a random mouse position for y coordinate. The params are: the down-left position of the screenshot position, the resolution image for y exe, and the height of the element",
           "mouse_or_keyboard": "Generate a 0 or 1 in the mouse or keyboard entry of the log",
-          "replace_gui_component_by_other": "Replace a gui component by another selected",
-          "given_text_in_image": "Inserts in the image the text in the log column with the same name as the GUI component. Example: the text in the 'Tex't' column is inserted at the location of the visual component 'Text'. The param is: the font configuration",
-          "hidden_gui_element": "Hides a gui element with a colour. Needs the hexadecimal colour starting with # as input.",
-          "replace_gui_element_various_places": "Replace a gui component by another selected in múltiple places. Actually without using",
+          "replace_gui_component_by_other": "Replace a UI element by another selected",
+          "given_text_in_image": "Inserts in the image the text in the log column with the same name as the UI element. Example: the text in the 'Tex't' column is inserted at the location of the visual component 'Text'. The param is: the font configuration",
+          "hidden_gui_element": "Hides a UI element with a colour. Needs the hexadecimal colour starting with # as input.",
+          "replace_gui_element_various_places": "Replace a UI element by another selected in múltiple places. Actually without using",
           "screenshot_name_without_root_path": "Generate a copy of the image renamed for the log and return without relative path",
           "random_text_in_image": "Insert a random text in a image. The param is a text",
-          "random_paragraph_in_image": "Insert a random paragraph in the GUI component coordinates. The params are: font family, Font size, Font color, Background color, Character delimitation, Random max number of paragraph",
-          "random_words_in_image": "Insert a random word in the GUI component coordinates. The params are: Font family, Font size, Font color, Background color and delimitation Random max number of words",
-          "random_sentence_in_image": "Insert a random sentence in the GUI component coordinates. The params are: Font family, Font size, Font color, Background color and Character delimitation for paragraph",
+          "random_paragraph_in_image": "Insert a random paragraph in the UI element coordinates. The params are: font family, Font size, Font color, Background color, Character delimitation, Random max number of paragraph",
+          "random_words_in_image": "Insert a random word in the UI element coordinates. The params are: Font family, Font size, Font color, Background color and delimitation Random max number of words",
+          "random_sentence_in_image": "Insert a random sentence in the UI element coordinates. The params are: Font family, Font size, Font color, Background color and Character delimitation for paragraph",
           "image_copy_renamed": "Generate a copy of the image renamed for the log",
           "image_copy_renamed_and_return_path": "Generate a copy of the image renamed for the log and return all relative path"
         }
@@ -254,14 +254,14 @@
           "description": "Insert a number for the function"
         },
         "element_input": {
-          "label": "Select GUI component",
-          "placeholder": "GUI component",
-          "description": "Select GUI components for the function"
+          "label": "Select UI element",
+          "placeholder": "UI element",
+          "description": "Select UI elements for the function"
         },
         "font_input": {
           "label": "Select font type, size and color",
-          "placeholder": "GUI component",
-          "description": "Select GUI components for the function"
+          "placeholder": "UI element",
+          "description": "Select UI elements for the function"
         },
         "list_input": {
           "label": "Insert the list of required parameters for the function",
@@ -534,14 +534,14 @@
         }
       },
       "assist": {
-        "empty": "To add a modification you need to select a GUI component to edit, the coordinates, the edit function and fill in its parameters",
+        "empty": "To add a modification you need to select a UI element to edit, the coordinates, the edit function and fill in its parameters",
         "download": "Download",
         "download_next": "Finish",
         "download_confirmation": "You will download the configuration Json and will no longer be able to configure this activity. Are you sure?",
         "function": {
           "variability_function": "Function variability",
           "params_function": "Param for selected function",
-          "gui_components": "GUI component to edit",
+          "gui_components": "UI element to edit",
           "dependency": "add_dependency",
           "activity_dependency": "Activity dependency",
           "variant_dependency": "Variant dependency",
@@ -580,14 +580,19 @@
         "executionStart": "Execution started:",
         "executionEnd": "Execution finished:",
         "scenariosNumber": "Number scenarios: {{ val }}",
-        "state": "Estado: {{ val }}",
-        "screenshotNameGenerationFunction": "Function generation: {{ val }}",
+        "state": "State: {{ val }}",
+        "screenshotNameGenerationFunction": "Screenshot path generation: {{ val }}",
         "title": "Experiment Details",
         "scenarios": "Download scenario conf",
         "variabilityConf": "Download variability conf",
         "published": "Published",
         "author": "Author",
-        "copyLink": "Copy link"
+        "copyLink": "Copy link",
+        "experiment": "Experiment",
+        "success": "successfully",
+        "publish": "published",
+        "unpublish": "unpublished"
+
       },
       "form": {
         "save": "Save",
@@ -633,7 +638,7 @@
         "scenario": {
           "label": "Scenario Variability configuration",
           "helperText": "Scenarios variation. Look and feel of the applications involved in the process.",
-          "tooltip": "We only indicate the configuration at scenario level if we want a number of scenarios greater than 0. This configuration consists of the same functions for varying GUI components at case level, but it is only aimed at varying those GUI components related to the look and feel of the applications involved in the log captures. GUI components that are the result of user actions on the system will be varied according to the configuration indicated in the case variability configuration. "
+          "tooltip": "We only indicate the configuration at scenario level if we want a number of scenarios greater than 0. This configuration consists of the same functions for varying UI elements at case level, but it is only aimed at varying those UI elements related to the look and feel of the applications involved in the log captures. UI elements that are the result of user actions on the system will be varied according to the configuration indicated in the case variability configuration. "
         },
         "imbalancedCase": {
           "label": "Percentages for imbalanced logs",
@@ -686,7 +691,7 @@
         "category": "Category:",
         "empty": "There's any component created yet",
         "form": {
-          "title": "GUI Component",
+          "title": "UI element",
           "name": {
             "label": "Name",
             "placeholder": "component's name"
