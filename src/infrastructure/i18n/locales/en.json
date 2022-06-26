@@ -604,6 +604,7 @@
         "published": "Published",
         "unpublished": "Unpublished",
         "author": "Author",
+        "identifier": "Experiment identifier",
         "copyLink": "Copy link",
         "experiment": "Experiment",
         "success": "successfully",

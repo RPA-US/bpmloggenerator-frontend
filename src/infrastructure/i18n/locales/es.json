@@ -672,6 +672,7 @@
         "published": "Publicado",
         "unpublished": "No publicado",
         "author": "Autor",
+        "identifier": "Identificador del experimento",
         "copyLink": "Copiar enlace",
         "experiment": "Experimento",
         "success": "exitosamente",

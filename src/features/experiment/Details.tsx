@@ -220,9 +220,12 @@ const ExperimentDetails: React.FC = () => {
 
             {experiment.isPublic && (
               <Grid container spacing={3} style={{ marginTop: theme.spacing(2) }} alignItems="center">
-                <Grid item>
+                {/* <Grid item>
                   <BoldKey variant="body1">{t('features.experiment.details.author')}</BoldKey>
                   {experiment.author}
+                </Grid> */}
+                <Grid item>
+                  <BoldKey variant="body1">{t('features.experiment.details.identifier')}</BoldKey>
                 </Grid>
                 <Grid item>
                   <Tooltip title={t('features.experiment.details.copyLink') as string}>
