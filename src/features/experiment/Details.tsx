@@ -66,13 +66,13 @@ const ExperimentDetails: React.FC = () => {
         const idParam = parseInt(id, 10);
         setLoading(true)
         setExperimentInList(null);
-        let experimentDetail = experiments.find((exp) => exp.id === idParam);
-        if (experimentDetail == null) {
-          const response = await experimentRepository.get(idParam, token ?? '');
-          setOwned(response.owned)
-          experimentDetail = experimentDTOToExperimentType(response.experiment);
-          dispatch(addExperiment)
-        }
+        // let experimentDetail = experiments.find((exp) => exp.id === idParam);
+        // if (experimentDetail == null) {
+        const response = await experimentRepository.get(idParam, token ?? '');
+        setOwned(response.owned)
+        let experimentDetail = experimentDTOToExperimentType(response.experiment);
+        dispatch(addExperiment)
+        // }
         setExperimentInList(experimentDetail);
       } catch (ex) {
         console.error('error getting experiment detail', ex);
@@ -87,7 +87,7 @@ const ExperimentDetails: React.FC = () => {
   return (
     <>
       <Typography variant="h4">
-        <BackButton to={`${configuration.PREFIX}/public`} />
+        <BackButton />
         {t('features.experiment.details.title')}
       </Typography>
 

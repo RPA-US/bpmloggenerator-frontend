@@ -75,7 +75,8 @@
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
-          "passwordConfirmation": "Las contraseñas no coinciden"
+          "passwordConfirmation": "Las contraseñas no coinciden",
+          "invalidcredentials": "Credenciales inválidas: {{msg}}"
         },
         "signup": "Registro"
       }
@@ -113,7 +114,7 @@
         "viewMore": "Ver más",
         "public": "Experimentos públicos",
         "myexperiments": "Mis experimentos",
-        "executionCompleted": "Ejecución del experimento {{mame}} completada",
+        "executionCompleted": "Ejecución del experimento {{name}} completada",
         "executionCompletedDescription": "Haga click sobre el título de la notificación para ver los detalles"
       },
       "function_category": {

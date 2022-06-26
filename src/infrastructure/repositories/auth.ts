@@ -48,7 +48,7 @@ export default class AuthRepository {
         }
         throw new AuthError('unhandled', error.statusText);
       }
-      console.error('error in AuthRepository.login', error);
+      console.error('error in AuthRepository.signup', error);
       throw error;
     }
   }

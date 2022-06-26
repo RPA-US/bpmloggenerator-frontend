@@ -90,7 +90,7 @@ function App() {
                 (
                   <>
                     <Button component={ Link } to={`${configuration.PREFIX}/public`}>
-                      <Typography color="white">Public experiments</Typography>
+                      <Typography color="white">{ t('features.experiment.list.public') }</Typography>
                     </Button>
                     <Button component={ Link } to={`${configuration.PREFIX}/login`}>
                       <Typography color="white">{ t('features.auth.login.title') }</Typography>
