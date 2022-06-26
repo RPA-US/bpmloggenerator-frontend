@@ -26,7 +26,7 @@ export default class ExperimentRepository {
       }
 
       let res;
-      if(token != ""){
+      if(token !== ""){
         res = await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
       } else {
         res = await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params))
@@ -43,7 +43,7 @@ export default class ExperimentRepository {
   async get(id: number, token: string) {
     let res: ExperimentDetail;
     try {
-      if(token != ''){
+      if(token !== ''){
         res = await Http.get<ExperimentDetail>(Http.buildURL(`/experiments/${id}/`), Http.authHeader(token))
       } else {
         res = await Http.get<ExperimentDetail>(Http.buildURL(`/experiments/${id}/`))
@@ -85,7 +85,7 @@ export default class ExperimentRepository {
       const { headers } = response;
       const contentDisposition = headers.get('content-disposition');
       let filename = `experiment_${id}.zip`;
-      if (contentDisposition != null) {
+      if (contentDisposition !== null) {
         filename = contentDisposition.replace(/.*filename=\"(.*)\"$/i, '$1')
       }
 

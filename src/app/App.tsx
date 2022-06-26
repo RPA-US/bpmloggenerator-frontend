@@ -20,7 +20,7 @@ import { authSelector, updateRedirectPath, checkSession, logout } from 'features
 import Login from 'features/auth/Login';
 import ForgotPassword from 'features/auth/ForgotPassword';
 import Signup from 'features/auth/Signup';
-// import NotificationsBoard from 'features/notifications/NotificationsBoard';
+import NotificationsBoard from 'features/notifications/NotificationsBoard';
 import ExperimentsList from 'features/experiment/ExperimentsList';
 import ExperimentCreation from 'features/experiment/Create';
 import ExperimentDetails from 'features/experiment/Details';
@@ -45,13 +45,13 @@ const LanguageSelectorContainer = styled('div')(({ theme }) => ({
   marginRight: theme.spacing(2)
 }))
 
-// const NotificationsContainer = styled('div')(({ theme }) => ({
-//   position: 'absolute',
-//   top: '64px', // under header bar
-//   right: 0,
-//   padding: theme.spacing(1),
-//   zIndex: 1,
-// }));
+const NotificationsContainer = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  top: '64px', // under header bar
+  right: 0,
+  padding: theme.spacing(1),
+  zIndex: 1,
+}));
 
 function App() {
   const { t } = useTranslation();
@@ -106,9 +106,9 @@ function App() {
             </LanguageSelectorContainer>
             </Toolbar>
 
-            {/* <NotificationsContainer>
+            <NotificationsContainer>
               <NotificationsBoard />
-            </NotificationsContainer> */}
+            </NotificationsContainer>
 
 
             { checked && (<StyledContainer maxWidth="xl">

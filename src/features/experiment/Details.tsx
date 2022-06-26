@@ -149,7 +149,7 @@ const ExperimentDetails: React.FC = () => {
                       console.log('experimentToFormData', [...experimentData.entries()]);
                       dispatch(saveExperiment(experimentData, () => {
                         const notification = NotificationFactory.success(
-                            t('features.experiment.details.experiment') + `${experiment.name}` + t('features.experiment.details.success') + `${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
+                            t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success') + ` ${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
                           )
                           .dismissible()
                           .build();
