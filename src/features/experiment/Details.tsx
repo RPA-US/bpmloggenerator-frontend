@@ -66,13 +66,13 @@ const ExperimentDetails: React.FC = () => {
         const idParam = parseInt(id, 10);
         setLoading(true)
         setExperimentInList(null);
-        let experimentDetail = experiments.find((exp) => exp.id === idParam);
-        if (experimentDetail == null) {
-          const response = await experimentRepository.get(idParam, token ?? '');
-          setOwned(response.owned)
-          experimentDetail = experimentDTOToExperimentType(response.experiment);
-          dispatch(addExperiment)
-        }
+        // let experimentDetail = experiments.find((exp) => exp.id === idParam);
+        // if (experimentDetail == null) {
+        const response = await experimentRepository.get(idParam, token ?? '');
+        setOwned(response.owned)
+        let experimentDetail = experimentDTOToExperimentType(response.experiment);
+        dispatch(addExperiment)
+        // }
         setExperimentInList(experimentDetail);
       } catch (ex) {
         console.error('error getting experiment detail', ex);
@@ -87,7 +87,7 @@ const ExperimentDetails: React.FC = () => {
   return (
     <>
       <Typography variant="h4">
-        <BackButton to={`${configuration.PREFIX}/public`} />
+        <BackButton />
         {t('features.experiment.details.title')}
       </Typography>
 
@@ -149,7 +149,7 @@ const ExperimentDetails: React.FC = () => {
                       console.log('experimentToFormData', [...experimentData.entries()]);
                       dispatch(saveExperiment(experimentData, () => {
                         const notification = NotificationFactory.success(
-                            t('features.experiment.details.experiment') + `${experiment.name}` + t('features.experiment.details.success') + `${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
+                            t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success') + ` ${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
                           )
                           .dismissible()
                           .build();
@@ -220,9 +220,12 @@ const ExperimentDetails: React.FC = () => {
 
             {experiment.isPublic && (
               <Grid container spacing={3} style={{ marginTop: theme.spacing(2) }} alignItems="center">
-                <Grid item>
+                {/* <Grid item>
                   <BoldKey variant="body1">{t('features.experiment.details.author')}</BoldKey>
                   {experiment.author}
+                </Grid> */}
+                <Grid item>
+                  <BoldKey variant="body1">{t('features.experiment.details.identifier')}</BoldKey>
                 </Grid>
                 <Grid item>
                   <Tooltip title={t('features.experiment.details.copyLink') as string}>

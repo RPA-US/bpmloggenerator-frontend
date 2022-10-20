@@ -76,7 +76,7 @@
           "emailRequired": "Please enter a valid email",
           "passwordConfirmation": "Passwords do not match",
           "passwordRequired": "Please enter a valid password.",
-          "invalidcredentials": "Email or password not valid"
+          "invalidcredentials": "Invalid credentials: {{msg}}"
         },
         "signup": "Sign up"
       }
@@ -114,7 +114,7 @@
         "viewMore": "View More",
         "public": "Public experiments",
         "myexperiments": "My experiments",
-        "executionCompleted": "Experiment {{mame}} execution completed",
+        "executionCompleted": "Experiment {{name}} execution completed",
         "executionCompletedDescription": "Click on the notification title to view details"
       },
       "function_category": {
@@ -604,6 +604,7 @@
         "published": "Published",
         "unpublished": "Unpublished",
         "author": "Author",
+        "identifier": "Experiment identifier",
         "copyLink": "Copy link",
         "experiment": "Experiment",
         "success": "successfully",
