@@ -1,0 +1,24 @@
+version: '3.6'
+
+# Networks
+networks:
+  caddy:
+    name: caddy
+    external: true
+
+services:
+  agosuirpa:
+    build: .
+    container_name: agosuirpa-frontend
+    restart: unless-stopped
+    networks:
+      - caddy
+    env_file: ./.env
+    labels:
+      caddy: canela.lsi.us.es
+      caddy.handle_path: /log-generator*
+      caddy.handle_path.0_reverse_proxy: '{{upstreams 3000}}'
+      flame.type: app
+      flame.name: AGOSUIRPA
+      flame.url: https://canela.lsi.us.es/log-generator/
+      flame.icon: math-log
