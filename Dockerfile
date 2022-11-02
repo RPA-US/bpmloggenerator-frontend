@@ -10,6 +10,6 @@ RUN yarn install
 RUN yarn global add serve
 # add app
 COPY . ./
-RUN yarn build
-# start app
-CMD ["serve", "--debug", "-s", "build"]
+# build start app
+RUN ["chmod", "+x", "./entry.sh"]
+ENTRYPOINT ["./entry.sh"]
