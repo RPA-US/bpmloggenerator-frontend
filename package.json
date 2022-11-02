@@ -1,7 +1,7 @@
 {
   "name": "agosuirpa-frontend",
   "version": "0.1.0",
-  "homepage": "/log-generator",
+  "homepage": "/agosuirpa",
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.3.1",
