@@ -16,6 +16,7 @@ import BackButton from 'components/BackButton';
 import DownloadButton from 'components/DownloadButton';
 import configuration from "infrastructure/util/configuration";
 import { experimentsSelector } from 'features/experiment/slice';
+import UploadVaribilityConfButton from 'components/UploadVariabilityConfButton';
 
 
 const ScenarioSelection: React.FC = () => {
@@ -73,6 +74,7 @@ const ScenarioSelection: React.FC = () => {
         ))}
       </TableContainer>
       <DownloadButton filename='scenario_variability_configuration' scenario_variability_mode={true} />
+      <UploadVaribilityConfButton scenario_variability_mode={true} />
     </Paper>
   </div>
   );
