@@ -48,6 +48,7 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
     sizeBalance: experiment.size_balance ?? undefined,
     specialColnames: experiment.special_colnames ?? '',
     status: '',
+    seedLog: experiment.seed ?? '',
     isPublic: experiment.public,
     author: experiment.user != null ? `${experiment.user.first_name} ${experiment.user.last_name}` : experiment.user
   }

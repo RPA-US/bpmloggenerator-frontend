@@ -599,6 +599,7 @@
         "screenshotNameGenerationFunction": "Screenshot path generation: {{ val }}",
         "title": "Experiment Details",
         "scenarios": "Download scenario conf",
+        "seedLog": "Download seed log",
         "variabilityConf": "Download variability conf",
         "public": "Public",
         "published": "Published",

@@ -24,6 +24,7 @@ export interface Experiment {
   sizeBalance: any
   specialColnames: any
   status: string | null
+  seedLog: any | null
   isPublic: boolean
   author?: string
 }

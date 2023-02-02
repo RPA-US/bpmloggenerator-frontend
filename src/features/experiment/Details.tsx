@@ -32,6 +32,10 @@ const downloadJson = (filename: string, json: any) => {
   downloadFile(filename, new Blob([strJson], { type: "application/json" }));
 }
 
+const downloadCsv = (filename: string, csv: any) => {
+  downloadFile(filename, new Blob([csv], { type: "application/csv" }));
+}
+
 const buildPublicLink = (id: any): string => `${configuration.PUBLIC_LINK_PART}/experiment/${id}`;
 
 const BoldKey = styled(Typography)`
@@ -249,6 +253,14 @@ const ExperimentDetails: React.FC = () => {
             )}
 
             <Grid container spacing={3} style={{ marginTop: theme.spacing(1) }}>
+              <Grid item style={{ marginTop: theme.spacing(1) }}>
+                <FileBox component="span" sx={{ p: 2 }}>
+                  <Button
+                    startIcon={<AttachFileIcon />}
+                    onClick={() => downloadCsv('seedLog.csv', experiment.seedLog)}
+                  >{t('features.experiment.details.seedLog')}</Button>
+                </FileBox>
+              </Grid>
               {(experiment.numberScenarios ?? 0) > 0 &&
                 (<Grid item style={{ marginTop: theme.spacing(1) }}>
                   <FileBox component="span" sx={{ p: 2 }}>

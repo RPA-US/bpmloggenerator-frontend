@@ -667,6 +667,7 @@
         "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
+        "seedLog": "Descargar log semilla",
         "variabilityConf": "Descargar configuración de variabilidad",
         "public": "Público",
         "published": "Publicado",
