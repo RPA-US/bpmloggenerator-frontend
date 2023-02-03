@@ -165,7 +165,9 @@
           "mouse_list_coordenates_top":"Límite superior de la coordenada",
           "mouse_list_coordenates_right":"Límite derecho de la coordenada",
           "mouse_list_coordenates_left":"Límite izquierdo de la coordenada",
-          "mouse_list_coordenates_resolution_y":"Resolución del alto de la imagen"
+          "mouse_list_coordenates_resolution_y":"Resolución del alto de la imagen",
+          "truncated_sentence_configuration_char_limit":"Máximo número de caracteres",
+          "gui_component_status": "Estado a ser asignado al componente GUI resultante"
         }
       },
       "GUI_category": {
@@ -232,7 +234,9 @@
           "random_words_in_image": "random_word_image",
           "random_sentence_in_image": "random_sentence_image",
           "image_copy_renamed": "generate_copied_capture_without_root",
-          "image_copy_renamed_and_return_path": "generate_copied_capture"
+          "image_copy_renamed_and_return_path": "generate_copied_capture",
+          "gui_component_status": "assign_status_as_property",
+          "truncated_random_sentence_in_image": "truncated_random_sentence_in_image"
         },
         "description": {
           "random_mouse_position": "Genera una posición aleatoria del raton. Los parámetros son: posición inferior izquierda (2 coordenadas), la resolución de la imagen (2 coordenadas), y la altura y anchura del area de la UI",
@@ -254,12 +258,14 @@
           "hidden_gui_element": "Oculta un elemento visual con un color plano. Necesita el color en hexadecimal empezado con #",
           "replace_gui_element_various_places": "Reemplaza un UI element por otro en múltiples lugares. Actualmente sin uso",
           "screenshot_name_without_root_path": "Genera una copia de la imagen renombrada para el log y devuelve sin ruta relativa",
-          "random_text_in_image": "Inserta un texto en la imagen e las coordenadas del UI element. El parámetro es un texto",
+          "random_text_in_image": "Inserta un texto en la imagen en las coordenadas del UI element. El parámetro es un texto",
           "random_paragraph_in_image": "Inserta un parrafo aleatorio en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por línea y un número máximo de aleatoriedad de parrafos a generar",
           "random_words_in_image": "Inserta una palabra aleatoria en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo, el límite de caracteres por líena y un número máximo de aleatoriedad de sentencias a generar",
-          "random_sentence_in_image": "Inserta una sentencia aleatoria en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo",
+          "random_sentence_in_image": "Inserta una frase/parrafo aleatoria en la imagen e las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo",
           "image_copy_renamed": "Genera una copia de la imagen renombrada para el log",
-          "image_copy_renamed_and_return_path": "Genera una copia de la imagen renombrada para el log y devuelve toda la ruta relativa"
+          "image_copy_renamed_and_return_path": "Genera una copia de la imagen renombrada para el log y devuelve toda la ruta relativa",
+          "gui_component_status": "Asigna el estado o estados (separados por ;) como propiedades del UI element",
+          "truncated_random_sentence_in_image": "Inserta una frase aleatoria como SOLO UNA LINEA en la imagen en las coordenadas del UI element. Los parámetros son: le tipo de fuente de letra, el tamaño de letra, el coor de letra, el color de fondo y el límite de caracteres por párrafo"
         }
       },
       "function_params": {

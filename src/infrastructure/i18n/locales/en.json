@@ -159,7 +159,9 @@
           "word_configuration_max_words":"Maximum number of words to be generated",
           "sentence_configuration_char_limit":"Maximum number of characters",
           "paragraph_configuration_char_limit":"Maximum number of characters",
-          "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated"
+          "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated",
+          "truncated_sentence_configuration_char_limit":"Maximum number of characters",
+          "gui_component_status":"Status to be assigned to the resulting GUI component"
         }
       },
       "GUI_category": {
@@ -227,7 +229,9 @@
           "random_words_in_image": "random_word_image",
           "random_sentence_in_image": "random_sentence_image",
           "image_copy_renamed": "generate_copied_capture_without_root",
-          "image_copy_renamed_and_return_path": "generate_copied_capture"
+          "image_copy_renamed_and_return_path": "generate_copied_capture",
+          "gui_component_status": "assign_status_as_property",
+          "truncated_random_sentence_in_image": "truncated_random_sentence_in_image"
         },
         "description": {
           "random_mouse_position": "Generate a random mouse position. The params in order are: the down-left position of the screenshot position (2 coordinates), the resolution image (2 coordinates), and the height and widht of the UI area",
@@ -254,7 +258,9 @@
           "random_words_in_image": "Insert a random word in the UI element coordinates. The params are: Font family, Font size, Font color, Background color and delimitation Random max number of words",
           "random_sentence_in_image": "Insert a random sentence in the UI element coordinates. The params are: Font family, Font size, Font color, Background color and Character delimitation for paragraph",
           "image_copy_renamed": "Generate a copy of the image renamed for the log",
-          "image_copy_renamed_and_return_path": "Generate a copy of the image renamed for the log and return all relative path"
+          "image_copy_renamed_and_return_path": "Generate a copy of the image renamed for the log and return all relative path",
+          "gui_component_status": "Assigns the status or statuses (separated by ;) as properties of the UI element",
+          "truncated_random_sentence_in_image": "Inserts a random sentence as ONLY ONE LINE in the image at the coordinates of the UI element. The parameters are: the font type, the font size, the font color, the background color and the character limit per paragraph."
         }
       },
       "function_params": {

@@ -1,8 +1,8 @@
 
 export enum ExperimentState {
-  NOT_LAUNCHED,
-  CREATING,
-  CREATED,
+  NOT_LAUNCHED, // PRE_SAVED
+  CREATING, // LAUNCHED
+  CREATED, // SAVED
 }
 export interface Experiment {
   id: number

@@ -17,6 +17,7 @@ import configuration from "infrastructure/util/configuration";
 import { wizardSelector, guiComponentCategoryRepository, wizardSlice } from 'features/experiment/wizard/slice';
 import { CategoryDTO, CategoryResponse, } from 'infrastructure/http/dto/wizard';
 import { authSelector } from 'features/auth/slice';
+import UploadVaribilityConfButton from 'components/UploadVariabilityConfButton';
 
 export interface ExperimentFormProperties {
   onSubmit: any
@@ -88,6 +89,7 @@ const ExperimentAssist: React.FC = () => {
         {t('features.experiment.create.title')}
       </Typography>
       <Paper sx={{ width: '70%', overflow: 'hidden', margin: 'auto' }}>
+        <UploadVaribilityConfButton scenario_variability_mode={false} />
         <TableContainer sx={{ maxHeight: '100%' }}>
           {
             Object.entries(seed).map(entry => (
