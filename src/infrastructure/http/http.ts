@@ -15,7 +15,7 @@ const body = (bodyObj: any) => {
 };
 
 const handleRequestResponse = async <T>(response: Response) => {
-    console.log('response', response, response.headers);
+    // console.log('response', response, response.headers);
     if (response.ok) {
         return await response.json() as T;
     } else {

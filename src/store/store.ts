@@ -2,7 +2,7 @@ import { configureStore, Action } from '@reduxjs/toolkit';
 import thunk, { ThunkAction } from 'redux-thunk';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 
 import rootReducer from './rootReducer';
 
@@ -13,7 +13,7 @@ const reducer = rootReducer(history);
 
 const middleware = [
   routerMiddleware(history),
-  logger,
+  // logger,
   thunk,
 ]
 

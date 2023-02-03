@@ -125,7 +125,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   
   // clear seed log attached data
   const seedLog = experimentData.get('seedLog') ?? '';
-  experimentData.delete('seedLog');
+  // experimentData.delete('seedLog');
 
   // for first saving we unset execute_mode field
   const executeMode = experimentData.get('execute_mode') ?? 'false';

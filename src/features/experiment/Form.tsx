@@ -100,7 +100,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       }
     }
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
-    console.log('is form valid', valid, ', evalued data', data);
+    console.log('Form validation: ', valid, '. Evalued data: ', data);
     return valid;
   }
 

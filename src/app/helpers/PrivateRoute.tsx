@@ -17,9 +17,9 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ auth, authPath, redirectP
     }
   }, [auth, setRedirectPath, currentLocation]);
 
-  console.log('Protected route props:  ', { auth, authPath, redirectPath, routeProps, currentLocation })
+  // console.log('Protected route props:  ', { auth, authPath, redirectPath, routeProps, currentLocation })
   if (auth || currentLocation.pathname.includes('experiment') || currentLocation.pathname.includes('public')) {
-    console.log('rendering route with props: ', routeProps)
+    // console.log('rendering route with props: ', routeProps)
     return (<Route {...routeProps} />);
   } else {
     return (<Redirect to={{ pathname: auth ? redirectPath : authPath }} />)

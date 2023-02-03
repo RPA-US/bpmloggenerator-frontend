@@ -105,7 +105,7 @@ const ExperimentDetails: React.FC = () => {
         <ExperimentFormComponent
           initialValues={experiment}
           onSubmit={(data: any) => {
-            console.log('Edit component data received:', data);
+            // console.log('Edit component data received:', data);
             const variability_mode = data.get('variability_mode');
             data.set('id', id);
             dispatch(saveExperiment(data, (status: string, error: any) => {
@@ -116,6 +116,14 @@ const ExperimentDetails: React.FC = () => {
                     history.push(configuration.PREFIX + '/scenario-variability');
                   } else if (variability_mode === "caseVariability") {
                     history.push(configuration.PREFIX + '/case-variability');
+                  } else {
+                    const notification = NotificationFactory.success(t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success'))
+                      .dismissible()
+                      .build();
+            
+                    setTimeout(() => {
+                      dispatch(showNotification(notification));
+                    }, 0)
                   }
                 } else {
                   history.push(configuration.PREFIX + '/');

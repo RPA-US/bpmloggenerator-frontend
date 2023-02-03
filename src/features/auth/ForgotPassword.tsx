@@ -49,6 +49,14 @@ export default function ForgotPassword(): JSX.Element {
       })
       .catch((ex) => {
         console.error('there was a problem requesting password recovering', ex)
+        const notification = NotificationFactory.success(t('features.auth.login.forgotPasswordError' + ex))
+          .dismissible()
+          .build();
+
+        setTimeout(() => {
+          dispatch(showNotification(notification));
+        }, 0)
+
       })
       .finally(() => {
         setLoading(false)
