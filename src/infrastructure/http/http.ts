@@ -45,19 +45,22 @@ export default class Http {
     }
 
     static async post <T>(url:string, bodyObj: any, headers?: any) {
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    ...(bodyObj instanceof FormData ? {} : commonHeaders),
-                    ...headers,
-                },
-                body: body(bodyObj)
-            })
-            return handleRequestResponse<T>(response);
-        } catch (ex) {
-            throw ex;
-        }
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                ...(bodyObj instanceof FormData ? {} : commonHeaders),
+                ...headers,
+            },
+            body: body(bodyObj)
+        })
+        
+        return handleRequestResponse<T>(response)
+        .catch(error => {
+            console.error(error);
+            return error.json().then((errorBody: any) => {
+            throw new Error(errorBody.message);
+            });
+        });
     }
 
     static async put <T>(url:string, bodyObj: any, headers?: any) {
@@ -68,7 +71,13 @@ export default class Http {
             },
             body: body(bodyObj)
         })
-        return handleRequestResponse<T>(response);
+        return handleRequestResponse<T>(response)
+        .catch(error => {
+            console.error(error);
+            return error.json().then((errorBody: any) => {
+            throw new Error(errorBody.message);
+            });
+        });
     }
 
     static async delete <T>(url:string, headers?: any) {

@@ -129,8 +129,14 @@ const ExperimentDetails: React.FC = () => {
                   history.push(configuration.PREFIX + '/');
                 }
               } else {
-                alert('unexpected error occurred');
-                console.error(error);
+                const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
+                    .dismissible()
+                    .build();
+          
+                  setTimeout(() => {
+                    dispatch(showNotification(notification));
+                  }, 0)
+              
               }
               }));
           }}
