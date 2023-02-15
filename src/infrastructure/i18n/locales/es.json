@@ -674,6 +674,7 @@
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
         "variabilityConf": "Descargar configuración de variabilidad",
+        "seed": "Descargar Log semilla",
         "public": "Público",
         "published": "Publicado",
         "unpublished": "No publicado",

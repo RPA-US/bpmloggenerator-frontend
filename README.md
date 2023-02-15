@@ -4,7 +4,7 @@ This project is the frontend part of the AGOSUIRPA project. To access the rest o
 
 ## Before run
 
-If you have installed Node Version Manager ([nvm](https://github.com/nvm-sh/nvm)) you can configure your node version typing:
+If you have installed Node Version Manager ([nvm](https://ñgithub.com/nvm-sh/nvm)) you can configure your node version typing:
 - `nvm install` if you dont have the version installed
 - `nvm use` to switch to the node's project version
 

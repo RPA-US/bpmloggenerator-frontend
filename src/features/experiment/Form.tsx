@@ -12,7 +12,7 @@ import FileUpload from 'components/FileUpload';
 import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import TextInputContainer from 'components/TextInputContainer';
-import { objectToFormData } from 'infrastructure/util/form';
+import { objectToFormData } from 'infrastructure/util/form';
 
 const RelativeContainer = styled('div')`
   position: relative;
@@ -34,15 +34,15 @@ const readFileContent = (file: Blob) => new Promise<string>((resolve, reject) =>
   reader.readAsText(file);
 });
 
-const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit, disabled = false, initialValues = {}}) => {
+const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit, disabled = false, initialValues = {} }) => {
   // hook to force component update manually
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({} as any), []);
-  
+
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
-  const [fileContents, setFileContents]: [ any, React.Dispatch<React.SetStateAction<any>> ] = useState({});
+  const [fileContents, setFileContents]: [any, React.Dispatch<React.SetStateAction<any>>] = useState({});
 
   const seedLogField = register('seedLog');
   const screenshotsField = register('screenshots');
@@ -61,18 +61,23 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   useEffect(() => {
     let scenarios_conf;
     let variability_conf;
+    let seedLog;
     if (initialValues.scenariosConf != null) {
       scenarios_conf = JSON.stringify(initialValues.scenariosConf)
     }
     if (initialValues.variabilityConf != null) {
       variability_conf = JSON.stringify(initialValues.variabilityConf)
     }
+    if (initialValues.seedLog != null) {
+      seedLog = JSON.stringify(initialValues.seedLog)
+    }
     setFileContents({
       ...fileContents,
+      seedLog,
       scenarios_conf,
       variability_conf,
     });
-  }, [ ])
+  }, [])
 
   const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
   const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
@@ -85,7 +90,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
     if (submitter === 'generate') {
       // if (fileContents.seedLog == null) setError({ type: 'required', message: t('features.experiment.form.errors.seedLogRequired') as string });
-      if ((data.screenshots == null || data.screenshots.length < 1) && (initialValues.screenshotsPath == null || initialValues.screenshotsPath === '')) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
+      if ((data.screenshots == null || data.screenshots.length < 1) && (initialValues.screenshotsPath == null || initialValues.screenshotsPath === '')) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
       if (fileContents.variability_conf == null && initialValues.variabilityConf == null) setFormError('variability_conf', { type: 'required', message: t('features.experiment.form.errors.variabilityRequired') as string });
       if (Validations.isPositiveInteger(data.number_scenarios) && data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
       if (!Validations.isPositiveInteger(data.number_scenarios)) setFormError('number_scenarios', { type: 'required', message: t('features.experiment.form.errors.scenariosNumberRequired') as string });
@@ -95,7 +100,15 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       } else {
         const tokenizedImbalanced = data.imbalancedCase.split(',');
         if (tokenizedImbalanced.length === 1) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseInvalidLength') as string });
-        const sum = tokenizedImbalanced.reduce((tot: number, curr: string) => tot + parseFloat(curr), 0);
+        //const sum = tokenizedImbalanced.reduce((tot: number, curr: string) => tot + parseFloat(curr), 0);
+        const sum = tokenizedImbalanced.reduce((tot: number, curr: string) => {
+          const currNum = parseFloat(curr);
+          if (!isNaN(currNum)) {
+            return tot + currNum;
+          }
+          return tot;
+        }, 0);
+
         if (sum != 1.0) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseSumDistinctOfOne') as string });
       }
     }
@@ -106,7 +119,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
   const formSubmit = (data: any, event: any) => {
     const buttonName = event.nativeEvent.submitter.name;
-    
+
     if (!validateForm(data, buttonName)) {
       return false;
     }
@@ -149,7 +162,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     if (checkedData.screenshots.length === 0 && initialValues.screenshotsPath != null) {
       checkedData.screenshots_path = initialValues.screenshotsPath;
     }
-    
+
     const formData = objectToFormData(checkedData, fileContents);
     onSubmit(formData)
   }
@@ -184,7 +197,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                 }
                 error={formState.errors.name != null}
                 helperText={formState.errors.name?.message}
-                disabled={ disabled }
+                disabled={disabled}
               />
             </TextInputContainer>
           </FormInput>
@@ -207,7 +220,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                 }
                 error={formState.errors.description != null}
                 helperText={formState.errors.description?.message}
-                disabled={ disabled }
+                disabled={disabled}
               />
             </TextInputContainer>
           </FormInput>
@@ -220,9 +233,10 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
           >
             <FileUpload
               accept=".csv"
-              disabled={ disabled }
+              disabled={disabled}
               errorMessage={!formState.dirtyFields.seedLog && formState.errors?.seedLog?.message}
-              fileName={(getValues('seedLog') ?? [])[0]?.name}
+              //por aqui debe andar el nombre al lado del imput
+              fileName={(getValues('seedLog') ?? [])[0]?.name || initialValues.seed != null ? 'no nulo':'nulo'}
               inputProps={{
                 ...seedLogField,
                 onChange: (evt: any) => {
@@ -253,15 +267,15 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
           >
             <FileUpload
               accept=".zip"
-              disabled={ disabled }
+              disabled={disabled}
               errorMessage={!formState.dirtyFields.screenshots && formState.errors?.screenshots?.message}
-              fileName={(getValues('screenshots') ?? [])[0]?.name || initialValues.screenshotsPath}
+              fileName={(getValues('screenshots') ?? [])[0]?.name || initialValues.screenshotsPath}
               inputProps={{
-                  ...screenshotsField,
-                  onChange: (evt: any) => {
-                    screenshotsField.onChange(evt);
-                    forceUpdate();
-                  },
+                ...screenshotsField,
+                onChange: (evt: any) => {
+                  screenshotsField.onChange(evt);
+                  forceUpdate();
+                },
               }}
             />
           </FormInput>
@@ -276,7 +290,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               <TextField
                 fullWidth
                 defaultValue=""
-                disabled={ disabled }
+                disabled={disabled}
                 type="number"
                 placeholder={t('features.experiment.form.scenariosNumber.placeholder')}
                 inputProps={
@@ -299,7 +313,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
           >
             <FileUpload
               accept=".json"
-              disabled={ disabled || scenariosConfDisabled }
+              disabled={disabled || scenariosConfDisabled}
               errorMessage={!formState.dirtyFields.scenarios_conf && formState.errors?.scenarios_conf?.message}
               fileName={(getValues('scenarios_conf') ?? [])[0]?.name || (watchNumberScenarios > 0 && initialValues.scenariosConf != null ? 'scenarios_conf.json' : '')}
               inputProps={{
@@ -323,7 +337,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             />
             <Button
               type="submit" name="scenarioVariability"
-              disabled={ disabled || scenariosConfDisabled || wizzardDisabled }
+              disabled={disabled || scenariosConfDisabled || wizzardDisabled}
               variant="outlined"
               style={{ fontSize: "small", marginLeft: 4 }}
               endIcon={<SettingsSuggestIcon />}>{t('features.experiment.form.assistant')}</Button>
@@ -346,7 +360,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                     value: initialValues?.sizeBalance?.size_secuence.join(',')
                   })
                 }
-                disabled={ disabled }
+                disabled={disabled}
                 error={formState.errors.logSize != null}
                 helperText={formState.errors.logSize?.message}
               />
@@ -372,7 +386,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                 }
                 error={formState.errors.imbalancedCase != null}
                 helperText={formState.errors.imbalancedCase?.message}
-                disabled={ disabled }
+                disabled={disabled}
               />
             </TextInputContainer>
           </FormInput>
@@ -385,7 +399,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
           >
             <FileUpload
               accept=".json"
-              disabled={ disabled }
+              disabled={disabled}
               errorMessage={!formState.dirtyFields.variability_conf && formState.errors?.variability_conf?.message}
               fileName={(getValues('variability_conf') ?? [])[0]?.name || (initialValues.variabilityConf != null ? 'variability_conf.json' : '')}
               inputProps={{
@@ -409,7 +423,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             />
             <Button
               type="submit" name="caseVariability"
-              disabled={ disabled || wizzardDisabled }
+              disabled={disabled || wizzardDisabled}
               variant="outlined"
               style={{ fontSize: "small", marginLeft: 4 }}
               endIcon={<SettingsSuggestIcon />}
@@ -422,11 +436,11 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
         <CardActions>
           <Spacer />
 
-          <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} disabled={ disabled }>
+          <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} disabled={disabled}>
             {t('features.experiment.form.save')}
           </Button>
 
-          <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />} disabled={ disabled }>
+          <Button type="submit" name="generate" variant="contained" color="primary" endIcon={<SendIcon />} disabled={disabled}>
             {t('features.experiment.form.generate')}
           </Button>
         </CardActions>
