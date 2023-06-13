@@ -7,19 +7,19 @@ networks:
     external: true
 
 services:
-  agosuirpa-frontend:
-    image: ghcr.io/rpa-us/agosuirpa-frontend/agosuirpa-frontend:latest
-    container_name: agosuirpa-frontend
+  bpmloggenerator-frontend:
+    image: ghcr.io/rpa-us/bpmloggenerator-frontend/bpmloggenerator-frontend:latest
+    container_name: bpmloggenerator-frontend
     restart: unless-stopped
     networks:
       - caddy
     env_file: ./.env
     labels:
       caddy: canela.lsi.us.es
-      caddy.handle_path: /agosuirpa*
+      caddy.handle_path: /bpmloggenerator*
       caddy.handle_path.0_reverse_proxy: '{{upstreams 3000}}'
       flame.type: app
-      flame.name: AGOSUIRPA
-      flame.url: https://canela.lsi.us.es/agosuirpa/
+      flame.name: bpmLogGenerator
+      flame.url: https://canela.lsi.us.es/bpmloggenerator/
       flame.icon: math-log
       com.centurylinklabs.watchtower.enable: true

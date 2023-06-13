@@ -6,7 +6,7 @@ import AuthRepository from 'infrastructure/repositories/auth';
 import { UserDTO } from 'infrastructure/http/dto/auth';
 import configuration from "infrastructure/util/configuration";
 
-export const SESSION_TOKEN_ITEM = "agosuirpa.auth";
+export const SESSION_TOKEN_ITEM = "bpmloggenerator.auth";
 
 const { localStorage } = window;
 

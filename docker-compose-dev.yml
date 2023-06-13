@@ -1,8 +1,8 @@
 version: '3.6'
 
 services:
-  agosuirpa:
+  bpmloggenerator:
     build: .
-    container_name: agosuirpa-frontend
+    container_name: bpmloggenerator-frontend
     restart: unless-stopped
     env_file: ./.env

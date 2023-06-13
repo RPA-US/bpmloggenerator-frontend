@@ -1,8 +1,8 @@
 {
   "general": {
-    "agosuirpa": {
-      "label": "AGOSUIRPA",
-      "tooltip": "AGOSUIRPA's platform is motivated by the difficulty of finding real logs to test on them. Due to the intrusive nature of keyloggers in terms of operator privacy and customer data involved in the business processes to be automated, companies cannot share this data with third parties without the express consent of those involved. Therefore, we developed a platform, which from a seed and some configuration parameters, allows us to generate logs of the dimension we want with their associated captures."
+    "bpmloggenerator": {
+      "label": "BPM Log Generator",
+      "tooltip": "BPM Log Generator's platform is motivated by the difficulty of finding real logs to test on them. Due to the intrusive nature of keyloggers in terms of operator privacy and customer data involved in the business processes to be automated, companies cannot share this data with third parties without the express consent of those involved. Therefore, we developed a platform, which from a seed and some configuration parameters, allows us to generate logs of the dimension we want with their associated captures."
     },
     "log": {
       "label": "UI log",
@@ -51,7 +51,8 @@
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordRequired": "Please enter a valid password",
-          "invalidCredentials": "Email or password incorrect"
+          "invalidCredentials": "Email or password incorrect",
+          "invalid": "Authencation not valid, please try again"
         },
         "login": "Login",
         "forgotPassword": "Forgot your password?",

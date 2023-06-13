@@ -56,7 +56,7 @@ export default class Http {
         
         return handleRequestResponse<T>(response)
         .catch(error => {
-            console.error(error);
+            // console.error(error);
             return error.json().then((errorBody: any) => {
             throw new Error(errorBody.message);
             });

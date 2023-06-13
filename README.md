@@ -1,6 +1,6 @@
-# AGOSUIRPA (frontend)
+# bpmLogGenerator (frontend)
 
-This project is the frontend part of the AGOSUIRPA project. To access the rest of the documentation, it is necessary to access the backend part in [AGOSUIRPA](https://github.com/RPA-US/agosuirpa).
+This project is the frontend part of the bpmLogGenerator project. To access the rest of the documentation, it is necessary to access the backend part in [bpmLogGenerator](https://github.com/RPA-US/bpmloggenerator).
 
 ## Before run
 

@@ -1,7 +1,7 @@
 {
-  "name": "agosuirpa-frontend",
+  "name": "bpmloggenerator-frontend",
   "version": "0.1.0",
-  "homepage": "/agosuirpa",
+  "homepage": "/bpmloggenerator",
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.3.1",
@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "relocate": "react-scripts build && rm -rf ../agosuirpa/build && mv -f build ../agosuirpa",
+    "relocate": "react-scripts build && rm -rf ../bpmloggenerator/build && mv -f build ../bpmloggenerator",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

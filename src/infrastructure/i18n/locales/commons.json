@@ -1,4 +1,4 @@
 {
-  "projectName": "AGOSUIRPA Platform",
+  "projectName": "BPM Log Generator",
   "datetime":"{{ val, datetime }}"
 }

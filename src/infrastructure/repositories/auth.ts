@@ -22,7 +22,7 @@ export default class AuthRepository {
         email,
         password
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Response) {
         if (error.status === 400) {
           throw new AuthError('invalid.credentials', 'invalid user credentials')
@@ -30,7 +30,7 @@ export default class AuthRepository {
         throw new AuthError('unhandled', error.statusText);
       }
       console.error('error in AuthRepository.login', error);
-      throw error;
+      throw new AuthError('invalid.login', "unhandled");
     }
   }
 

@@ -16,7 +16,6 @@ export interface Experiment {
   numberScenarios: number
   variabilityConf: any
   scenariosConf: any
-  seedLog:any
   foldername: string
   isActive: boolean
   isBeingProcessed: number

@@ -80,7 +80,6 @@ function App() {
               </Button>
               <Spacer />
               
-              
               {
                 isAuth ? (
                   <UserMenu>
