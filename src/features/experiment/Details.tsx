@@ -11,7 +11,7 @@ import { ThemeContext } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
-import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice} from './slice';
+import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice } from './slice';
 import { experimentDTOToExperimentType, downloadFile, copyTextToClipboard, experimentToFormData } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
@@ -35,6 +35,43 @@ const downloadJson = (filename: string, json: any) => {
 const downloadCsv = (filename: string, csv: any) => {
   downloadFile(filename, new Blob([csv], { type: "application/csv" }));
 }
+const downloadCSV = (filename: string, data: any) => {
+
+  console.log(data);
+
+  const replacer = (key: string, value: any) => value === null ? '' : value;
+  const header = Object.keys(data[0]);
+  console.log(typeof data);
+  let csv = data.map((row: { [x: string]: any; }) => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join('%'));
+  csv.unshift(header.join(','));
+  csv = csv.join('\r\n');
+  
+  downloadFile(filename, new Blob([csv], { type: "text/csv" }));
+  }
+
+
+  function downloadCSV2( filename: string, urlEncodedString: string) {
+    const decodedString = decodeURIComponent(urlEncodedString);
+    const rows = decodedString.split('\n');
+    const headers = rows[0].split(',');
+    const data = rows.slice(1).map(row => row.split(','));
+  
+    const csvContent = [headers, ...data].map(row => row.join(',')).join('\n');
+  
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+
+
+
 
 const buildPublicLink = (id: any): string => `${configuration.PUBLIC_LINK_PART}/experiment/${id}`;
 
@@ -84,7 +121,7 @@ const ExperimentDetails: React.FC = () => {
         setLoading(false)
       }
     })();
-  }, [id,token]);
+  }, [id, token]);
 
 
 
@@ -109,7 +146,7 @@ const ExperimentDetails: React.FC = () => {
         <ExperimentFormComponent
           initialValues={experiment}
           onSubmit={(data: any) => {
-            console.log('Edit component data received:', data);
+            // console.log('Edit component data received:', data);
             const variability_mode = data.get('variability_mode');
             data.set('id', id);
             dispatch(saveExperiment(data, (status: string, error: any) => {
@@ -120,15 +157,29 @@ const ExperimentDetails: React.FC = () => {
                     history.push(configuration.PREFIX + '/scenario-variability');
                   } else if (variability_mode === "caseVariability") {
                     history.push(configuration.PREFIX + '/case-variability');
+                  } else {
+                    const notification = NotificationFactory.success(t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success'))
+                      .dismissible()
+                      .build();
+
+                    setTimeout(() => {
+                      dispatch(showNotification(notification));
+                    }, 0)
                   }
                 } else {
                   history.push(configuration.PREFIX + '/');
                 }
               } else {
-                alert('unexpected error occurred');
-                console.error(error);
+                const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
+                  .dismissible()
+                  .build();
+
+                setTimeout(() => {
+                  dispatch(showNotification(notification));
+                }, 0)
+
               }
-              }));
+            }));
           }}
         />
       )}
@@ -140,7 +191,7 @@ const ExperimentDetails: React.FC = () => {
               <Grid item>
                 <Typography variant="h6">{experiment.name}</Typography>
               </Grid>
-              { owned &&
+              {owned &&
                 <Grid item>
                   <label>{t('features.experiment.details.published')}</label>
                   <Switch
@@ -153,8 +204,8 @@ const ExperimentDetails: React.FC = () => {
                       console.log('experimentToFormData', [...experimentData.entries()]);
                       dispatch(saveExperiment(experimentData, () => {
                         const notification = NotificationFactory.success(
-                            t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success') + ` ${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
-                          )
+                          t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success') + ` ${newValue ? t('features.experiment.details.publish') : t('features.experiment.details.unpublish')}`
+                        )
                           .dismissible()
                           .build();
 
@@ -277,6 +328,16 @@ const ExperimentDetails: React.FC = () => {
                     startIcon={<AttachFileIcon />}
                     onClick={() => downloadJson('variability_conf.json', experiment.variabilityConf)}
                   >{t('features.experiment.details.variabilityConf')}</Button>
+                </FileBox>
+              </Grid><Grid item style={{ marginTop: theme.spacing(1) }}>
+                
+                <FileBox component="span" sx={{ p: 2 }}>
+                  <Button
+                    startIcon={<AttachFileIcon />}
+                    
+                    onClick={() => downloadCSV2('seed.csv', experiment.seedLog)}
+                    
+                  >{t('features.experiment.details.seed')}</Button>
                 </FileBox>
               </Grid>
               { /*<Grid item style={{ marginTop: theme.spacing(1) }}>

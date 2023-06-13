@@ -12,7 +12,7 @@ export default class ExperimentRepository {
 
       return await Http.get<ExperimentResponse>(Http.buildURL('/experiments/', params), Http.authHeader(token))
     } catch (ex) {
-      console.error('error caught in ExperimentRepository.list', ex);
+      console.error('Error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error
       throw ex;
     }
@@ -34,7 +34,7 @@ export default class ExperimentRepository {
 
       return res;
     } catch (ex) {
-      console.error('error caught in ExperimentRepository.list', ex);
+      console.error('Error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error
       throw ex;
     }
@@ -50,7 +50,7 @@ export default class ExperimentRepository {
       }
       return res;
     } catch (ex) {
-      console.error('error caught in ExperimentRepository.list', ex);
+      console.error('Error caught in ExperimentRepository.list', ex);
       // TODO handle session caduced error
       throw ex;
     }
@@ -64,8 +64,7 @@ export default class ExperimentRepository {
         return await Http.post<ExperimentDTO>(Http.buildURL('/experiments/'), experimentData, Http.authHeader(token)) 
       }
     } catch (ex) {
-      console.error('error caught in ExperimentRepository.create', ex);
-      // TODO handle session caduced error
+      // console.error('Error caught in ExperimentRepository.save', ex);
       throw ex;
     }
   }
@@ -95,7 +94,7 @@ export default class ExperimentRepository {
         blob,
       }
     } catch (ex) {
-      console.error('error caught in ExperimentRepository.download', ex);
+      console.error('Error caught in ExperimentRepository.download', ex);
       // TODO handle session caduced error
       throw ex;
     }

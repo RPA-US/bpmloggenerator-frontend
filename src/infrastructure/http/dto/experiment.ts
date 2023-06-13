@@ -3,6 +3,7 @@ export interface ExperimentDTO {
   name: string
   description: string
   number_scenarios: number
+  seed:any
   variability_conf: any
   special_colnames: any
   screenshot_name_generation_function: string

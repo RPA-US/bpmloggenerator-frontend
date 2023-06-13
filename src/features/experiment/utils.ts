@@ -38,6 +38,7 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
     lastEditionDate: new Date(experiment.last_edition),
     state,
     numberScenarios: experiment.number_scenarios ?? 0,
+    seedLog: experiment.seed ?? undefined,
     variabilityConf: experiment.variability_conf ?? undefined,
     scenariosConf: experiment.scenarios_conf ?? undefined,
     foldername: experiment.foldername ?? '',
@@ -74,7 +75,8 @@ export function experimentToFormData(experiment: Experiment): FormData {
       'size_balance': experiment.sizeBalance,
       'special_colnames': experiment.specialColnames,
       'status': experiment.status ?? '',
-      'variability_conf': experiment.variabilityConf
+      'variability_conf': experiment.variabilityConf,
+      'seedLog':experiment.seedLog
     }, {})
   }
   return new FormData();

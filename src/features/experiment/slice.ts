@@ -140,10 +140,10 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
       experimentData.set('id', typedExperiment.id);
       experimentData.set('execute_mode', 'true');
       try {
-        experimentRepository.save(experimentData, auth.token ?? '');
+        const experimentExecutionResponse = await experimentRepository.save(experimentData, auth.token ?? '');
         typedExperiment.state = ExperimentState.CREATING;
       } catch (ex) {
-        console.error('error during project execution', ex);
+        // console.error('Error during project execution', ex);
         throw ex;
       }
     }
@@ -171,11 +171,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     actionFinishedCallback != null && actionFinishedCallback(experimentResponse.status, null);
     } catch (error) {
       dispatch(setError(error as ExperimentError))
-      let exception = error;
-      if (error instanceof Response) {
-        exception = new Error(`error saving experiment (status was ${error.status})`) as ExperimentError;
-      }
-      actionFinishedCallback != null && actionFinishedCallback(null, exception);
+      actionFinishedCallback != null && actionFinishedCallback(null, error);
     }
 }
 

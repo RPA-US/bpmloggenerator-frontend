@@ -34,7 +34,7 @@ const NotificationsBoard: React.FC = () => {
   const [ visibility, setVisibility ] = useState<string[]>([])
 
   useEffect(() => {
-    console.log('list changed!', list)
+    // console.log('list changed!', list)
     if (visibility.length !== list.length) {
       setVisibility(
         (list as any[])
