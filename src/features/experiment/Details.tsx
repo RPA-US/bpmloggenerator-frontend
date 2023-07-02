@@ -329,16 +329,6 @@ const ExperimentDetails: React.FC = () => {
                     onClick={() => downloadJson('variability_conf.json', experiment.variabilityConf)}
                   >{t('features.experiment.details.variabilityConf')}</Button>
                 </FileBox>
-              </Grid><Grid item style={{ marginTop: theme.spacing(1) }}>
-                
-                <FileBox component="span" sx={{ p: 2 }}>
-                  <Button
-                    startIcon={<AttachFileIcon />}
-                    
-                    onClick={() => downloadCSV2('seed.csv', experiment.seedLog)}
-                    
-                  >{t('features.experiment.details.seed')}</Button>
-                </FileBox>
               </Grid>
               { /*<Grid item style={{ marginTop: theme.spacing(1) }}>
                 <FileBox component="span" sx={{ p: 2 }}>
@@ -346,7 +336,7 @@ const ExperimentDetails: React.FC = () => {
                     startIcon={ <AttachFileIcon /> }
                   >{ t('features.experiment.details.screenshots') }</Button>
                 </FileBox>              
-            </Grid>*/ }
+              </Grid>*/ }
             </Grid>
 
           </CardContent>

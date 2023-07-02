@@ -235,8 +235,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
               accept=".csv"
               disabled={disabled}
               errorMessage={!formState.dirtyFields.seedLog && formState.errors?.seedLog?.message}
-              //por aqui debe andar el nombre al lado del imput
-              fileName={(getValues('seedLog') ?? [])[0]?.name || initialValues.seed != null ? 'no nulo':'nulo'}
+              
+              fileName={(getValues('seedLog') ?? [])[0]?.name || '' }//initialValues.seed != null ? 'no nulo':'nulo'}
               inputProps={{
                 ...seedLogField,
                 onChange: (evt: any) => {
