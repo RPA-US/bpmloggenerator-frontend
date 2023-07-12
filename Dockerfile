@@ -6,7 +6,7 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 # install application dependencies
 COPY package.json yarn.lock ./
-RUN npm install -g yarn
+RUN npm install yarn
 RUN yarn install
 RUN yarn global add serve
 # add app
