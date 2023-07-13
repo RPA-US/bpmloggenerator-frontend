@@ -46,8 +46,8 @@ const LanguageSelectorContainer = styled('div')(({ theme }) => ({
 }))
 
 const NotificationsContainer = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: '64px', // under header bar
+  position: 'fixed',
+  top: '46px', // under header bar
   right: 0,
   padding: theme.spacing(1),
   zIndex: 1,
