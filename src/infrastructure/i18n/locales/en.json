@@ -616,6 +616,7 @@
         "copyLink": "Copy link",
         "experiment": "Experiment",
         "success": "successfully",
+        "saveResult": "Experiment {{ name }} saved successfully",
         "publish": "published",
         "unpublish": "unpublished",
         "publishResult": "Experiment {{ name }} successfully {{ published }}"

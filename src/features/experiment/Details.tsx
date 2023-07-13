@@ -158,7 +158,7 @@ const ExperimentDetails: React.FC = () => {
                   } else if (variability_mode === "caseVariability") {
                     history.push(configuration.PREFIX + '/case-variability');
                   } else {
-                    const notification = NotificationFactory.success(t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success'))
+                    const notification = NotificationFactory.success(t('features.experiment.details.saveResult', {name: experiment.name}))
                       .dismissible()
                       .build();
 

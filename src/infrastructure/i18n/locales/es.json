@@ -685,6 +685,7 @@
         "copyLink": "Copiar enlace",
         "experiment": "Experimento",
         "success": "exitosamente",
+        "saveResult": "El experimento {{ name }} se ha guardado exitosamente",
         "publish": "publicado",
         "unpublish": "despublicado",
         "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'"
