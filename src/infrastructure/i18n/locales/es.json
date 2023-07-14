@@ -73,6 +73,7 @@
         "email": "email",
         "password": "contraseña",
         "confirmpassword": "confirmar contraseña",
+        "success": "Cuenta registrada con exito, compruebe su correo para verificar su cuenta",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",

@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { signup, authSelector, checkPassword } from './slice';
 import { useTranslation } from 'react-i18next';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
 
 const LoginBoxContainer = styled('div')`
   position: absolute;
@@ -51,6 +53,15 @@ export default function Signup(): JSX.Element {
       const { email, password1, password2 } = data;
       clearErrors();
       await dispatch(signup({ email, password1, password2 }));
+
+      history.push(redirectPath)
+      const notification = NotificationFactory.success(t('features.auth.signup.success'))
+        .dismissible()
+          .build();
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+
       reset(data);
     }
   }

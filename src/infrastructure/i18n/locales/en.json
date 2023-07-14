@@ -73,6 +73,7 @@
         "email": "email",
         "password": "password",
         "confirmpassword": "password confirmation",
+        "success": "Account created successfully, please check your inbox to confirm your email",
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordConfirmation": "Passwords do not match",
