@@ -76,6 +76,7 @@
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordConfirmation": "Passwords do not match",
+          "passwordInvalid": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",
           "passwordRequired": "Please enter a valid password.",
           "invalidcredentials": "Invalid credentials: {{msg}}"
         },
