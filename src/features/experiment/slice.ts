@@ -123,9 +123,9 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   const { auth, experiment } = getState();
   const hasPreviousId = experimentData.get("id") != null;
   
-  // clear seed log attached data
-  const seedLog = experimentData.get('seedLog') ?? '';
-  // experimentData.delete('seedLog');
+  // clear seed_log log attached data
+  const seed_log = experimentData.get('seed_log') ?? '';
+  // experimentData.delete('seed_log');
 
   // for first saving we unset execute_mode field
   const executeMode = experimentData.get('execute_mode') ?? 'false';
@@ -150,7 +150,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
 
     if (!hasPreviousId && experimentResponse.id != null) {
       if(experimentResponse.status === "PRE_SAVED") {
-        const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
+        const { case_conf, scenario_conf } = csvLogToJSON(seed_log, experimentData.get("special_colnames"))
         dispatch(
           setExperiment({
             detail: typedExperiment,

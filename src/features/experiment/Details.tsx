@@ -308,7 +308,7 @@ const ExperimentDetails: React.FC = () => {
                 <FileBox component="span" sx={{ p: 2 }}>
                   <Button
                     startIcon={<AttachFileIcon />}
-                    onClick={() => downloadCsv('seedLog.csv', experiment.seedLog)}
+                    onClick={() => downloadCsv('seed_log.csv', experiment.seed_log)}
                   >{t('features.experiment.details.seedLog')}</Button>
                 </FileBox>
               </Grid>

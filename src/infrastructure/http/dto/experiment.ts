@@ -18,7 +18,7 @@ export interface ExperimentDTO {
   screenshots_path: string
   size_balance: any
   status: string
-  seed: any | null
+  seed_log: any | null
   user?: any
 }
 
