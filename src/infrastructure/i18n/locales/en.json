@@ -708,6 +708,12 @@
         "email": {
           "label": "Email",
           "placeholder": "Enter your email"
+        },
+        "errors": {
+          "firstNameMaxLength": "The name must be shorter than than 151 characters",
+          "lastNameMaxLength": "The last name must be shorter than than 151 characters",
+          "emailRequired": "Please enter a valid email",
+          "emailMaxLength": "The email must be shorter than than 255 characters"
         }
       },
       "gui-components": {

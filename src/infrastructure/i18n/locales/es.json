@@ -715,6 +715,12 @@
         "email": {
           "label": "Email",
           "placeholder": "Introduce tu email"
+        },
+        "errors": {
+          "firstNameMaxLength": "El nombre ha de ser mas corto que 151 caracteres",
+          "lastNameMaxLength": "El apellido ha de ser mas corto que 151 caracteres",
+          "emailRequired": "Por favor introduzca un correo válido",
+          "emailMaxLength": "El correo ha de ser mas corto que 256 caracteres"
         }
       },
       "gui-components": {

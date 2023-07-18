@@ -25,11 +25,14 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
     let valid = true;
     const setFormError = (field: string, error: ErrorOption) => {
       valid = false;
+      console.log(error)
       setError(field, error);
     }
 
     if (Validations.isBlank(data.email)) setFormError('email', { type: 'required', message: t('features.user.form.errors.emailRequired') as string });
-    // TODO FIX MAX LENGTH?
+    if (data.first_name.length > 150) setFormError('firstName', { type: 'maxLength', message: t('features.user.form.errors.firstNameMaxLength') as string });
+    if (data.last_name.length > 150) setFormError('lastName', { type: 'maxLength', message: t('features.user.form.errors.lastNameMaxLength') as string });
+    if (data.email.length > 254) setFormError('email', { type: 'maxLength', message: t('features.user.form.errors.emailMaxLength') as string });
     return valid;
   }
 
