@@ -657,6 +657,8 @@
         },
         "errors": {
           "nameRequired": "Por favor introduzca un nombre válido",
+          "nameMaxLength": "El nombre ha de tener una longitud inferior a 256 caracteres",
+          "descriptionMaxLength": "La descripción ha de tener una longitud inferior a 256 caracteres",
           "screenShotsRequired": "Por favor introduzca un zip con las capturas de pantalla",
           "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
           "logSizeRequired": "Por favor introduzca un tamaño del log válido separado por comas",
@@ -673,7 +675,7 @@
         "executionEnd": "Ejecución finalizada:",
         "scenariosNumber": "Número de escenarios: {{ val }}",
         "state": "Estado: {{ val }}",
-        "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
+        "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
         "seedLog": "Descargar log semilla",

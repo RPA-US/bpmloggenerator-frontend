@@ -677,6 +677,8 @@
         },
         "errors": {
           "nameRequired": "Please enter a valid name.",
+          "nameMaxLength": "The name must be shorter than than 256 characters.",
+          "descriptionMaxLength": "The description must be shorter than than 256 characters.",
           "screenShotsRequired": "Please enter a zip with the screenshots",
           "scenarioRequired": "Please enter a valid screenshots configuration file",
           "logSizeRequired": "Please enter a valid log size separated by commas",
