@@ -762,6 +762,7 @@
           "errors": {
             "currentPasswordRequired": "Please, enter your current password",
             "passwordRequired": "Please, enter your new password",
+            "passwordInvalid": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",
             "repeatedPasswordRequired": "You must repeat the new password",
             "passwordsDontMatch": "Repeated password doesn't match",
             "passwordLengthRequired": "Password must contains at least 9 characters"

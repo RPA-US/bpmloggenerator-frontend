@@ -768,6 +768,7 @@
           "save": "Cambiar contraseña",
           "errors": {
             "currentPasswordRequired": "Por favor introduzca su contraseña actual",
+            "passwordInvalid": "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial",
             "passwordRequired": "Por favor introduzca la nueva contraseña",
             "repeatedPasswordRequired": "Debe volver a introducir la contraseña nueva",
             "passwordsDontMatch": "Las contraseñas no coinciden",

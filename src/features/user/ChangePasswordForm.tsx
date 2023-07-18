@@ -8,6 +8,7 @@ import TextInputContainer from 'components/TextInputContainer';
 import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import { objectToFormData } from 'infrastructure/util/form';
+import { checkPassword } from './utils';
 
 export interface ChangePasswordFormProps {
   onSubmit: Function
@@ -28,7 +29,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disab
 
     if (Validations.isBlank(data.currentPassword)) setFormError('currentPassword', { type: 'required', message: t('features.user.changePassword.form.errors.currentPasswordRequired') as string });
     if (Validations.isBlank(data.password)) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordRequired') as string });
-    else if (data.password.length < 9) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordLengthRequired') as string });
+    else if (!checkPassword(data.password)) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordInvalid') as string });
     if (Validations.isBlank(data.repeatedPassword)) setFormError('repeatedPassword', { type: 'required', message: t('features.user.changePassword.form.errors.repeatedPasswordRequired') as string });
     else if (data.password !== data.repeatedPassword) setFormError('repeatedPassword', { type: 'required', message: t('features.user.changePassword.form.errors.passwordsDontMatch') as string });
     
