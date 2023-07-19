@@ -175,4 +175,16 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     }
 }
 
+export const getExperiments = async (token: any): Promise<Experiment[]> => {
+  const experimentResponse = await experimentRepository.list(0, token ?? '');
+  const experiments = experimentResponse.results
+    .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(exp))
+    .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i)
+  return experiments;
+}
+
+export const isNameInUse = (name: string, experiments: Experiment[]): Boolean => {
+  return experiments.some((experiment) => experiment.name === name)
+}
+
 export default experimentsSlice.reducer;

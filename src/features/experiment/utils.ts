@@ -50,7 +50,7 @@ export function experimentDTOToExperimentType(experiment: ExperimentDTO): Experi
     specialColnames: experiment.special_colnames ?? '',
     status: '',
     isPublic: experiment.public,
-    author: experiment.user != null ? `${experiment.user.first_name} ${experiment.user.last_name}` : experiment.user
+    author: experiment.user != null ? `${experiment.user.username}` : experiment.user
   }
 }
 

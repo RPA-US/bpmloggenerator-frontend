@@ -13,10 +13,11 @@ export interface ListProps {
   loadMoreFn: Function,
   loadMoreDisabled: boolean,
   isLoading: boolean,
+  showAuthor: boolean,
   downloadFn: Function,
 }
 
-const List: React.FC<ListProps> = ({ experiments, loadMoreFn, loadMoreDisabled, isLoading, downloadFn }) => {
+const List: React.FC<ListProps> = ({ experiments, loadMoreFn, loadMoreDisabled, isLoading, showAuthor, downloadFn }) => {
   const theme = useContext(ThemeContext) as Theme;
   const { t } = useTranslation();
   return (
@@ -31,6 +32,11 @@ const List: React.FC<ListProps> = ({ experiments, loadMoreFn, loadMoreDisabled, 
                       <Typography variant='h6'>{ experiment.name }</Typography>
                     </Button>
                     <br />
+                    { showAuthor && (
+                      <Typography variant="body2" color="black" style={{ paddingLeft: theme.spacing(1) }}>
+                        { experiment.author }
+                      </Typography>
+                    )}
                     <Typography variant="caption" color="gray" style={{ paddingLeft: theme.spacing(1) }}>
                     { t('commons:datetime', { val: experiment.state === ExperimentState.CREATED ? experiment.executionEnd : (experiment.lastEditionDate===new Date())?experiment.lastEditionDate:experiment.creationDate }) }
                     </Typography>

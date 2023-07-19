@@ -1,3 +1,4 @@
+import { Experiment } from './types';
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
@@ -13,6 +14,10 @@ import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import TextInputContainer from 'components/TextInputContainer';
 import { objectToFormData } from 'infrastructure/util/form';
+import { getExperiments, isNameInUse } from 'features/experiment/slice';
+import { useSelector } from 'react-redux';
+import { authSelector } from 'features/auth/slice';
+import { get } from 'http';
 
 const RelativeContainer = styled('div')`
   position: relative;
@@ -38,6 +43,12 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   // hook to force component update manually
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({} as any), []);
+  
+  const { token } = useSelector(authSelector);
+  let experiments: Experiment[] = [];
+  getExperiments(token).then((exp) => {
+    experiments = exp;
+  });
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
@@ -114,6 +125,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
     else if (data.name.length > 255) setFormError('name', { type: 'maxLength', message: t('features.experiment.form.errors.nameMaxLength') as string })
+    else if (initialValues.name !== data.name && isNameInUse(data.name, experiments)) setFormError('name', { type: 'validate', message: t('features.experiment.form.errors.nameAlreadyExists') as string })
+    console.log(initialValues)
     if (data.description.length > 255) setFormError('description', { type: 'maxLength', message: t('features.experiment.form.errors.descriptionMaxLength') as string })
     console.log('Form validation: ', valid, '. Evalued data: ', data);
     return valid;

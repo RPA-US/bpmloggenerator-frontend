@@ -658,6 +658,7 @@
         "errors": {
           "nameRequired": "Por favor introduzca un nombre válido",
           "nameMaxLength": "El nombre ha de tener una longitud inferior a 256 caracteres",
+          "nameAlreadyExists": "El nombre del experimento ha de ser único",
           "descriptionMaxLength": "La descripción ha de tener una longitud inferior a 256 caracteres",
           "screenShotsRequired": "Por favor introduzca un zip con las capturas de pantalla",
           "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
@@ -720,7 +721,7 @@
           "firstNameMaxLength": "El nombre ha de ser mas corto que 151 caracteres",
           "lastNameMaxLength": "El apellido ha de ser mas corto que 151 caracteres",
           "emailRequired": "Por favor introduzca un correo válido",
-          "emailMaxLength": "El correo ha de ser mas corto que 256 caracteres"
+          "emailMaxLength": "El correo ha de ser mas corto que 255 caracteres"
         }
       },
       "gui-components": {
