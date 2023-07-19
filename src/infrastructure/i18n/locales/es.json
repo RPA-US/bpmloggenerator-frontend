@@ -700,6 +700,7 @@
       "profileView": "Perfil",
       "logout": "Desconectar",
       "form": {
+        "userSaved": "El usuario se ha guardado exitosamente",
         "addComponent": "Añadir UI element",
         "save": "Guardar",
         "username": {

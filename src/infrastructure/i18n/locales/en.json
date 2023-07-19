@@ -693,6 +693,7 @@
       "profileView": "Profile",
       "logout": "Logout",
       "form": {
+        "userSaved": "User saved successfully",
         "addComponent": "Add component",
         "save": "Save",
         "username": {
