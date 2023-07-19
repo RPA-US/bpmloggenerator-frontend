@@ -126,7 +126,6 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
     else if (data.name.length > 255) setFormError('name', { type: 'maxLength', message: t('features.experiment.form.errors.nameMaxLength') as string })
     else if (initialValues.name !== data.name && isNameInUse(data.name, experiments)) setFormError('name', { type: 'validate', message: t('features.experiment.form.errors.nameAlreadyExists') as string })
-    console.log(initialValues)
     if (data.description.length > 255) setFormError('description', { type: 'maxLength', message: t('features.experiment.form.errors.descriptionMaxLength') as string })
     console.log('Form validation: ', valid, '. Evalued data: ', data);
     return valid;
