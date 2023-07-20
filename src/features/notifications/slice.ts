@@ -50,10 +50,7 @@ export const notificationsSlice = createSlice({
       let notificationId = (payload as Notification).id ?? payload;
       const index = state.list.findIndex(n => n.id === notificationId);
       if (index >= 0) {
-        state.list = state.list.map((n, i) => {
-          if (i === index) n.visible = false;
-          return n;
-        });
+        state.list[index].visible = false;
         // notification.hideCallback = hideCallback;
       }
     }
@@ -72,10 +69,16 @@ export const showNotification = (notification: NotificationAlert, hideCallback?:
   }
 
   dispatch(showNotificationAction(notification));
+
+  setTimeout(() => {
+    dispatch(hideNotification(notification));
+  }, notification.timeout)
 }
 
 export const hideNotification = (notification: NotificationAlert): AppThunk => async (dispatch: AppDispatch) => {
   dispatch(hideNotificationAction(notification));
+
+  dispatch(removeNotification(notification));
 }
 
 
