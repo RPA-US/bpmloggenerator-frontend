@@ -9,6 +9,9 @@ import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import { objectToFormData } from 'infrastructure/util/form';
 import { checkPassword } from './utils';
+import NotificationFactory from 'features/notifications/notification';
+import { useDispatch } from 'react-redux';
+import { showNotification } from 'features/notifications/slice';
 
 export interface ChangePasswordFormProps {
   onSubmit: Function
@@ -19,6 +22,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disab
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, setError } = useForm();
+  const dispatch = useDispatch();
 
   const validateForm = (data: any) => {
     let valid = true;
@@ -40,6 +44,14 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disab
     if (!validateForm(data)) {
       return false;
     }
+
+    const notification = NotificationFactory.success(t('features.user.changePassword.success'))
+      .dismissible()
+      .build();
+
+    setTimeout(() => {
+      dispatch(showNotification(notification));
+    }, 0)
     
     onSubmit(objectToFormData(data, {}));
   }

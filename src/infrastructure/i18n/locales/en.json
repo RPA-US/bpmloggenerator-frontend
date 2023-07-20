@@ -754,6 +754,7 @@
         }
       },
       "changePassword": {
+        "success": "Password changed successfully", 
         "button": "Change password",
         "title": "Password change form",
         "form": {
