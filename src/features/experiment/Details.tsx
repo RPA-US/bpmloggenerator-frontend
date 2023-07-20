@@ -128,7 +128,7 @@ const ExperimentDetails: React.FC = () => {
   return (
     <>
       <Typography variant="h4">
-        <BackButton />
+        <BackButton to={experiment != null && experiment.isPublic === true ? `${configuration.PREFIX}/public` : `${configuration.PREFIX}`} />
         {t('features.experiment.details.title')}
       </Typography>
 
