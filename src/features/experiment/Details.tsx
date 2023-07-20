@@ -123,7 +123,42 @@ const ExperimentDetails: React.FC = () => {
     })();
   }, [id, token]);
 
+  const formSubmit = (data: any) => {
+    // console.log('Edit component data received:', data);
+    const variability_mode = data.get('variability_mode');
+    data.set('id', id);
+    dispatch(saveExperiment(data, (status: string, error: any) => {
+      setLoading(false);
+      if (error == null) {
+        if (status != "LAUNCHED") {
+          if (variability_mode === "scenarioVariability") {
+            history.push(configuration.PREFIX + '/scenario-variability');
+          } else if (variability_mode === "caseVariability") {
+            history.push(configuration.PREFIX + '/case-variability');
+          } else {
+            const notification = NotificationFactory.success(t('features.experiment.details.saveResult', { name: experiment.name }))
+              .dismissible()
+              .build();
 
+            setTimeout(() => {
+              dispatch(showNotification(notification));
+            }, 0)
+          }
+        } else {
+          history.push(configuration.PREFIX + '/');
+        }
+      } else {
+        const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
+          .dismissible()
+          .build();
+
+        setTimeout(() => {
+          dispatch(showNotification(notification));
+        }, 0)
+
+      }
+    }));
+  }
 
   return (
     <>
@@ -145,42 +180,7 @@ const ExperimentDetails: React.FC = () => {
       {experiment != null && experiment.state === ExperimentState.NOT_LAUNCHED && (
         <ExperimentFormComponent
           initialValues={experiment}
-          onSubmit={(data: any) => {
-            // console.log('Edit component data received:', data);
-            const variability_mode = data.get('variability_mode');
-            data.set('id', id);
-            dispatch(saveExperiment(data, (status: string, error: any) => {
-              setLoading(false);
-              if (error == null) {
-                if (status != "LAUNCHED") {
-                  if (variability_mode === "scenarioVariability") {
-                    history.push(configuration.PREFIX + '/scenario-variability');
-                  } else if (variability_mode === "caseVariability") {
-                    history.push(configuration.PREFIX + '/case-variability');
-                  } else {
-                    const notification = NotificationFactory.success(t('features.experiment.details.saveResult', {name: experiment.name}))
-                      .dismissible()
-                      .build();
-
-                    setTimeout(() => {
-                      dispatch(showNotification(notification));
-                    }, 0)
-                  }
-                } else {
-                  history.push(configuration.PREFIX + '/');
-                }
-              } else {
-                const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
-                  .dismissible()
-                  .build();
-
-                setTimeout(() => {
-                  dispatch(showNotification(notification));
-                }, 0)
-
-              }
-            }));
-          }}
+          onSubmit={ formSubmit }
         />
       )}
 
