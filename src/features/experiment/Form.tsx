@@ -14,7 +14,7 @@ import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import TextInputContainer from 'components/TextInputContainer';
 import { objectToFormData } from 'infrastructure/util/form';
-import { getExperiments, isNameInUse } from 'features/experiment/slice';
+import { experimentsSelector, isNameInUse } from 'features/experiment/slice';
 import { useSelector } from 'react-redux';
 import { authSelector } from 'features/auth/slice';
 import { get } from 'http';
@@ -44,11 +44,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({} as any), []);
   
-  const { token } = useSelector(authSelector);
-  let experiments: Experiment[] = [];
-  getExperiments(token).then((exp) => {
-    experiments = exp;
-  });
+  const { experiments } = useSelector(experimentsSelector);
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
