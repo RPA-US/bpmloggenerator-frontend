@@ -604,6 +604,7 @@
         "title": "Generación automática de GUI logs"
       },
       "form": {
+        "executeExperiment": "Ejecución comenzada",
         "save": "Guardar",
         "assistant": "Wizard",
         "name": {

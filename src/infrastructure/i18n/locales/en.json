@@ -624,6 +624,7 @@
         "publishResult": "Experiment {{ name }} successfully {{ published }}"
       },
       "form": {
+        "executeExperiment": "Execution started",
         "save": "Save",
         "assistant": "Wizard",
         "name": {

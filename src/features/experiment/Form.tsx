@@ -1,5 +1,6 @@
 import { Experiment } from './types';
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
@@ -15,9 +16,10 @@ import Validations from 'infrastructure/util/validations';
 import TextInputContainer from 'components/TextInputContainer';
 import { objectToFormData } from 'infrastructure/util/form';
 import { experimentsSelector, isNameInUse } from 'features/experiment/slice';
-import { useSelector } from 'react-redux';
-import { authSelector } from 'features/auth/slice';
-import { get } from 'http';
+import { useHistory } from 'react-router-dom';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
+import configuration from "infrastructure/util/configuration";
 
 const RelativeContainer = styled('div')`
   position: relative;
@@ -48,6 +50,8 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
   const [fileContents, setFileContents]: [any, React.Dispatch<React.SetStateAction<any>>] = useState({});
 
@@ -148,6 +152,16 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
     if (buttonName === "generate") {
       checkedData.execute_mode = true;
+
+      history.push(configuration.PREFIX + '/bpmloggenerator');
+
+      const notification = NotificationFactory.success(t('features.experiment.form.executeExperiment'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
     } else if (buttonName === "scenarioVariability" || buttonName === "caseVariability") {
       checkedData.status = "PRE_SAVED";
       checkedData.variability_mode = buttonName;
