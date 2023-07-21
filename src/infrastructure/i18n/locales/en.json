@@ -759,6 +759,7 @@
       },
       "changePassword": {
         "success": "Password changed successfully", 
+        "authError": "Something went wrong, check that your credentials are correct",
         "button": "Change password",
         "title": "Password change form",
         "form": {

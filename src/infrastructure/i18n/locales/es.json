@@ -766,6 +766,7 @@
       },
       "changePassword": {
         "success": "La contraseña se ha cambiado exitosamente",
+        "authError": "Algo salió mal, comprueba que tu contraseña sea correcta",
         "button": "Cambiar contraseña",
         "title": "Cambio de contraseña",
         "form": {

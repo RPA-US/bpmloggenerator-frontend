@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@mui/styled-engine';
 import { Button, Grid, TextField, Theme } from '@mui/material';
@@ -10,8 +10,10 @@ import Validations from 'infrastructure/util/validations';
 import { objectToFormData } from 'infrastructure/util/form';
 import { checkPassword } from './utils';
 import NotificationFactory from 'features/notifications/notification';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showNotification } from 'features/notifications/slice';
+import AuthRepository, { AuthError } from 'infrastructure/repositories/auth';
+import { authSelector } from 'features/auth/slice';
 
 export interface ChangePasswordFormProps {
   onSubmit: Function
@@ -19,6 +21,11 @@ export interface ChangePasswordFormProps {
 }
 
 const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disabled = false }) => {
+  const authRepository = new AuthRepository();
+  const { token } = useSelector( authSelector );
+
+  const [ pwdChangeModal, setPwdChangeModal ] = useState(false);
+
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, setError } = useForm();
@@ -40,20 +47,32 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disab
     return valid;
   }
 
-  const formSubmit = (data: any) => {
+  const formSubmit = async (data: any) => {
     if (!validateForm(data)) {
       return false;
     }
 
-    const notification = NotificationFactory.success(t('features.user.changePassword.success'))
-      .dismissible()
-      .build();
+    try{
+      const response = await authRepository.changePassword(data.currentPassword, data.password, data.repeatedPassword, token ?? '');
 
-    setTimeout(() => {
-      dispatch(showNotification(notification));
-    }, 0)
-    
-    onSubmit(objectToFormData(data, {}));
+      const notification = NotificationFactory.success(t('features.user.changePassword.success'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+
+      onSubmit();
+    } catch (ex) {
+      const notification = NotificationFactory.error(t('features.user.changePassword.authError'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+    }
   }
 
   return (
