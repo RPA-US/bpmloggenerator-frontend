@@ -8,7 +8,7 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { ErrorOption, SubmitHandler, useForm, ValidationRule } from 'react-hook-form';
+import { ErrorOption, set, SubmitHandler, useForm, ValidationRule } from 'react-hook-form';
 import styled from '@emotion/styled';
 import FileUpload from 'components/FileUpload';
 import Spacer from 'components/Spacer';
@@ -127,6 +127,12 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     else if (data.name.length > 255) setFormError('name', { type: 'maxLength', message: t('features.experiment.form.errors.nameMaxLength') as string })
     else if (initialValues.name !== data.name && isNameInUse(data.name, experiments)) setFormError('name', { type: 'validate', message: t('features.experiment.form.errors.nameAlreadyExists') as string })
     if (data.description.length > 255) setFormError('description', { type: 'maxLength', message: t('features.experiment.form.errors.descriptionMaxLength') as string })
+
+    if (data.seed_log[0] !== undefined && !data.seed_log[0].name.endsWith('.csv')) setFormError('seed_log', { type: 'validate', message: t('features.experiment.form.errors.seedExtension') as string });
+    if (data.screenshots[0] !== undefined && !data.screenshots[0].name.endsWith('.zip')) setFormError('screenshots', { type: 'validate', message: t('features.experiment.form.errors.screenshotsExtension') as string });
+    if (data.scenarios_conf !== undefined && !data.scenarios_conf[0].name.endsWith('.json')) setFormError('scenarios_conf', { type: 'validate', message: t('features.experiment.form.errors.scenariosExtension') as string });
+    if (data.variability_conf[0] !== undefined && !data.variability_conf[0].name.endsWith('.json')) setFormError('variability_conf', { type: 'validate', message: t('features.experiment.form.errors.variabilityExtension') as string });
+
     console.log('Form validation: ', valid, '. Evalued data: ', data);
     return valid;
   }
@@ -258,8 +264,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".csv"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.seed_log && formState.errors?.seedLog?.message}
-              
+              errorMessage={formState.errors?.seed_log?.message}
               fileName={(getValues('seed_log') ?? [])[0]?.name || initialValues.seed_log != null ? 'seed.csv' : ''}
               inputProps={{
                 ...seed_logField,
@@ -292,7 +297,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".zip"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.screenshots && formState.errors?.screenshots?.message}
+              errorMessage={formState.errors?.screenshots?.message}
               fileName={(getValues('screenshots') ?? [])[0]?.name || initialValues.screenshotsPath}
               inputProps={{
                 ...screenshotsField,
@@ -338,7 +343,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".json"
               disabled={disabled || scenariosConfDisabled}
-              errorMessage={!formState.dirtyFields.scenarios_conf && formState.errors?.scenarios_conf?.message}
+              errorMessage={formState.errors?.scenarios_conf?.message}
               fileName={(getValues('scenarios_conf') ?? [])[0]?.name || (watchNumberScenarios > 0 && initialValues.scenariosConf != null ? 'scenarios_conf.json' : '')}
               inputProps={{
                 ...scenarioField,
@@ -424,7 +429,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".json"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.variability_conf && formState.errors?.variability_conf?.message}
+              errorMessage={formState.errors?.variability_conf?.message}
               fileName={(getValues('variability_conf') ?? [])[0]?.name || (initialValues.variabilityConf != null ? 'variability_conf.json' : '')}
               inputProps={{
                 ...variabilityField,

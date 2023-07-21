@@ -685,7 +685,11 @@
           "scenarioRequired": "Please enter a valid screenshots configuration file",
           "logSizeRequired": "Please enter a valid log size separated by commas",
           "imbalancedCaseRequired": "Please enter valid imbalanced case percentages separated by commas",
-          "variabilityRequired": "Please enter a valid variability configuration file"
+          "variabilityRequired": "Please enter a valid variability configuration file",
+          "seedExtension": "Seed log files must be .csv",
+          "screenshotsExtension": "Screenshots files must be .zip",
+          "scenariosExtension": "Scenarios files must be .json",
+          "variabilityExtension": "Variability files must be .json"
         },
         "generate": "Execute"
       }

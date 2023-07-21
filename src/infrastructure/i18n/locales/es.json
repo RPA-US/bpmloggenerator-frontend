@@ -665,7 +665,11 @@
           "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
           "logSizeRequired": "Por favor introduzca un tamaño del log válido separado por comas",
           "imbalancedCaseRequired": "Por favor introduzca los porcentajes de log no balanceados separados por coma",
-          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido"
+          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido",
+          "seedExtension": "El log semilla ha de ser un fichero .csv",
+          "screenshotsExtension": "Las capturas de pantalla han de ser un fichero .zip",
+          "scenariosExtension": "El fichero de configuración de escenarios ha de ser un fichero .json",
+          "variabilityExtension": "El fichero de configuración de variabilidad ha de ser un fichero .json"
         },
         "generate": "Ejecutar"
       },
