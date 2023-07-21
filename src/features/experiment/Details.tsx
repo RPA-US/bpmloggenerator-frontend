@@ -256,9 +256,11 @@ const ExperimentDetails: React.FC = () => {
               <Grid item style={{ marginTop: theme.spacing(3) }}>
                 <BoldKey variant="body1">{t('features.experiment.details.executionStart')}</BoldKey>{t('commons:datetime', { val: experiment.executionStart })}
               </Grid>
-              <Grid item style={{ marginTop: theme.spacing(3) }}>
-                <BoldKey variant="body1">{t('features.experiment.details.executionEnd')}</BoldKey>{t('commons:datetime', { val: experiment.executionEnd })}
-              </Grid>
+              { experiment.state === ExperimentState.CREATED &&
+                <Grid item style={{ marginTop: theme.spacing(3) }}>
+                  <BoldKey variant="body1">{t('features.experiment.details.executionEnd')}</BoldKey>{t('commons:datetime', { val: experiment.executionEnd })}
+                </Grid>
+              }
             </Grid>
 
             <Typography variant="subtitle2" style={{ marginTop: theme.spacing(2) }}>{t('features.experiment.details.description')}</Typography>
