@@ -94,7 +94,8 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
       dispatch(addExperiments({
         experiments: experimentResponse.results
           .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(exp))
-          .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i),
+          .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i)
+          .sort((a, b) => b.creationDate.getTime() - a.creationDate.getTime()),
         pagination: {
           page: currentPage + (experimentResponse.next != null ? 1 : 0),
           total: experimentResponse.count,
