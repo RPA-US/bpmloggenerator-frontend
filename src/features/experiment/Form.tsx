@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteForever from '@mui/icons-material/Save';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
 import { useTranslation } from 'react-i18next';
@@ -130,7 +131,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
     if (data.seed_log[0] !== undefined && !data.seed_log[0].name.endsWith('.csv')) setFormError('seed_log', { type: 'validate', message: t('features.experiment.form.errors.seedExtension') as string });
     if (data.screenshots[0] !== undefined && !data.screenshots[0].name.endsWith('.zip')) setFormError('screenshots', { type: 'validate', message: t('features.experiment.form.errors.screenshotsExtension') as string });
-    if (data.scenarios_conf !== undefined && !data.scenarios_conf[0].name.endsWith('.json')) setFormError('scenarios_conf', { type: 'validate', message: t('features.experiment.form.errors.scenariosExtension') as string });
+    if (data.scenarios_conf !== undefined && data.scenarios_conf[0] !== undefined && !data.scenarios_conf[0].name.endsWith('.json')) setFormError('scenarios_conf', { type: 'validate', message: t('features.experiment.form.errors.scenariosExtension') as string });
     if (data.variability_conf[0] !== undefined && !data.variability_conf[0].name.endsWith('.json')) setFormError('variability_conf', { type: 'validate', message: t('features.experiment.form.errors.variabilityExtension') as string });
 
     console.log('Form validation: ', valid, '. Evalued data: ', data);
@@ -194,7 +195,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
 
     const formData = objectToFormData(checkedData, fileContents);
-    onSubmit(formData)
+    onSubmit(formData, buttonName)
   }
 
   return (
@@ -464,6 +465,14 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
         <CardActions>
           <Spacer />
+          {Object.keys(initialValues).length > 0 && (
+            <Button 
+              type="submit" name="delete" variant="contained"
+              style={{ backgroundColor: theme.palette.error.main, color: theme.palette.error.contrastText }}
+              endIcon={<DeleteForever />}>
+              {t('features.experiment.details.deleteButton')}
+            </Button>
+          )}
 
           <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} disabled={disabled}>
             {t('features.experiment.form.save')}

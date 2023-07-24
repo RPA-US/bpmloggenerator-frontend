@@ -698,7 +698,10 @@
         "saveResult": "El experimento {{ name }} se ha guardado exitosamente",
         "publish": "publicado",
         "unpublish": "despublicado",
-        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'"
+        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'",
+        "deleteExperiment": "Eliminar",
+        "deletedExperiment": "El experimento {{ name }} se ha eliminado exitosamente",
+        "deleteError": "Algo salió mal: "
       }
     },
     "user": {

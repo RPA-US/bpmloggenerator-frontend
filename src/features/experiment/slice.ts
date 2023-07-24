@@ -175,6 +175,19 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
     }
 }
 
+export const deleteExperiment = (experimentId: string, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
+  const { auth } = getState();
+  const id = parseInt(experimentId);
+  
+  try {
+    const response = await experimentRepository.delete(id, auth.token ?? '');
+    actionFinishedCallback != null && actionFinishedCallback(response.status, null);
+  } catch (error) {
+    dispatch(setError(error as ExperimentError))
+    actionFinishedCallback != null && actionFinishedCallback(null, error);
+  }
+}
+
 export const isNameInUse = (name: string, experiments: Experiment[]): Boolean => {
   return experiments.some((experiment) => experiment.name === name)
 }

@@ -621,7 +621,10 @@
         "saveResult": "Experiment {{ name }} saved successfully",
         "publish": "published",
         "unpublish": "unpublished",
-        "publishResult": "Experiment {{ name }} successfully {{ published }}"
+        "publishResult": "Experiment {{ name }} successfully {{ published }}",
+        "deleteButton": "Delete",
+        "deletedExperiment": "Experiment {{ name }} deleted successfully",
+        "deleteError": "Error deleting experiment: "
       },
       "form": {
         "executeExperiment": "Execution started",
