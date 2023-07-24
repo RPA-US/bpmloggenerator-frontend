@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteForever from '@mui/icons-material/Save';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
 import { useTranslation } from 'react-i18next';
