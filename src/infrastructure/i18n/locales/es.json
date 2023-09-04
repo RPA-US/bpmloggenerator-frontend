@@ -73,10 +73,12 @@
         "email": "email",
         "password": "contraseña",
         "confirmpassword": "confirmar contraseña",
+        "success": "Cuenta registrada con exito",
         "errors": {
           "emailRequired": "Por favor introduzca un correo válido",
           "passwordRequired": "Por favor introduzca una contraseña válida",
           "passwordConfirmation": "Las contraseñas no coinciden",
+          "passwordInvalid": "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial",
           "invalidcredentials": "Credenciales inválidas: {{msg}}"
         },
         "signup": "Registro"
@@ -602,6 +604,7 @@
         "title": "Generación automática de GUI logs"
       },
       "form": {
+        "executeExperiment": "Ejecución comenzada",
         "save": "Guardar",
         "assistant": "Wizard",
         "name": {
@@ -655,11 +658,18 @@
         },
         "errors": {
           "nameRequired": "Por favor introduzca un nombre válido",
+          "nameMaxLength": "El nombre ha de tener una longitud inferior a 256 caracteres",
+          "nameAlreadyExists": "El nombre del experimento ha de ser único",
+          "descriptionMaxLength": "La descripción ha de tener una longitud inferior a 256 caracteres",
           "screenShotsRequired": "Por favor introduzca un zip con las capturas de pantalla",
           "scenarioRequired": "Por favor introduzca un fichero de configuración de escenarios válido",
           "logSizeRequired": "Por favor introduzca un tamaño del log válido separado por comas",
           "imbalancedCaseRequired": "Por favor introduzca los porcentajes de log no balanceados separados por coma",
-          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido"
+          "variabilityRequired": "Por favor introduzca un fichero de configuración de variabilidad válido",
+          "seedExtension": "El log semilla ha de ser un fichero .csv",
+          "screenshotsExtension": "Las capturas de pantalla han de ser un fichero .zip",
+          "scenariosExtension": "El fichero de configuración de escenarios ha de ser un fichero .json",
+          "variabilityExtension": "El fichero de configuración de variabilidad ha de ser un fichero .json"
         },
         "generate": "Ejecutar"
       },
@@ -671,7 +681,7 @@
         "executionEnd": "Ejecución finalizada:",
         "scenariosNumber": "Número de escenarios: {{ val }}",
         "state": "Estado: {{ val }}",
-        "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
+        "screenshotNameGenerationFunction": "Generación del path de la captura: {{ val }}",
         "title": "Detalles del experimento",
         "scenarios": "Descargar configuración de escenario",
         "seedLog": "Descargar log semilla",
@@ -685,15 +695,21 @@
         "copyLink": "Copiar enlace",
         "experiment": "Experimento",
         "success": "exitosamente",
+        "saveResult": "El experimento {{ name }} se ha guardado exitosamente",
         "publish": "publicado",
         "unpublish": "despublicado",
-        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'"
+        "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'",
+        "deleteExperiment": "Eliminar",
+        "deletedExperiment": "El experimento {{ name }} se ha eliminado exitosamente",
+        "deleteError": "Algo salió mal: ",
+        "deleteButton": "Eliminar"
       }
     },
     "user": {
       "profileView": "Perfil",
       "logout": "Desconectar",
       "form": {
+        "userSaved": "El usuario se ha guardado exitosamente",
         "addComponent": "Añadir UI element",
         "save": "Guardar",
         "username": {
@@ -710,6 +726,12 @@
         "email": {
           "label": "Email",
           "placeholder": "Introduce tu email"
+        },
+        "errors": {
+          "firstNameMaxLength": "El nombre ha de ser mas corto que 151 caracteres",
+          "lastNameMaxLength": "El apellido ha de ser mas corto que 151 caracteres",
+          "emailRequired": "Por favor introduzca un correo válido",
+          "emailMaxLength": "El correo ha de ser mas corto que 255 caracteres"
         }
       },
       "gui-components": {
@@ -747,6 +769,8 @@
         }
       },
       "changePassword": {
+        "success": "La contraseña se ha cambiado exitosamente",
+        "authError": "Algo salió mal, comprueba que tu contraseña sea correcta",
         "button": "Cambiar contraseña",
         "title": "Cambio de contraseña",
         "form": {
@@ -765,6 +789,7 @@
           "save": "Cambiar contraseña",
           "errors": {
             "currentPasswordRequired": "Por favor introduzca su contraseña actual",
+            "passwordInvalid": "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial",
             "passwordRequired": "Por favor introduzca la nueva contraseña",
             "repeatedPasswordRequired": "Debe volver a introducir la contraseña nueva",
             "passwordsDontMatch": "Las contraseñas no coinciden",

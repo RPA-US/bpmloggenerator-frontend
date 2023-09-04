@@ -3,7 +3,10 @@ import { Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/m
 import { ThemeContext } from '@mui/styled-engine';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
 import { ErrorOption, useForm } from 'react-hook-form';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
 
 import FormInput from 'components/FormInput';
 import TextInputContainer from 'components/TextInputContainer';
@@ -18,6 +21,7 @@ export interface UserFormProperties {
 
 const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, initialValues = {} }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
 
@@ -25,11 +29,14 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
     let valid = true;
     const setFormError = (field: string, error: ErrorOption) => {
       valid = false;
+      console.log(error)
       setError(field, error);
     }
 
     if (Validations.isBlank(data.email)) setFormError('email', { type: 'required', message: t('features.user.form.errors.emailRequired') as string });
-    // TODO FIX MAX LENGTH?
+    if (data.first_name.length > 150) setFormError('firstName', { type: 'maxLength', message: t('features.user.form.errors.firstNameMaxLength') as string });
+    if (data.last_name.length > 150) setFormError('lastName', { type: 'maxLength', message: t('features.user.form.errors.lastNameMaxLength') as string });
+    if (data.email.length > 254) setFormError('email', { type: 'maxLength', message: t('features.user.form.errors.emailMaxLength') as string });
     return valid;
   }
 
@@ -55,6 +62,12 @@ const UserForm: React.FC<UserFormProperties> = ({ onSubmit, disabled = false, in
       });
 
     onSubmit(formData)
+    const notification = NotificationFactory.success(t('features.user.form.userSaved'))
+      .dismissible()
+      .build();
+    setTimeout(() => {
+        dispatch(showNotification(notification));
+    }, 0)
   }
 
   return (

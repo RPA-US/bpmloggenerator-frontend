@@ -8,6 +8,7 @@ import { login, authSelector } from './slice';
 import { useTranslation } from 'react-i18next';
 import Spacer from 'components/Spacer';
 import { ThemeContext } from '@emotion/react';
+import configuration from 'infrastructure/util/configuration';
 
 const LoginBoxContainer = styled('div')`
   position: absolute;
@@ -102,13 +103,15 @@ export default function Login(): JSX.Element {
                     </Button>
                   </Grid>
                   <Spacer />
-                  <Grid item>
-                    <Link to="forgot-password">
-                      <Typography variant="body2">
-                      { t('features.auth.login.forgotPassword') }
-                      </Typography>
-                    </Link>
-                  </Grid>
+                  { configuration.ENABLE_EMAIL && (
+                    <Grid item>
+                      <Link to="forgot-password">
+                        <Typography variant="body2">
+                        { t('features.auth.login.forgotPassword') }
+                        </Typography>
+                      </Link>
+                    </Grid>
+                  )}
                 </Grid>
               </form>
             </Box>

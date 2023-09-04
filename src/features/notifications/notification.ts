@@ -11,7 +11,7 @@ export class NotificationAlert implements Notification {
   public dismissible: boolean;
 
   constructor(public title: string, public type: NotificationType) {
-    this.timeout = configuration.DEFAULT_NOTIFICATION_TIMING;
+    this.timeout = configuration.DEFAULT_NOTIFICATION_TIMEOUT;
     this.visible = false;
     this.dismissible = false;
   }

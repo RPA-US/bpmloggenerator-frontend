@@ -2,7 +2,12 @@ version: '3.6'
 
 services:
   bpmloggenerator:
-    build: .
+    build: 
+      context: .
+      dockerfile: ./dev.Dockerfile
     container_name: bpmloggenerator-frontend
     restart: unless-stopped
     env_file: ./.env
+    ports:
+      - "3000:3000"
+      - "8000:8000"

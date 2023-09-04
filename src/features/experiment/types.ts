@@ -24,7 +24,7 @@ export interface Experiment {
   sizeBalance: any
   specialColnames: any
   status: string | null
-  seedLog: any | null
+  seed_log: any | null
   isPublic: boolean
   author?: string
 }
@@ -52,7 +52,7 @@ export interface ExperimentsState {
 export interface ExperimentConfiguration {
   logSize: number[]
   numberOfScenarios: number
-  seedLog: string
+  seed_log: string
   variabilityConfig: string
   scenarioConfig: string | null
 

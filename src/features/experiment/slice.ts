@@ -94,7 +94,8 @@ export const loadExperiments = (): AppThunk => async (dispatch: AppDispatch, get
       dispatch(addExperiments({
         experiments: experimentResponse.results
           .map((exp: ExperimentDTO, i) => experimentDTOToExperimentType(exp))
-          .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i),
+          .filter((exp, i, ls) => ls.findIndex(e => e.id === exp.id) === i)
+          .sort((a, b) => b.creationDate.getTime() - a.creationDate.getTime()),
         pagination: {
           page: currentPage + (experimentResponse.next != null ? 1 : 0),
           total: experimentResponse.count,
@@ -123,9 +124,9 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
   const { auth, experiment } = getState();
   const hasPreviousId = experimentData.get("id") != null;
   
-  // clear seed log attached data
-  const seedLog = experimentData.get('seedLog') ?? '';
-  // experimentData.delete('seedLog');
+  // clear seed_log log attached data
+  const seed_log = experimentData.get('seed_log') ?? '';
+  // experimentData.delete('seed_log');
 
   // for first saving we unset execute_mode field
   const executeMode = experimentData.get('execute_mode') ?? 'false';
@@ -150,7 +151,7 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
 
     if (!hasPreviousId && experimentResponse.id != null) {
       if(experimentResponse.status === "PRE_SAVED") {
-        const { case_conf, scenario_conf } = csvLogToJSON(seedLog, experimentData.get("special_colnames"))
+        const { case_conf, scenario_conf } = csvLogToJSON(seed_log, experimentData.get("special_colnames"))
         dispatch(
           setExperiment({
             detail: typedExperiment,
@@ -173,6 +174,23 @@ export const saveExperiment = (experimentData: any, actionFinishedCallback: Func
       dispatch(setError(error as ExperimentError))
       actionFinishedCallback != null && actionFinishedCallback(null, error);
     }
+}
+
+export const deleteExperiment = (experimentId: string, actionFinishedCallback: Function|null): AppThunk => async (dispatch: AppDispatch, getState) => {
+  const { auth } = getState();
+  const id = parseInt(experimentId);
+  
+  try {
+    const response = await experimentRepository.delete(id, auth.token ?? '');
+    actionFinishedCallback != null && actionFinishedCallback(response.status, null);
+  } catch (error) {
+    dispatch(setError(error as ExperimentError))
+    actionFinishedCallback != null && actionFinishedCallback(null, error);
+  }
+}
+
+export const isNameInUse = (name: string, experiments: Experiment[]): Boolean => {
+  return experiments.some((experiment) => experiment.name === name)
 }
 
 export default experimentsSlice.reducer;

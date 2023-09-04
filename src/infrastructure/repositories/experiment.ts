@@ -69,7 +69,21 @@ export default class ExperimentRepository {
     }
   }
   
-  async delete() {}
+  async delete(id: number, token: string) {
+    try {
+      if(token != ''){
+        return await Http.request('DELETE', Http.buildURL(`/experiments/${id}/`), {
+          ...Http.authHeader(token)
+        });
+      } else {
+        return await Http.request('DELETE', Http.buildURL(`/experiments/${id}/`));
+      } 
+    } catch (ex) {
+      console.error('Error caught in ExperimentRepository.delete', ex);
+      // TODO handle session caduced error
+      throw ex;
+    }
+  }
   
   async download(id: number, token: string) {
     try {

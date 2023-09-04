@@ -90,10 +90,11 @@ const ExperimentsList: React.FC = () => {
       </FlexDiv>
 
       <List
-        loadMoreFn={ () => loadExperiments() }
+        loadMoreFn={ () => dispatch(loadExperiments()) }
         loadMoreDisabled={ experiments.length > 0 && !pagination.hasNext }
         isLoading={ isLoading }
         experiments={ experiments }
+        showAuthor={ false }
         downloadFn = { (id: number) => downloadResults(id, token ?? '') }
       />
     </>

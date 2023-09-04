@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import DownloadIcon from '@mui/icons-material/Download';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import LinkIcon from '@mui/icons-material/Link';
 import configuration from "infrastructure/util/configuration";
 import { useHistory, useParams } from 'react-router-dom';
@@ -11,12 +12,13 @@ import { ThemeContext } from '@emotion/react';
 import { authSelector } from 'features/auth/slice';
 
 import BackButton from 'components/BackButton';
-import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice } from './slice';
+import { experimentsSelector, addExperiment, saveExperiment, experimentRepository, experimentsSlice, deleteExperiment } from './slice';
 import { experimentDTOToExperimentType, downloadFile, copyTextToClipboard, experimentToFormData } from './utils';
 import ExperimentFormComponent from './Form';
 import { ExperimentState } from './types';
 import NotificationFactory from 'features/notifications/notification';
 import { showNotification } from 'features/notifications/slice';
+import { useForm } from 'react-hook-form';
 
 const downloadResults = async (experimentId: number, token: string) => {
   try {
@@ -100,6 +102,7 @@ const ExperimentDetails: React.FC = () => {
   const [owned, setOwned]: any = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { handleSubmit } = useForm();
 
   useEffect(() => {
     (async () => {
@@ -123,12 +126,71 @@ const ExperimentDetails: React.FC = () => {
     })();
   }, [id, token]);
 
+  const formSubmit = (data: any, buttonName: any) => {
+    const variability_mode = data.get('variability_mode');
+    data.set('id', id);
+    if (buttonName === "save" || buttonName === "generate") {
+      dispatch(saveExperiment(data, (status: string, error: any) => {
+        setLoading(false);
+        if (error == null) {
+          if (status != "LAUNCHED") {
+            if (variability_mode === "scenarioVariability") {
+              history.push(configuration.PREFIX + '/scenario-variability');
+            } else if (variability_mode === "caseVariability") {
+              history.push(configuration.PREFIX + '/case-variability');
+            } else {
+              const notification = NotificationFactory.success(t('features.experiment.details.saveResult', { name: experiment.name }))
+                .dismissible()
+                .build();
 
+              setTimeout(() => {
+                dispatch(showNotification(notification));
+              }, 0)
+            }
+          } else {
+            history.push(configuration.PREFIX + '/');
+          }
+        } else {
+          const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
+            .dismissible()
+            .build();
+
+          setTimeout(() => {
+            dispatch(showNotification(notification));
+          }, 0)
+        }
+      }));
+    }
+    else if (buttonName === "delete") {
+      dispatch(deleteExperiment(id, (status: string, error: any) => {
+        setLoading(false);
+        if (error == null) {
+          const notification = NotificationFactory.success(t('features.experiment.details.deletedExperiment', { name: experiment.name }))
+            .dismissible()
+            .build();
+
+          setTimeout(() => {
+            dispatch(showNotification(notification));
+          }, 0)
+
+          history.push(configuration.PREFIX + '/')
+        } else {
+          const notification = NotificationFactory.error(t('features.experiment.details.deleteError') + error)
+            .dismissible()
+            .build();
+
+          setTimeout(() => {
+            dispatch(showNotification(notification));
+          }, 0)
+        }
+      }))
+    }
+  }
 
   return (
     <>
       <Typography variant="h4">
-        <BackButton />
+        <BackButton to={experiment != null && experiment.isPublic === true ? `${configuration.PREFIX}/public` : `${configuration.PREFIX}`} />
         {t('features.experiment.details.title')}
       </Typography>
 
@@ -145,42 +207,7 @@ const ExperimentDetails: React.FC = () => {
       {experiment != null && experiment.state === ExperimentState.NOT_LAUNCHED && (
         <ExperimentFormComponent
           initialValues={experiment}
-          onSubmit={(data: any) => {
-            // console.log('Edit component data received:', data);
-            const variability_mode = data.get('variability_mode');
-            data.set('id', id);
-            dispatch(saveExperiment(data, (status: string, error: any) => {
-              setLoading(false);
-              if (error == null) {
-                if (status != "LAUNCHED") {
-                  if (variability_mode === "scenarioVariability") {
-                    history.push(configuration.PREFIX + '/scenario-variability');
-                  } else if (variability_mode === "caseVariability") {
-                    history.push(configuration.PREFIX + '/case-variability');
-                  } else {
-                    const notification = NotificationFactory.success(t('features.experiment.details.experiment') + ` ${experiment.name} ` + t('features.experiment.details.success'))
-                      .dismissible()
-                      .build();
-
-                    setTimeout(() => {
-                      dispatch(showNotification(notification));
-                    }, 0)
-                  }
-                } else {
-                  history.push(configuration.PREFIX + '/');
-                }
-              } else {
-                const notification = NotificationFactory.error(t('features.experiment.details.experiment') + ` ${experiment.name} ` + error)
-                  .dismissible()
-                  .build();
-
-                setTimeout(() => {
-                  dispatch(showNotification(notification));
-                }, 0)
-
-              }
-            }));
-          }}
+          onSubmit={ formSubmit }
         />
       )}
 
@@ -256,9 +283,11 @@ const ExperimentDetails: React.FC = () => {
               <Grid item style={{ marginTop: theme.spacing(3) }}>
                 <BoldKey variant="body1">{t('features.experiment.details.executionStart')}</BoldKey>{t('commons:datetime', { val: experiment.executionStart })}
               </Grid>
-              <Grid item style={{ marginTop: theme.spacing(3) }}>
-                <BoldKey variant="body1">{t('features.experiment.details.executionEnd')}</BoldKey>{t('commons:datetime', { val: experiment.executionEnd })}
-              </Grid>
+              { experiment.state === ExperimentState.CREATED &&
+                <Grid item style={{ marginTop: theme.spacing(3) }}>
+                  <BoldKey variant="body1">{t('features.experiment.details.executionEnd')}</BoldKey>{t('commons:datetime', { val: experiment.executionEnd })}
+                </Grid>
+              }
             </Grid>
 
             <Typography variant="subtitle2" style={{ marginTop: theme.spacing(2) }}>{t('features.experiment.details.description')}</Typography>
@@ -308,7 +337,7 @@ const ExperimentDetails: React.FC = () => {
                 <FileBox component="span" sx={{ p: 2 }}>
                   <Button
                     startIcon={<AttachFileIcon />}
-                    onClick={() => downloadCsv('seedLog.csv', experiment.seedLog)}
+                    onClick={() => downloadCsv('seed_log.csv', experiment.seed_log)}
                   >{t('features.experiment.details.seedLog')}</Button>
                 </FileBox>
               </Grid>

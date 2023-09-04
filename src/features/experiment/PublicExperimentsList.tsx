@@ -121,6 +121,7 @@ const PublicExperimentsList: React.FC = () => {
         loadMoreDisabled={ state.list.length > 0 && !state.hasNext }
         isLoading={ state.loading }
         experiments={ state.list as Experiment[] }
+        showAuthor={ true }
         downloadFn = { (id: number) => downloadResults(id) }
       />
     </>

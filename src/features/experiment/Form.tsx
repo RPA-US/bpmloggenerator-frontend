@@ -1,18 +1,26 @@
+import { Experiment } from './types';
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button, Card, CardActions, CardContent, TextField, Theme } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import FormInput from 'components/FormInput';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@emotion/react';
-import { ErrorOption, SubmitHandler, useForm, ValidationRule } from 'react-hook-form';
+import { ErrorOption, set, SubmitHandler, useForm, ValidationRule } from 'react-hook-form';
 import styled from '@emotion/styled';
 import FileUpload from 'components/FileUpload';
 import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import TextInputContainer from 'components/TextInputContainer';
 import { objectToFormData } from 'infrastructure/util/form';
+import { experimentsSelector, isNameInUse } from 'features/experiment/slice';
+import { useHistory } from 'react-router-dom';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
+import configuration from "infrastructure/util/configuration";
 
 const RelativeContainer = styled('div')`
   position: relative;
@@ -38,13 +46,17 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   // hook to force component update manually
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({} as any), []);
+  
+  const { experiments } = useSelector(experimentsSelector);
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { register, formState, handleSubmit, getValues, resetField, watch, setError } = useForm();
   const [fileContents, setFileContents]: [any, React.Dispatch<React.SetStateAction<any>>] = useState({});
 
-  const seedLogField = register('seedLog');
+  const seed_logField = register('seed_log');
   const screenshotsField = register('screenshots');
   const variabilityField = register('variability_conf');
   const scenarioField = register('scenarios_conf');
@@ -61,25 +73,25 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
   useEffect(() => {
     let scenarios_conf;
     let variability_conf;
-    let seedLog;
+    let seed_log;
     if (initialValues.scenariosConf != null) {
       scenarios_conf = JSON.stringify(initialValues.scenariosConf)
     }
     if (initialValues.variabilityConf != null) {
       variability_conf = JSON.stringify(initialValues.variabilityConf)
     }
-    if (initialValues.seedLog != null) {
-      seedLog = JSON.stringify(initialValues.seedLog)
+    if (initialValues.seed_log != null) {
+      seed_log = JSON.stringify(initialValues.seed_log)
     }
     setFileContents({
       ...fileContents,
-      seedLog,
+      seed_log,
       scenarios_conf,
       variability_conf,
     });
   }, [])
 
-  const wizzardDisabled = getValues('name') == null || getValues('seedLog').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
+  const wizzardDisabled = getValues('name') == null || getValues('seed_log').length == 0 || (getValues('screenshots').length == 0 && initialValues.screenshotsPath == null);
   const scenariosConfDisabled = !((getValues('number_scenarios') ?? 0) > 0);
 
   const validateForm = (data: any, submitter: string) => {
@@ -89,7 +101,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       setError(field, error);
     }
     if (submitter === 'generate') {
-      // if (fileContents.seedLog == null) setError({ type: 'required', message: t('features.experiment.form.errors.seedLogRequired') as string });
+      // if (fileContents.seed_log == null) setError({ type: 'required', message: t('features.experiment.form.errors.seed_logRequired') as string });
       if ((data.screenshots == null || data.screenshots.length < 1) && (initialValues.screenshotsPath == null || initialValues.screenshotsPath === '')) setFormError('screenshots', { type: 'required', message: t('features.experiment.form.errors.screenShotsRequired') as string });
       if (fileContents.variability_conf == null && initialValues.variabilityConf == null) setFormError('variability_conf', { type: 'required', message: t('features.experiment.form.errors.variabilityRequired') as string });
       if (Validations.isPositiveInteger(data.number_scenarios) && data.number_scenarios > 0 && fileContents.scenarios_conf == null && initialValues.scenariosConf == null) setFormError('scenarios_conf', { type: 'required', message: t('features.experiment.form.errors.scenarioRequired') as string });
@@ -113,6 +125,15 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
       }
     }
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
+    else if (data.name.length > 255) setFormError('name', { type: 'maxLength', message: t('features.experiment.form.errors.nameMaxLength') as string })
+    else if (initialValues.name !== data.name && isNameInUse(data.name, experiments)) setFormError('name', { type: 'validate', message: t('features.experiment.form.errors.nameAlreadyExists') as string })
+    if (data.description.length > 255) setFormError('description', { type: 'maxLength', message: t('features.experiment.form.errors.descriptionMaxLength') as string })
+
+    if (data.seed_log[0] !== undefined && !data.seed_log[0].name.endsWith('.csv')) setFormError('seed_log', { type: 'validate', message: t('features.experiment.form.errors.seedExtension') as string });
+    if (data.screenshots[0] !== undefined && !data.screenshots[0].name.endsWith('.zip')) setFormError('screenshots', { type: 'validate', message: t('features.experiment.form.errors.screenshotsExtension') as string });
+    if (data.scenarios_conf !== undefined && data.scenarios_conf[0] !== undefined && !data.scenarios_conf[0].name.endsWith('.json')) setFormError('scenarios_conf', { type: 'validate', message: t('features.experiment.form.errors.scenariosExtension') as string });
+    if (data.variability_conf[0] !== undefined && !data.variability_conf[0].name.endsWith('.json')) setFormError('variability_conf', { type: 'validate', message: t('features.experiment.form.errors.variabilityExtension') as string });
+
     console.log('Form validation: ', valid, '. Evalued data: ', data);
     return valid;
   }
@@ -138,12 +159,22 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
     if (buttonName === "generate") {
       checkedData.execute_mode = true;
+
+      history.push(configuration.PREFIX + '/bpmloggenerator');
+
+      const notification = NotificationFactory.success(t('features.experiment.form.executeExperiment'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
     } else if (buttonName === "scenarioVariability" || buttonName === "caseVariability") {
       checkedData.status = "PRE_SAVED";
       checkedData.variability_mode = buttonName;
     }
 
-    // delete checkedData.seedLog;
+    // delete checkedData.seed_log;
 
     if (data.logSize != null && data.logSize != "" && data.imbalancedCase != null && data.imbalancedCase != "") {
       const imbalancedCases = data.imbalancedCase.split(',').map((n: string) => parseFloat(n));
@@ -164,7 +195,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
     }
 
     const formData = objectToFormData(checkedData, fileContents);
-    onSubmit(formData)
+    onSubmit(formData, buttonName)
   }
 
   return (
@@ -234,25 +265,24 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".csv"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.seedLog && formState.errors?.seedLog?.message}
-              
-              fileName={(getValues('seedLog') ?? [])[0]?.name || '' }//initialValues.seed != null ? 'no nulo':'nulo'}
+              errorMessage={formState.errors?.seed_log?.message}
+              fileName={(getValues('seed_log') ?? [])[0]?.name || initialValues.seed_log != null ? 'seed.csv' : ''}
               inputProps={{
-                ...seedLogField,
+                ...seed_logField,
                 onChange: (evt: any) => {
-                  seedLogField.onChange(evt);
+                  seed_logField.onChange(evt);
                   const file = evt.target.files[0];
                   readFileContent(file)
                     .then((content) => {
                       console.log('setting file content: ', content);
                       setFileContents({
                         ...fileContents,
-                        seedLog: content,
+                        seed_log: content,
                       });
                     })
                     .catch((err) => {
                       console.error('error reading file', err);
-                      setError('seedLog', err);
+                      setError('seed_log', err);
                     })
                 }
               }}
@@ -268,7 +298,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".zip"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.screenshots && formState.errors?.screenshots?.message}
+              errorMessage={formState.errors?.screenshots?.message}
               fileName={(getValues('screenshots') ?? [])[0]?.name || initialValues.screenshotsPath}
               inputProps={{
                 ...screenshotsField,
@@ -314,7 +344,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".json"
               disabled={disabled || scenariosConfDisabled}
-              errorMessage={!formState.dirtyFields.scenarios_conf && formState.errors?.scenarios_conf?.message}
+              errorMessage={formState.errors?.scenarios_conf?.message}
               fileName={(getValues('scenarios_conf') ?? [])[0]?.name || (watchNumberScenarios > 0 && initialValues.scenariosConf != null ? 'scenarios_conf.json' : '')}
               inputProps={{
                 ...scenarioField,
@@ -330,7 +360,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                     })
                     .catch((err) => {
                       console.error('error reading file', err);
-                      setError('seedLog', err);
+                      setError('seed_log', err);
                     })
                 }
               }}
@@ -400,7 +430,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
             <FileUpload
               accept=".json"
               disabled={disabled}
-              errorMessage={!formState.dirtyFields.variability_conf && formState.errors?.variability_conf?.message}
+              errorMessage={formState.errors?.variability_conf?.message}
               fileName={(getValues('variability_conf') ?? [])[0]?.name || (initialValues.variabilityConf != null ? 'variability_conf.json' : '')}
               inputProps={{
                 ...variabilityField,
@@ -416,7 +446,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
                     })
                     .catch((err) => {
                       console.error('error reading file', err);
-                      setError('seedLog', err);
+                      setError('seed_log', err);
                     })
                 }
               }}
@@ -435,6 +465,14 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
 
         <CardActions>
           <Spacer />
+          {Object.keys(initialValues).length > 0 && (
+            <Button 
+              type="submit" name="delete" variant="contained"
+              style={{ backgroundColor: theme.palette.error.main, color: theme.palette.error.contrastText }}
+              endIcon={<DeleteForever />}>
+              {t('features.experiment.details.deleteButton')}
+            </Button>
+          )}
 
           <Button type="submit" name="save" variant="contained" color="primary" endIcon={<SaveIcon />} disabled={disabled}>
             {t('features.experiment.form.save')}

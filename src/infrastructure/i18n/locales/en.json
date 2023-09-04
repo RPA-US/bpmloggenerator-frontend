@@ -73,9 +73,11 @@
         "email": "email",
         "password": "password",
         "confirmpassword": "password confirmation",
+        "success": "Account created successfully",
         "errors": {
           "emailRequired": "Please enter a valid email",
           "passwordConfirmation": "Passwords do not match",
+          "passwordInvalid": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",
           "passwordRequired": "Please enter a valid password.",
           "invalidcredentials": "Invalid credentials: {{msg}}"
         },
@@ -616,11 +618,16 @@
         "copyLink": "Copy link",
         "experiment": "Experiment",
         "success": "successfully",
+        "saveResult": "Experiment {{ name }} saved successfully",
         "publish": "published",
         "unpublish": "unpublished",
-        "publishResult": "Experiment {{ name }} successfully {{ published }}"
+        "publishResult": "Experiment {{ name }} successfully {{ published }}",
+        "deleteButton": "Delete",
+        "deletedExperiment": "Experiment {{ name }} deleted successfully",
+        "deleteError": "Error deleting experiment: "
       },
       "form": {
+        "executeExperiment": "Execution started",
         "save": "Save",
         "assistant": "Wizard",
         "name": {
@@ -674,11 +681,18 @@
         },
         "errors": {
           "nameRequired": "Please enter a valid name.",
+          "nameMaxLength": "The name must be shorter than than 256 characters.",
+          "nameAlreadyExists": "The experiment name must be unique", 
+          "descriptionMaxLength": "The description must be shorter than than 256 characters.",
           "screenShotsRequired": "Please enter a zip with the screenshots",
           "scenarioRequired": "Please enter a valid screenshots configuration file",
           "logSizeRequired": "Please enter a valid log size separated by commas",
           "imbalancedCaseRequired": "Please enter valid imbalanced case percentages separated by commas",
-          "variabilityRequired": "Please enter a valid variability configuration file"
+          "variabilityRequired": "Please enter a valid variability configuration file",
+          "seedExtension": "Seed log files must be .csv",
+          "screenshotsExtension": "Screenshots files must be .zip",
+          "scenariosExtension": "Scenarios files must be .json",
+          "variabilityExtension": "Variability files must be .json"
         },
         "generate": "Execute"
       }
@@ -687,6 +701,7 @@
       "profileView": "Profile",
       "logout": "Logout",
       "form": {
+        "userSaved": "User saved successfully",
         "addComponent": "Add component",
         "save": "Save",
         "username": {
@@ -703,6 +718,12 @@
         "email": {
           "label": "Email",
           "placeholder": "Enter your email"
+        },
+        "errors": {
+          "firstNameMaxLength": "The name must be shorter than than 151 characters",
+          "lastNameMaxLength": "The last name must be shorter than than 151 characters",
+          "emailRequired": "Please enter a valid email",
+          "emailMaxLength": "The email must be shorter than than 255 characters"
         }
       },
       "gui-components": {
@@ -740,6 +761,8 @@
         }
       },
       "changePassword": {
+        "success": "Password changed successfully", 
+        "authError": "Something went wrong, check that your credentials are correct",
         "button": "Change password",
         "title": "Password change form",
         "form": {
@@ -759,6 +782,7 @@
           "errors": {
             "currentPasswordRequired": "Please, enter your current password",
             "passwordRequired": "Please, enter your new password",
+            "passwordInvalid": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",
             "repeatedPasswordRequired": "You must repeat the new password",
             "passwordsDontMatch": "Repeated password doesn't match",
             "passwordLengthRequired": "Password must contains at least 9 characters"

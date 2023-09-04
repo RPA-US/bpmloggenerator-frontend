@@ -4,9 +4,10 @@ import { Box, Button, Card, CardContent, TextField, Typography } from '@mui/mate
 import { useForm, ErrorOption } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { signup, authSelector } from './slice';
+import { signup, authSelector, checkPassword } from './slice';
 import { useTranslation } from 'react-i18next';
-import Validations from 'infrastructure/util/validations';
+import NotificationFactory from 'features/notifications/notification';
+import { showNotification } from 'features/notifications/slice';
 
 const LoginBoxContainer = styled('div')`
   position: absolute;
@@ -36,6 +37,8 @@ export default function Signup(): JSX.Element {
     if (typeof data.password1 !== "undefined" && typeof data.password2 !== "undefined") {
       if(data.password1 != data.password2)
         setFormError('password2', { type: 'required', message: t('features.auth.signup.errors.passwordConfirmation') as string });
+      if(!checkPassword(data.password1))
+        setFormError('password1', { type: 'required', message: t('features.auth.signup.errors.passwordInvalid') as string });
     }
     return valid;
   }
@@ -50,6 +53,15 @@ export default function Signup(): JSX.Element {
       const { email, password1, password2 } = data;
       clearErrors();
       await dispatch(signup({ email, password1, password2 }));
+
+      history.push(redirectPath)
+      const notification = NotificationFactory.success(t('features.auth.signup.success'))
+        .dismissible()
+          .build();
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+
       reset(data);
     }
   }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '@mui/styled-engine';
 import { Button, Grid, TextField, Theme } from '@mui/material';
@@ -8,6 +8,12 @@ import TextInputContainer from 'components/TextInputContainer';
 import Spacer from 'components/Spacer';
 import Validations from 'infrastructure/util/validations';
 import { objectToFormData } from 'infrastructure/util/form';
+import { checkPassword } from './utils';
+import NotificationFactory from 'features/notifications/notification';
+import { useDispatch, useSelector } from 'react-redux';
+import { showNotification } from 'features/notifications/slice';
+import AuthRepository, { AuthError } from 'infrastructure/repositories/auth';
+import { authSelector } from 'features/auth/slice';
 
 export interface ChangePasswordFormProps {
   onSubmit: Function
@@ -15,9 +21,15 @@ export interface ChangePasswordFormProps {
 }
 
 const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disabled = false }) => {
+  const authRepository = new AuthRepository();
+  const { token } = useSelector( authSelector );
+
+  const [ pwdChangeModal, setPwdChangeModal ] = useState(false);
+
   const { t } = useTranslation();
   const theme = useContext(ThemeContext) as Theme;
   const { register, formState, handleSubmit, getValues, setError } = useForm();
+  const dispatch = useDispatch();
 
   const validateForm = (data: any) => {
     let valid = true;
@@ -28,19 +40,39 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSubmit, disab
 
     if (Validations.isBlank(data.currentPassword)) setFormError('currentPassword', { type: 'required', message: t('features.user.changePassword.form.errors.currentPasswordRequired') as string });
     if (Validations.isBlank(data.password)) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordRequired') as string });
-    else if (data.password.length < 9) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordLengthRequired') as string });
+    else if (!checkPassword(data.password)) setFormError('password', { type: 'required', message: t('features.user.changePassword.form.errors.passwordInvalid') as string });
     if (Validations.isBlank(data.repeatedPassword)) setFormError('repeatedPassword', { type: 'required', message: t('features.user.changePassword.form.errors.repeatedPasswordRequired') as string });
     else if (data.password !== data.repeatedPassword) setFormError('repeatedPassword', { type: 'required', message: t('features.user.changePassword.form.errors.passwordsDontMatch') as string });
     
     return valid;
   }
 
-  const formSubmit = (data: any) => {
+  const formSubmit = async (data: any) => {
     if (!validateForm(data)) {
       return false;
     }
-    
-    onSubmit(objectToFormData(data, {}));
+
+    try{
+      const response = await authRepository.changePassword(data.currentPassword, data.password, data.repeatedPassword, token ?? '');
+
+      const notification = NotificationFactory.success(t('features.user.changePassword.success'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+
+      onSubmit();
+    } catch (ex) {
+      const notification = NotificationFactory.error(t('features.user.changePassword.authError'))
+        .dismissible()
+        .build();
+
+      setTimeout(() => {
+        dispatch(showNotification(notification));
+      }, 0)
+    }
   }
 
   return (

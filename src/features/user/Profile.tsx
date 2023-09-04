@@ -122,17 +122,7 @@ const Profile: React.FC = () => {
 
         <ChangePasswordForm
           disabled={ isLoading }
-          onSubmit={ async (data: FormData) => {
-            try {
-              const getFormField = (field: string): string => data.get(field) as string ?? '';
-              const response = await authRepository.changePassword(getFormField('currentPassword'), getFormField('password'), getFormField('repeatedPassword'), token ?? '');
-              console.log('change password response', response);
-            } catch (ex) {
-              console.error('error changing password', ex);
-            } finally {
-              setPwdChangeModal(false);
-            }
-          } }
+          onSubmit={ () => { setPwdChangeModal(false) } }
         /> 
       </CenteredModal>
     </>
