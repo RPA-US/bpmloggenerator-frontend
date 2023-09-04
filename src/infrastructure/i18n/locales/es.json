@@ -701,7 +701,8 @@
         "publishResult": "El experimento {{ name }} ha cambiado su estado a '{{ published }}'",
         "deleteExperiment": "Eliminar",
         "deletedExperiment": "El experimento {{ name }} se ha eliminado exitosamente",
-        "deleteError": "Algo salió mal: "
+        "deleteError": "Algo salió mal: ",
+        "deleteButton": "Eliminar"
       }
     },
     "user": {
