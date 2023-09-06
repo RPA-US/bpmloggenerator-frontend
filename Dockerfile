@@ -5,9 +5,9 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 # install application dependencies
-COPY package.json ./
+COPY package.json npm-shrinkwrap.json ./
 RUN npm install yarn
-RUN yarn install
+RUN npm install
 RUN yarn global add serve
 # add app
 COPY . ./
