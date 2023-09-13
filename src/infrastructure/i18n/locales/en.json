@@ -160,6 +160,7 @@
           "mouse_list_coordenates_y_top":"Y-coordinate upper boundary",
           "word_configuration_chat_limit":"Maximum number of characters",
           "word_configuration_max_words":"Maximum number of words to be generated",
+          "word_configuration_truncate":"Maximum number of characters to be generated",
           "sentence_configuration_char_limit":"Maximum number of characters",
           "paragraph_configuration_char_limit":"Maximum number of characters",
           "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated",
@@ -660,7 +661,7 @@
         },
         "screenshots": {
           "label": "Screenshots",
-          "helperText": "Screenshots that appear in the seed log",
+          "helperText": "Screenshots that appear in the seed log (.png or .jpg supported)",
           "tooltip": "Corresponds to the screenshots indicated in the seed log and therefore, with indicated variability and/or scenario configurations. It should be a tablet with all screenshots in the root of the tablet with the same name as indicated in the configuration json(s)."
         },
         "variability": {

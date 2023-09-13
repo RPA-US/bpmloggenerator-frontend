@@ -153,6 +153,7 @@
           "paragraph_configuration_font":"Configuración de la fuente",
           "word_configuration_chat_limit":"Número máximo de caracteres",
           "word_configuration_max_words":"Número máximo de palabras a generar",
+          "word_configuration_truncate":"Número máximo de caracteres a generar",
           "sentence_configuration_char_limit":"Número máximo de caracteres",
           "paragraph_configuration_char_limit":"Número máximo de caracteres",
           "paragraph_configuration_max_paragraph":"Número máximo de párrafos a generar",
@@ -636,7 +637,7 @@
           "tooltip": "Una semilla se corresponde con un log pequeño, que tiene un caso por cada variante del log que queremos generar. Y obviamente las capturas asociadas a las actividades de dichos casos."
         },
         "screenshots": {
-          "label": "Capturas de pantalla",
+          "label": "Capturas de pantalla (soportados .png o .jpg)",
           "helperText": "Capturas de pantalla que aparecen en la semilla",
           "tooltip": "Se corresponden con las capturas indicadas en el log semilla y por tanto, con indicadas las configuraciones de variabilidad y/o escenario. Debe ser un comprimido con todas las capturas en la raíz del comprimido con el mismo nombre que se indica en los json de configuración."
         },
