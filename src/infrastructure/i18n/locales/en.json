@@ -165,7 +165,8 @@
           "paragraph_configuration_char_limit":"Maximum number of characters",
           "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated",
           "truncated_sentence_configuration_char_limit":"Maximum number of characters",
-          "gui_component_status":"Status to be assigned to the resulting GUI component"
+          "gui_component_status":"Status to be assigned to the resulting GUI component",
+          "number_of_surnames": "Number of surnames to be generated"
         }
       },
       "GUI_category": {
@@ -210,7 +211,6 @@
       "function_trace": {
         "name": {
           "random_mouse_position": "random_mouse_position",
-          "random_id_card": "generate_DNI",
           "random_word_with_first_letter_capital": "generate_random_entity",
           "random_path": "generate_path",
           "random_paragraph": "generate_paragraph",
@@ -235,7 +235,14 @@
           "image_copy_renamed": "generate_copied_capture_without_root",
           "image_copy_renamed_and_return_path": "generate_copied_capture",
           "gui_component_status": "assign_status_as_property",
-          "truncated_random_sentence_in_image": "truncated_random_sentence_in_image"
+          "truncated_random_sentence_in_image": "truncated_random_sentence_in_image",
+          "digits_in_image": "digits_in_image",
+          "person_name_image": "person_name_image",
+          "id_card_image": "id_card_image",
+          "digits_text": "digits_text",
+          "person_name_text": "person_name_text",
+          "person_surname_text": "person_surname_text",
+          "random_id_card": "generate_DNI"
         },
         "description": {
           "random_mouse_position": "Generate a random mouse position. The params in order are: the down-left position of the screenshot position (2 coordinates), the resolution image (2 coordinates), and the height and widht of the UI area",
