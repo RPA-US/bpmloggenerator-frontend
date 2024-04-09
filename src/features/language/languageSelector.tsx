@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Avatar, MenuItem, Select } from '@mui/material';
 
 import esThumbnail from 'assets/lang-thumbnails/spanish.png';
-import enThumbnail from 'assets/lang-thumbnails/english.png';
+import enThumbnail from 'assets/lang-thumbnails/usa.png';
 
 const LanguageSelector: React.FC = () => {
   const { i18n } = useTranslation();
