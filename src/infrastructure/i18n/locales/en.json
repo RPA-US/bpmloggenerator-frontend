@@ -166,7 +166,10 @@
           "paragraph_configuration_max_paragraph":"Maximum number of paragraphs to be generated",
           "truncated_sentence_configuration_char_limit":"Maximum number of characters",
           "gui_component_status":"Status to be assigned to the resulting GUI component",
-          "number_of_surnames": "Number of surnames to be generated"
+          "number_of_names": "Number of names to be generated",
+          "number_of_surnames": "Number of surnames to be generated",
+          "person_name_configuration_font": "Font configuration",
+          "person_name_configuration_char_limit": "Maximum number of characters"
         }
       },
       "GUI_category": {

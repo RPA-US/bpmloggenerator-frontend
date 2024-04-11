@@ -172,7 +172,10 @@
           "mouse_list_coordenates_resolution_y":"Resolución del alto de la imagen",
           "truncated_sentence_configuration_char_limit":"Máximo número de caracteres",
           "gui_component_status": "Estado a ser asignado al componente GUI resultante",
-          "number_of_surnames": "Número de apellidos a generar"
+          "number_of_names": "Número de nombres a ser generados",
+          "number_of_surnames": "Número de apellidos a ser generados",
+          "person_name_configuration_font": "Configuración de la fuente",
+          "person_name_configuration_char_limit": "Número máximo de caracteres"
         }
       },
       "GUI_category": {
