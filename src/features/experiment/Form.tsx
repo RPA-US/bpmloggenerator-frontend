@@ -121,7 +121,7 @@ const ExperimentFormComponent: React.FC<ExperimentFormProperties> = ({ onSubmit,
           return tot;
         }, 0);
 
-        if (sum != 1.0) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseSumDistinctOfOne') as string });
+        if ((Math.round(sum * 1e12) / 1e12) != 1.0) setFormError('imbalancedCase', { type: 'required', message: t('features.experiment.form.errors.imbalancedCaseSumDistinctOfOne') as string });
       }
     }
     if (Validations.isBlank(data.name)) setFormError('name', { type: 'required', message: t('features.experiment.form.errors.nameRequired') as string })
