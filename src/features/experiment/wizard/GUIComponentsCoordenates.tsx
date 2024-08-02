@@ -660,7 +660,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                             top: resizeRect(screenshots[key][index2].coordinates[1], resolutionBRW[1], resolutionIMG[1]),
                                             width: resizeRect(screenshots[key][index2].coordinates[2], resolutionBRW[0], resolutionIMG[0]) - resizeRect(screenshots[key][index2].coordinates[0], resolutionBRW[0], resolutionIMG[0]),
                                             height: resizeRect(screenshots[key][index2].coordinates[3], resolutionBRW[1], resolutionIMG[1]) - resizeRect(screenshots[key][index2].coordinates[1], resolutionBRW[1], resolutionIMG[1]),
-                                            outline: "2px solid black",
+                                            border: "2px solid black",
                                             backgroundColor: randomColor[key][index2],
                                             opacity: 0.3
                                         }}
@@ -675,7 +675,7 @@ const ExperimentGetGUIComponentsCoordenates: React.FC = () => {
                                     top: (coorR[1] <= coorR[3]) ? coorR[1] : coorR[3],
                                     width: ((Math.abs(coorR[0] - coorR[2]) <= resolutionBRW[0]) ? Math.abs(coorR[0] - coorR[2]) : 1),
                                     height: ((Math.abs(coorR[1] - coorR[3]) <= resolutionBRW[1]) ? Math.abs(coorR[1] - coorR[3]) : 1),
-                                    outline: "2px solid blue",
+                                    border: "2px solid blue",
                                     backgroundColor: "blue",
                                     opacity: 0.3
                                 }}
